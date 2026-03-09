@@ -14,25 +14,24 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/about/about.component').then(m => m.AboutComponent),
   },
+
+  // 📌 MÓDULO DE CITAS - CORREGIDO
   {
     path: 'citas',
-    children: [
-      {
-        path: '',
-        // 🌐 Sin guard — cualquier visitante puede agendar
-        loadComponent: () =>
-          import('./features/appointments/user/appointment-user/appointment-user.component')
-            .then(m => m.AppointmentUserComponent),
-      },
-      {
-        path: 'admin',
-        canActivate: [authGuard, adminGuard],
-        loadComponent: () =>
-          import('./features/appointments/admin/appointment-admin/appointment-admin.component')
-            .then(m => m.AppointmentAdminComponent),
-      },
-    ],
+    loadChildren: () => 
+      import('./features/appointments/user/appointment-user.routes')
+        .then(m => m.appointmentUserRoutes)
   },
+
+  // 📌 ADMIN DE CITAS - RUTA SEPARADA (no va como hijo de /citas)
+  {
+    path: 'citas/admin',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () =>
+      import('./features/appointments/admin/appointment-admin/appointment-admin.component')
+        .then(m => m.AppointmentAdminComponent)
+  },
+
   {
     path: 'presupuesto-cirugias',
     loadComponent: () =>
@@ -51,7 +50,8 @@ export const routes: Routes = [
       import('./features/contact/contact.component')
         .then(m => m.ContactComponent),
   },
-  // ── Auth ────────────────────────────────────────────────────────────
+
+  // AUTH
   {
     path: 'login',
     loadComponent: () =>
@@ -64,6 +64,7 @@ export const routes: Routes = [
       import('./features/auth/register/register.component')
         .then(m => m.RegisterComponent),
   },
+
   {
     path: '**',
     redirectTo: '',

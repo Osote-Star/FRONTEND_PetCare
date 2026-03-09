@@ -1,0 +1,87 @@
+<div class="progress-header">
+    <div class="step-badge">2</div>
+
+    <div class="step-info">
+      <small>Nueva cita</small>
+      <h2>Escoge un servicio</h2>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="header-actions">
+      <button class="btn btn-back" (click)="atras()">← Atrás</button>
+      <button class="btn btn-next" (click)="siguiente()">Siguiente →</button>
+    </div>
+    
+    <div class="divider"></div>
+
+    <div class="steps-dots">
+      <div class="dot done"></div>
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+<!-- MAIN -->
+<main>
+  <div class="card">
+    <h1 class="card-title">¿Qué necesita tu mascota?</h1>
+    <p class="card-subtitle">Selecciona el tipo de servicio para tu cita</p>
+
+    <!-- BAÑO -->
+    <div class="service-option" onclick="selectService(this)">
+      <div class="service-header">
+        <div class="service-icon icon-bano">🛁</div>
+        <div class="service-text">
+          <div class="service-name">Baño</div>
+          <div class="service-desc">Baño completo con secado y perfume</div>
+        </div>
+        <div class="service-price">desde $200</div>
+        <div class="radio-circle"></div>
+      </div>
+    </div>
+
+    <!-- BAÑO Y CORTE -->
+    <div class="service-option" onclick="selectService(this)">
+      <div class="service-header">
+        <div class="service-icon icon-corte">✂️</div>
+        <div class="service-text">
+          <div class="service-name">Baño y Corte de pelo</div>
+          <div class="service-desc">Estética completa para tu mascota</div>
+        </div>
+        <div class="service-price">desde $350</div>
+        <div class="radio-circle"></div>
+      </div>
+    </div>
+
+    <!-- VISITA MÉDICA -->
+    <div class="service-option selected" onclick="selectService(this)">
+      <div class="service-header">
+        <div class="service-icon icon-medica">🩺</div>
+        <div class="service-text">
+          <div class="service-name">Visita médica</div>
+          <div class="service-desc">Consulta con médico veterinario</div>
+        </div>
+        <div class="service-price">desde $450</div>
+        <div class="radio-circle"></div>
+      </div>
+      <div class="sub-options">
+        <label>Razón de tu visita <span style="color:var(--terracotta)">*</span></label>
+        <div class="reasons-grid">
+          <div class="reason-chip" onclick="toggleChip(event, this)">Vómito</div>
+          <div class="reason-chip active" onclick="toggleChip(event, this)">Diarrea</div>
+          <div class="reason-chip" onclick="toggleChip(event, this)">Sangrado</div>
+          <div class="reason-chip" onclick="toggleChip(event, this)">Herida</div>
+          <div class="reason-chip" onclick="toggleChip(event, this)">Cirugía</div>
+          <div class="reason-chip" onclick="toggleChip(event, this)">Vacuna</div>
+          <div class="reason-chip" onclick="toggleChip(event, this)">Revisión</div>
+        </div>
+        <label style="margin-top: 4px;">Cuéntanos más</label>
+        <textarea class="notes-field" placeholder="Platicanos sobre tu visita..."></textarea>
+      </div>
+    </div>
+
+  </div>
+</main>
+  

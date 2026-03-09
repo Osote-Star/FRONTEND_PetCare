@@ -1,0 +1,34 @@
+/* ── FOOTER ── */
+.footer-section { background: #2E1F14; }
+
+.footer-logo {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 24px; letter-spacing: 2px;
+  color: var(--sand);
+}
+
+.footer-col-title {
+  font-size: 11px; letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.35);
+}
+
+.footer-link {
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.footer-link:hover { color: white; }
+
+.social-btn {
+  width: 38px; height: 38px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.social-btn:hover { background: rgba(255,255,255,0.13); }

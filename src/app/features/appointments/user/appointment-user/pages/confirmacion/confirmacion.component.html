@@ -1,0 +1,141 @@
+
+
+  <!-- HEADER -->
+  <div class="progress-header">
+    <div class="step-badge">4</div>
+    <div class="step-info">
+      <small>Gracias por confiar en nosotros</small>
+      <h2>Concluir cita</h2>
+    </div>
+    <div class="divider"></div>
+    <div class="header-actions">
+      <button class="btn btn-back" (click)="atras()">← Atrás</button>
+      <button class="btn btn-next" (click)="siguiente()">Siguiente →</button>
+    </div>
+    <div class="divider"></div>
+    <div class="steps-dots">
+      <div class="dot done"></div>
+      <div class="dot done"></div>
+      <div class="dot done"></div>
+      <div class="dot active"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+  <main>
+    <!-- CARD PRINCIPAL -->
+    <div class="card">
+      <h1 class="card-title">¿Cuándo los vemos?</h1>
+      <p class="card-subtitle">Selecciona el veterinario, día y horario de tu preferencia</p>
+
+      <!-- VETERINARIO -->
+      <div class="vet-selector">
+        <label class="field-label">Veterinario <span style="color:var(--terracotta)">*</span></label>
+        <div class="select-wrapper">
+          <select class="form-select">
+            <option>Dra. Rosa Alesys Angeles González</option>
+            <option>Dr. Marco Estrada Fuentes</option>
+            <option>Dra. Sofía Reyes Montoya</option>
+            <option>Sin preferencia — cualquier disponible</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- CALENDARIO -->
+      <div class="section-label">Selecciona una fecha</div>
+      <div class="calendar-wrap">
+        <div class="calendar-header">
+          <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+          <span class="cal-month" id="cal-month"></span>
+          <button class="cal-nav" onclick="changeMonth(1)">›</button>
+        </div>
+        <table class="calendar-grid">
+          <thead>
+            <tr>
+              <th>LUN</th><th>MAR</th><th>MIÉ</th><th>JUE</th>
+              <th>VIE</th><th>SÁB</th><th>DOM</th>
+            </tr>
+          </thead>
+          <tbody id="cal-body"></tbody>
+        </table>
+      </div>
+
+      <!-- HORARIOS -->
+      <div class="slots-header">
+        <span class="slots-label">Horarios disponibles</span>
+        <span class="slots-date" id="selected-date-label">— Sábado 21 de febrero</span>
+      </div>
+      <div class="slots-grid" id="slots-grid">
+        <button class="slot-btn taken">12:15</button>
+        <button class="slot-btn" (click)="selectSlot('12:45')">12:45</button>
+        <button class="slot-btn" (click)="selectSlot('13:15')">13:15</button>
+        <button class="slot-btn taken">13:45</button>
+        <button class="slot-btn" (click)="selectSlot('16:15')">16:15</button>
+        <button class="slot-btn" (click)="selectSlot('16:45')">16:45</button>
+        <button class="slot-btn selected" (click)="selectSlot('17:15')">17:15</button>
+        <button class="slot-btn" (click)="selectSlot('17:45')">17:45</button>
+        <button class="slot-btn" (click)="selectSlot('18:15')">18:15</button>
+        <button class="slot-btn" (click)="selectSlot('18:45')">18:45</button>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="summary-card">
+      <div class="summary-title">Resumen de tu cita</div>
+
+      <div class="summary-item">
+        <div class="summary-icon">🏥</div>
+        <div class="summary-item-text">
+          <small>Clínica</small>
+          <span>VetPaws — Condesa</span>
+        </div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-icon">🩺</div>
+        <div class="summary-item-text">
+          <small>Servicio</small>
+          <span>Visita médica · Diarrea</span>
+        </div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-icon">🐶</div>
+        <div class="summary-item-text">
+          <small>Paciente</small>
+          <span>Toby — Labrador</span>
+        </div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-icon">👩‍⚕️</div>
+        <div class="summary-item-text">
+          <small>Veterinaria</small>
+          <span>Dra. Rosa Alesys A. G.</span>
+        </div>
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <div class="summary-item">
+        <div class="summary-icon">📅</div>
+        <div class="summary-item-text">
+          <small>Fecha</small>
+          <span id="sidebar-date">Sábado 21 de febrero</span>
+        </div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-icon">🕐</div>
+        <div class="summary-item-text">
+          <small>Hora</small>
+          <span id="sidebar-time">17:15 hrs</span>
+        </div>
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <div class="summary-total">
+        <span>Total estimado</span>
+        <span>$450 MXN</span>
+      </div>
+
+      <div class="confirm-badge">✅ ¡Todo listo para confirmar!</div>
+    </div>
+  </main>

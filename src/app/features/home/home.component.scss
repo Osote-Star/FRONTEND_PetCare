@@ -1,0 +1,174 @@
+/* inicio.component.css
+   Solo estilos que Bootstrap no puede cubrir por sí solo.
+   Todo lo estructural y de espaciado usa clases de Bootstrap 5.
+*/
+
+/* ── VARIABLES ── */
+:root {
+  --bark:       #4A3728;
+  --moss:       #5C7A4E;
+  --moss-light: #8BAF78;
+  --sand:       #E8D5B7;
+  --terracotta: #C4704A;
+  --cream:      #FDF6EE;
+}
+
+/* ── COLORES CUSTOM (Bootstrap no tiene estos tonos) ── */
+.text-bark        { color: var(--bark) !important; }
+.text-moss        { color: var(--moss) !important; }
+.text-terracotta  { color: var(--terracotta) !important; }
+.text-sand        { color: var(--sand) !important; }
+.text-moss-light  { color: var(--moss-light) !important; }
+.text-white-75    { color: rgba(255,255,255,0.75) !important; }
+.text-white-25    { color: rgba(255,255,255,0.25) !important; }
+.bg-bark          { background-color: var(--bark) !important; }
+
+/* ── HERO ── */
+.hero-section { min-height: 88vh; }
+
+.hero-left {
+  background-color: var(--bark);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Círculo decorativo de fondo */
+.hero-left::before {
+  content: '';
+  position: absolute;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: rgba(92,122,78,0.1);
+  top: -120px; left: -120px;
+  pointer-events: none;
+}
+
+.hero-tag {
+  background: rgba(139,175,120,0.2) !important;
+  border: 1px solid rgba(139,175,120,0.45) !important;
+  color: var(--moss-light) !important;
+  font-size: 12px !important;
+  letter-spacing: 1px;
+}
+
+.hero-title em { color: var(--sand); font-style: italic; }
+
+.hero-desc { color: rgba(255,255,255,0.65); font-weight: 300; }
+
+.hero-btn-primary {
+  background-color: var(--moss) !important;
+  border-color: var(--moss) !important;
+  box-shadow: 0 6px 24px rgba(92,122,78,0.4) !important;
+}
+.hero-btn-primary:hover {
+  background-color: #6e9260 !important;
+  border-color: #6e9260 !important;
+  transform: translateY(-2px);
+}
+
+.hero-img { object-position: center top; min-height: 500px; }
+
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to right, rgba(74,55,40,0.15), transparent 40%);
+}
+
+.hero-badge {
+  position: absolute;
+  bottom: 32px; right: 32px;
+  min-width: 200px;
+}
+
+.badge-icon {
+  width: 48px; height: 48px;
+  background: #FFF9E6;
+}
+
+/* Stats */
+.stat-num {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 30px; font-weight: 700;
+  color: var(--sand); line-height: 1;
+}
+.stat-lbl {
+  font-size: 11px; color: rgba(255,255,255,0.45);
+  text-transform: uppercase; letter-spacing: 0.7px; margin-top: 4px;
+}
+
+/* ── SECTION LABELS ── */
+.section-label {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--moss);
+}
+
+.label-line {
+  display: inline-block;
+  width: 24px; height: 2px;
+  background: var(--moss); border-radius: 2px;
+}
+
+.section-label-light { color: var(--moss-light); }
+.label-line-light { display: inline-block; width: 24px; height: 2px; background: var(--moss-light); border-radius: 2px; }
+
+/* ── SERVICE CARDS ── */
+.service-card {
+  box-shadow: 0 4px 24px rgba(74,55,40,0.07);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 56px rgba(74,55,40,0.14);
+}
+
+.service-img-wrap { height: 240px; }
+
+.service-img {
+  height: 100%;
+  transition: transform 0.4s ease;
+}
+
+.service-card:hover .service-img { transform: scale(1.04); }
+
+.service-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(74,55,40,0.55), transparent 55%);
+}
+
+.badge-surgery {
+  background: #FCE7F3;
+  color: #9D174D;
+}
+
+.service-link { transition: letter-spacing 0.2s; }
+.service-card:hover .service-link { letter-spacing: 0.3px; }
+
+.lead-sm { font-size: 15px; line-height: 1.7; }
+
+/* ── WHY SECTION ── */
+.why-section { background: var(--bark); }
+
+.why-img-col { min-height: 520px; }
+.why-img { object-position: center; }
+
+.why-item {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: background 0.2s;
+}
+
+.why-item:hover { background: rgba(255,255,255,0.09); }
+
+.why-icon {
+  width: 48px; height: 48px; flex-shrink: 0;
+  background: rgba(92,122,78,0.25);
+}
+
+/* ── CTA BANNER ── */
+.cta-banner {
+  background: linear-gradient(135deg, var(--moss) 0%, #3D5C32 100%);
+}
+
+.cta-banner .btn-light:hover { transform: translateY(-2px); }
+

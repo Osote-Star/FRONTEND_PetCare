@@ -1,0 +1,170 @@
+
+
+/* ── VARIABLES ── */
+:root {
+  --bark:       #4A3728;
+  --moss:       #5C7A4E;
+  --moss-light: #8BAF78;
+  --sand:       #E8D5B7;
+  --terracotta: #C4704A;
+  --cream:      #FDF6EE;
+}
+
+/* ── COLOR UTILS ── */
+.text-bark       { color: var(--bark) !important; }
+.text-moss       { color: var(--moss) !important; }
+.text-moss-light { color: var(--moss-light) !important; }
+.text-sand       { color: var(--sand) !important; }
+.text-white-75   { color: rgba(255,255,255,0.75) !important; }
+.text-white-25   { color: rgba(255,255,255,0.25) !important; }
+
+/* ── HERO ── */
+.hero-citas { min-height: 88vh; }
+
+.hero-left {
+  background-color: var(--bark);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-left::before {
+  content: '';
+  position: absolute;
+  width: 480px; height: 480px; border-radius: 50%;
+  background: rgba(92,122,78,0.1);
+  top: -100px; left: -120px;
+  pointer-events: none;
+}
+
+.hero-tag {
+  background: rgba(139,175,120,0.2) !important;
+  border: 1px solid rgba(139,175,120,0.4) !important;
+  color: var(--moss-light) !important;
+  font-size: 12px !important;
+  letter-spacing: 1px;
+}
+
+.hero-title em { color: var(--sand); }
+
+.hero-desc { color: rgba(255,255,255,0.65); font-weight: 300; font-size: 16px; line-height: 1.7; }
+
+.hero-btn {
+  background-color: var(--moss) !important;
+  border-color: var(--moss) !important;
+  box-shadow: 0 6px 24px rgba(92,122,78,0.4) !important;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.hero-btn:hover {
+  background-color: #6e9260 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(92,122,78,0.45) !important;
+}
+
+.hero-img-col { min-height: 520px; }
+.hero-img { object-position: center top; }
+
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to right, rgba(74,55,40,0.2), transparent 40%);
+}
+
+.hero-badge {
+  position: absolute; bottom: 32px; right: 32px;
+  min-width: 210px;
+}
+
+.badge-icon { width: 46px; height: 46px; background: #ECFDF5; }
+
+.stat-num {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 28px; font-weight: 700;
+  color: var(--sand); line-height: 1;
+}
+
+.stat-lbl {
+  font-size: 11px; color: rgba(255,255,255,0.45);
+  text-transform: uppercase; letter-spacing: 0.7px; margin-top: 3px;
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--moss);
+}
+
+.label-line {
+  display: inline-block; width: 24px; height: 2px;
+  background: var(--moss); border-radius: 2px;
+}
+
+.section-label-light { color: var(--moss-light); }
+.label-line-light { display: inline-block; width: 24px; height: 2px; background: var(--moss-light); border-radius: 2px; }
+
+/* ── PROCEDIMIENTOS ── */
+.proc-card {
+  background: var(--cream);
+  border: 1.5px solid #EEE;
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
+
+.proc-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 48px rgba(74,55,40,0.1);
+  border-color: var(--moss-light);
+}
+
+.proc-icon {
+  width: 60px; height: 60px;
+  background: var(--light-green, #EEF5EA);
+  background: #EEF5EA;
+}
+
+.proc-benefit {
+  background: #EEF5EA;
+  border: 1px solid rgba(92,122,78,0.2);
+}
+
+/* ── DATOS / FACTS ── */
+.facts-section { background: var(--bark); }
+
+.fact-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: background 0.2s;
+}
+.fact-card:hover { background: rgba(255,255,255,0.1); }
+
+.fact-num {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 48px; font-weight: 700;
+  color: var(--moss-light); line-height: 1;
+}
+
+/* ── BENEFITS SECTION ── */
+.benefits-img {
+  object-fit: cover;
+  height: 460px;
+}
+
+.benefits-badge {
+  position: absolute;
+  bottom: 24px; right: -16px;
+  min-width: 200px;
+}
+
+.benefit-item {
+  background: var(--cream);
+  border: 1.5px solid #EEE;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.benefit-item:hover {
+  border-color: var(--moss-light);
+  background: #EEF5EA;
+}
+
+/* ── CTA BANNER ── */
+.cta-banner {
+  background: linear-gradient(135deg, var(--moss) 0%, #3D5C32 100%);
+}

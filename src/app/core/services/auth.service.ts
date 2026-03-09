@@ -1,7 +1,8 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../models/user.model';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../environments/environment';
+import { inject } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -31,6 +32,4 @@ export class AuthService {
   }
 }
 
-function inject(HttpClient: typeof HttpClient) {
-  throw new Error('Function not implemented.');
-}
+

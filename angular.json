@@ -32,9 +32,11 @@
               }
             ],
             "styles": [
+                "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [  "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+]
           },
           "configurations": {
             "production": {
@@ -91,12 +93,17 @@
               }
             ],
             "styles": [
+              
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [  "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+]
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "d07cb3c6-2ebf-4dfb-8c30-a03477a11cec"
   }
 }
