@@ -2,17 +2,17 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
-import { AdminUser, LoginRequest, LoginResponse, RegisterAdminRequest } from '../models/auth.model';
+import { User, LoginRequest, LoginResponse, RegisterRequest } from '../models/auth.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http   = inject(HttpClient);
   private readonly router = inject(Router);
-  private readonly base   = `${environment.apiUrl}/auth`;
+  private readonly base   = `${environment.apiUrl}/v1/auth`;
 
   // ── Estado reactivo con Signals ───────────────────────────────────────
-  private readonly _currentUser = signal<AdminUser | null>(this.loadFromStorage());
+  private readonly _currentUser = signal<User | null>(this.loadFromStorage());
 
   readonly currentUser  = this._currentUser.asReadonly();
   readonly isLoggedIn   = computed(() => this._currentUser() !== null);
@@ -41,15 +41,16 @@ export class AuthService {
   }
 
   // ── Registro (solo superadmin) ────────────────────────────────────────
-  registerAdmin(dto: RegisterAdminRequest) {
-    return this.http.post<AdminUser>(`${this.base}/register`, dto);
+  register(dto: RegisterRequest) {
+    return this.http.post<User>(`${this.base}/register`, dto);
   }
+
 
   getToken(): string | null {
     return localStorage.getItem('token');
   }
 
-  private loadFromStorage(): AdminUser | null {
+  private loadFromStorage(): User | null {
     try {
       const raw = localStorage.getItem('user');
       return raw ? JSON.parse(raw) : null;

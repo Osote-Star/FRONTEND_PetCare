@@ -1,12 +1,11 @@
 export type UserRole = 'admin' | 'superadmin';
 
-export interface AdminUser {
+export interface User {
   id: string;
   name: string;
   email: string;
   role: UserRole;
-  createdAt: Date;
-  createdBy?: string;   // id del superadmin que lo registró
+  createdAt: Date; // id del superadmin que lo registró
 }
 
 export interface LoginRequest {
@@ -16,12 +15,12 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   token: string;
-  user: AdminUser;
+  user: User;
 }
 
-export interface RegisterAdminRequest {
+export interface RegisterRequest {
   name: string;
   email: string;
   password: string;
-  role: 'admin' | 'superadmin';
+  roleid: 2;
 }

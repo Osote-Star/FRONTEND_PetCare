@@ -1,1 +1,154 @@
-<p>register works!</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PetCare — Crear cuenta</title>
+  <link rel="stylesheet" href="register.component.scss" />
+</head>
+<body>
+<section class="auth-section">
+
+  <!-- ══════════════════════════════
+       LEFT — FORM PANEL
+  ══════════════════════════════ -->
+  <div class="panel-left-form">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="auth-card">
+
+      <!-- Heading -->
+      <div class="card-header">
+        <h3>Crear cuenta</h3>
+        <div class="accent-line"></div>
+        <p>Regístrate para poder agendar citas veterinarias</p>
+      </div>
+
+      <!-- ── Angular form ── -->
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+
+        <!-- Nombre completo -->
+        <div class="field">
+          <label for="fullName">Nombre completo</label>
+          <div class="input-wrap">
+            <input
+              id="fullName"
+              type="text"
+              placeholder="Nombre"
+              formControlName="fullName"
+              autocomplete="name"
+            />
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="field">
+          <label for="email">Correo electrónico</label>
+          <div class="input-wrap">
+            <input
+              id="email"
+              type="email"
+              placeholder="correo@ejemplo.com"
+              formControlName="email"
+              autocomplete="email"
+            />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="field">
+          <label for="password">Contraseña</label>
+          <div class="input-wrap">
+            <input
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              formControlName="password"
+              autocomplete="new-password"
+            />
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="field">
+          <label for="confirmPassword">Confirmar contraseña</label>
+          <div class="input-wrap">
+            <input
+              id="confirmPassword"
+              type="password"
+              placeholder="••••••••"
+              formControlName="confirmPassword"
+              autocomplete="new-password"
+            />
+          </div>
+        </div>
+
+        <!-- Error -->
+        <div class="alert-error" *ngIf="error()">
+          {{ error() }}
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="btn-submit"
+          [attr.disabled]="(form.invalid || isLoading()) ? true : null"
+        >
+          <div class="spinner" *ngIf="isLoading()"></div>
+          <span *ngIf="!isLoading()">Crear cuenta</span>
+          <span *ngIf="isLoading()">Creando cuenta…</span>
+        </button>
+
+      </form>
+
+      <div class="card-footer">
+        ¿Ya tienes cuenta?&nbsp;<a routerLink="/login">Inicia sesión</a>
+      </div>
+
+    </div>
+  </div>
+
+
+
+
+  
+  <!-- ══════════════════════════════
+       RIGHT — IMAGE PANEL
+  ══════════════════════════════ -->
+  <div class="panel-right-image">
+
+    <img
+      src="https://images.unsplash.com/photo-1593840443879-6d4279149c7e?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      alt="Veterinaria revisando a un gato en consulta"
+    />
+    <div class="panel-overlay"></div>
+
+    <div class="panel-content">
+
+      <!-- Brand -->
+      <div class="panel-brand">
+        <span class="brand-name">PetCare</span>
+      </div>
+
+      <!-- Tagline + pills -->
+      <div class="panel-tagline">
+        <h2>Tu primera cita, a un paso de distancia.</h2>
+        <p>Crea tu cuenta y accede a una red de profesionales veterinarios listos para cuidar a tu mascota.</p>
+
+        <div class="feature-pills">
+          <span class="pill">🐾 Registro gratuito</span>
+          <span class="pill">🩺 Atención profesional</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="paw-watermark" aria-hidden="true">🐾</div>
+
+  </div>
+
+</section>
+
+</body>
+</html>

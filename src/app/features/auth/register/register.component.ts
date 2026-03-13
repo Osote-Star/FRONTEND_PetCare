@@ -23,7 +23,7 @@ export class RegisterComponent {
     name:     ['', Validators.required],
     email:    ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
-    role:     ['admin', Validators.required],
+    roleID:     ['2'],
   });
 
   submit(): void {
@@ -31,11 +31,11 @@ export class RegisterComponent {
     this.isLoading.set(true);
     this.error.set(null);
 
-    this.authService.registerAdmin(this.form.value as any).subscribe({
+    this.authService.register(this.form.value as any).subscribe({
       next: () => {
         this.success.set(true);
         this.isLoading.set(false);
-        setTimeout(() => this.router.navigate(['/citas/admin']), 2000);
+        setTimeout(() => this.router.navigate(['/citas']), 2000);
       },
       error: (err) => {
         this.error.set(err.error?.message ?? 'Error al registrar');

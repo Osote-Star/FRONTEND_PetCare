@@ -23,17 +23,26 @@ export class LoginComponent {
     password: ['', [Validators.required, Validators.minLength(8)]],
   });
 
-  submit(): void {
-    if (this.form.invalid) return;
-    this.isLoading.set(true);
-    this.error.set(null);
+ submit(): void {
+  if (this.form.invalid) return;
 
-    this.authService.login(this.form.value as any).subscribe({
-      next: () => this.router.navigate(['/citas/admin']),
-      error: (err) => {
-        this.error.set(err.error?.message ?? 'Credenciales incorrectas');
-        this.isLoading.set(false);
-      },
-    });
-  }
+  const { email, password } = this.form.value;
+
+  this.isLoading.set(true);   
+  this.error.set(null);        
+
+  this.authService.login({
+    email: email!,
+    password: password!
+  }).subscribe({
+    next: () => {
+      this.isLoading.set(false);
+      this.router.navigate(['/citas']);
+    },
+    error: (err) => {
+      this.error.set(err.error?.message ?? 'Credenciales incorrectas');
+      this.isLoading.set(false);
+    },
+  });
+}
 }
