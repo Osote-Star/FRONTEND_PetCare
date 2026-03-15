@@ -2,55 +2,53 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
-import { User, LoginRequest, LoginResponse, RegisterRequest } from '../models/auth.model';
+import {  ApiResponse, User, LoginDto, LoginResponseDto, RegisterDto,   } from '../models/auth.model';
 import { environment } from '../../../environments/environment';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http   = inject(HttpClient);
   private readonly router = inject(Router);
-  private readonly base   = `${environment.apiUrl}/v1/auth`;
+  private readonly base   = `${environment.apiUrl}`;
 
-  // ── Estado reactivo con Signals ───────────────────────────────────────
-  private readonly _currentUser = signal<User | null>(this.loadFromStorage());
+//mapear usuario
 
-  readonly currentUser  = this._currentUser.asReadonly();
-  readonly isLoggedIn   = computed(() => this._currentUser() !== null);
-  readonly isAdmin      = computed(() =>
-    this._currentUser()?.role === 'admin' || this._currentUser()?.role === 'superadmin'
-  );
-  readonly isSuperAdmin = computed(() => this._currentUser()?.role === 'superadmin');
+ private _isLoggedIn = signal(!!localStorage.getItem('token'));
+
+  isLoggedIn = this._isLoggedIn.asReadonly();
 
   // ── Login ─────────────────────────────────────────────────────────────
-  login(dto: LoginRequest) {
-    return this.http.post<LoginResponse>(`${this.base}/login`, dto).pipe(
-      tap(({ token, user }) => {
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-        this._currentUser.set(user);
+ login(dto: LoginDto): Observable<ApiResponse<LoginResponseDto>> {
+    return this.http.post<ApiResponse<LoginResponseDto>>(`${this.base}/auth/login`, dto).pipe(
+      tap(response => {
+        if (response.data?.token) {
+          localStorage.setItem('token', response.data.token);
+          localStorage.setItem('user', JSON.stringify(response.data.user));
+          this._isLoggedIn.set(true); 
+        }
       })
     );
   }
 
-  // ── Logout ────────────────────────────────────────────────────────────
+register(dto: RegisterDto): Observable<ApiResponse<string>> {
+  return this.http.post<ApiResponse<string>>(`${this.base}/auth/register`, dto);
+}
+
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    this._currentUser.set(null);
-    this.router.navigate(['/']);
+    this._isLoggedIn.set(false);
   }
-
-  // ── Registro (solo superadmin) ────────────────────────────────────────
-  register(dto: RegisterRequest) {
-    return this.http.post<User>(`${this.base}/register`, dto);
-  }
-
 
   getToken(): string | null {
     return localStorage.getItem('token');
   }
 
-  private loadFromStorage(): User | null {
+
+
+
+private loadFromStorage(): User | null {
     try {
       const raw = localStorage.getItem('user');
       return raw ? JSON.parse(raw) : null;
@@ -58,4 +56,6 @@ export class AuthService {
       return null;
     }
   }
+
 }
+

@@ -9,6 +9,21 @@ nav {
   gap: 8px;
 }
 
+nav.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* espacio entre items */
+  padding: 8px 16px;
+}
+
+/* empuja .nav-auth al extremo derecho */
+.nav-auth {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 /* ── LINKS PRINCIPALES ── */
 nav a {
   text-decoration: none;
@@ -44,7 +59,7 @@ nav a[routerLink="/citas/admin"],
 nav a[routerLink="/registrar-admin"],
 nav span,
 nav button {
-  margin-left: auto;
+  margin-left:auto;
 }
 
 /* Anula el margin-left auto en los siguientes elementos

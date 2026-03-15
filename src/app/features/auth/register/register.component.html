@@ -26,7 +26,7 @@
       </div>
 
       <!-- ── Angular form ── -->
-      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
 
         <!-- Nombre completo -->
         <div class="field">
@@ -90,7 +90,7 @@
         </div>
 
         <!-- Submit -->
-        <button
+      <button
           type="submit"
           class="btn-submit"
           [attr.disabled]="(form.invalid || isLoading()) ? true : null"

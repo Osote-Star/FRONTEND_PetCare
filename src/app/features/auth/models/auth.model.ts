@@ -1,26 +1,37 @@
-export type UserRole = 'admin' | 'superadmin';
-
 export interface User {
   id: string;
   name: string;
   email: string;
-  role: UserRole;
-  createdAt: Date; // id del superadmin que lo registró
+  role: number;
 }
 
-export interface LoginRequest {
+
+export interface LoginDto {
   email: string;
   password: string;
 }
 
-export interface LoginResponse {
-  token: string;
-  user: User;
+export interface UserSessionDto {
+  id_user: number;
+  name: string;
+  email: string;
+  id_role: number;
 }
 
-export interface RegisterRequest {
+export interface LoginResponseDto {
+  token: string;
+  user: UserSessionDto;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
+export interface RegisterDto {
   name: string;
   email: string;
   password: string;
-  roleid: 2;
+  id_role: number;
 }

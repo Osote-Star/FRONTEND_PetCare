@@ -1,6 +1,6 @@
 import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../features/auth/services/auth.service';
 
 @Component({
@@ -11,8 +11,13 @@ import { AuthService } from '../../../features/auth/services/auth.service';
   styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent {
-  readonly authService  = inject(AuthService);
-  readonly isLoggedIn   = this.authService.isLoggedIn;
-  readonly isSuperAdmin = this.authService.isSuperAdmin;
-  readonly userName     = computed(() => this.authService.currentUser()?.name);
+     private authService = inject(AuthService);
+  private router = inject(Router);
+
+isLoggedIn = this.authService.isLoggedIn;
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 }

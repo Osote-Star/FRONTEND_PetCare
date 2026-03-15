@@ -1,20 +1,14 @@
 <!-- navbar.component.html -->
-<nav>
-    <a routerLink="/">Inicio</a>
-    <a routerLink="/sobre-nosotros">Sobre Nosotros</a>
-    <a routerLink="/citas">Citas</a>
-    <a routerLink="/presupuesto-cirugias">Presupuesto</a>
-    <a routerLink="/donaciones">Donaciones</a>
-    <a routerLink="/contacto">Contacto</a>
-  
-    @if (isLoggedIn()) {
-      <a routerLink="/citas/admin">Panel Admin</a>
-      @if (isSuperAdmin()) {
-        <a routerLink="/registrar-admin">+ Nuevo Admin</a>
-      }
-      <span>{{ userName() }}</span>
-      <button (click)="authService.logout()">Cerrar sesión</button>
-    } @else {
-      <a routerLink="/login">Acceso</a>
-    }
-  </nav>
+<nav class="main-nav">
+  <a routerLink="/">Inicio</a>
+  <a routerLink="/sobre-nosotros">Sobre Nosotros</a>
+  <a routerLink="/citas">Citas</a>
+  <a routerLink="/presupuesto-cirugias">Presupuesto</a>
+  <a routerLink="/donaciones">Donaciones</a>
+  <a routerLink="/contacto">Contacto</a>
+
+  <div class="nav-auth">
+    <a *ngIf="!isLoggedIn()" routerLink="/login">Acceso</a>
+    <button *ngIf="isLoggedIn()" (click)="logout()">Cerrar sesión</button>
+  </div>
+</nav>
