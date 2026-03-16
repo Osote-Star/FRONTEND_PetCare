@@ -41,7 +41,7 @@ export class RegisterComponent {
   }
 
 
- id_role: number = 1;
+ id_role: number = 3;
 
 
 
@@ -69,4 +69,10 @@ export class RegisterComponent {
       },
     });
   }
+
+    Cambiar(): void{
+      this.router.navigate(['/login']);
+    }
+
+
 }

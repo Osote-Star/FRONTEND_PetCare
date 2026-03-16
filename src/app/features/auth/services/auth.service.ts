@@ -11,9 +11,7 @@ export class AuthService {
   private readonly http   = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly base   = `${environment.apiUrl}`;
-
-//mapear usuario
-
+  
  private _isLoggedIn = signal(!!localStorage.getItem('token'));
 
   isLoggedIn = this._isLoggedIn.asReadonly();
