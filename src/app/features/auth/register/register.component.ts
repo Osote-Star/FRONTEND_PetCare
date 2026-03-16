@@ -29,20 +29,22 @@ export class RegisterComponent {
     private authService: AuthService,
     private router: Router
   ) {
-    this.form = this.fb.group(
-      {
-        fullName: ['', [Validators.required, Validators.minLength(2)]],
-        email:    ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required, Validators.minLength(8)]],
-        confirmPassword: ['', Validators.required],
-      },
-      { validators: passwordMatchValidator }
-    );
-  }
-
+      this.form = this.fb.group(
+    {
+      fullName: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      phone: ['', [
+        Validators.required,
+        Validators.pattern('^[0-9]{10}$'), 
+      ]],
+      confirmPassword: ['', Validators.required],
+    },
+    { validators: passwordMatchValidator } 
+  );
+}
 
  id_role: number = 3;
-
 
 
   submit(): void {
@@ -51,9 +53,9 @@ export class RegisterComponent {
     this.isLoading.set(true);
     this.error.set('');
 
-    const { fullName, email, password } = this.form.value;
+    const { fullName, email, phone, password } = this.form.value;
 
-    this.authService.register({ name: fullName, email, password, id_role: this.id_role }).subscribe({
+    this.authService.register({ name: fullName, email, phone, password, id_role: this.id_role }).subscribe({
       next: () => {
         // Login automático 
         this.authService.login({ email, password }).subscribe({

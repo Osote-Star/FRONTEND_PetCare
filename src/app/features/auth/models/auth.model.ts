@@ -2,6 +2,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  phone: number;
   role: number;
 }
 
@@ -33,5 +34,6 @@ export interface RegisterDto {
   name: string;
   email: string;
   password: string;
+  phone: string
   id_role: number;
 }

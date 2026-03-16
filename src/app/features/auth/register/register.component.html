@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="register.component.scss" />
 </head>
 <body>
+
 <section class="auth-section">
 
   <!-- ══════════════════════════════
@@ -26,7 +27,7 @@
       </div>
 
       <!-- ── Angular form ── -->
-    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+   <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
 
         <!-- Nombre completo -->
         <div class="field">
@@ -53,6 +54,21 @@
               formControlName="email"
               autocomplete="email"
             />
+          </div>
+        </div>
+
+        <!-- Tel -->
+        <div class="field">
+          <label for="phone">Telefono</label>
+          <div class="input-wrap">
+          <input
+          id="phone"
+          type="text"
+          placeholder="Telefono"
+          formControlName="phone"
+          maxlength="10"
+          autocomplete="tel"
+        />
           </div>
         </div>
 
@@ -108,8 +124,6 @@
 
     </div>
   </div>
-
-
 
 
   
