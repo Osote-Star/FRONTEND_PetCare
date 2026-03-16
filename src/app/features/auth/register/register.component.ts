@@ -11,8 +11,6 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
   return password === confirm ? null : { passwordMismatch: true };
 }
 
-
-
 @Component({
   selector: 'app-register',
   standalone: true,

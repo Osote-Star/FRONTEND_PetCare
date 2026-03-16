@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard }       from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 
 export const routes: Routes = [
@@ -25,6 +26,8 @@ export const routes: Routes = [
   // 📌 ADMIN DE CITAS - RUTA SEPARADA (no va como hijo de /citas)
   {
     path: 'citas/admin',
+     canActivate: [authGuard, roleGuard], 
+    data:{roles:[1, 2]},
     loadComponent: () =>
       import('./features/appointments/admin/appointment-admin/appointment-admin.component')
         .then(m => m.AppointmentAdminComponent)

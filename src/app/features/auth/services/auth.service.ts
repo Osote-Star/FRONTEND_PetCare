@@ -2,7 +2,7 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
-import {  ApiResponse, User, LoginDto, LoginResponseDto, RegisterDto,   } from '../models/auth.model';
+import {  ApiResponse, User, LoginDto, LoginResponseDto, RegisterDto, UserSessionDto,   } from '../models/auth.model';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 
@@ -16,7 +16,6 @@ export class AuthService {
 
   isLoggedIn = this._isLoggedIn.asReadonly();
 
-  // ── Login ─────────────────────────────────────────────────────────────
  login(dto: LoginDto): Observable<ApiResponse<LoginResponseDto>> {
     return this.http.post<ApiResponse<LoginResponseDto>>(`${this.base}/auth/login`, dto).pipe(
       tap(response => {
@@ -44,7 +43,15 @@ register(dto: RegisterDto): Observable<ApiResponse<string>> {
   }
 
 
+getCurrentUser(): UserSessionDto | null {
+  const raw = localStorage.getItem('user');
+  return raw ? JSON.parse(raw) : null;
+}
 
+getRole(): number | null {
+  const user = this.getCurrentUser();
+  return user ? user.id_role : null;
+}
 
 private loadFromStorage(): User | null {
     try {

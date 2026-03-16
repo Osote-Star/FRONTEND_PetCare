@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
-import { superAdminGuard } from '../../core/guards/super-admin.guard';
+import { authGuard } from '../../core/guards/auth.guard';
+import { roleGuard } from '../../core/guards/role.guard';
+
 
 export const authRoutes: Routes = [
   {
@@ -9,7 +11,8 @@ export const authRoutes: Routes = [
   },
   {
     path: 'registrar-admin',
-    canActivate: [superAdminGuard],          // ← solo superadmin llega aquí
+    canActivate: [authGuard, roleGuard], 
+    data:{roles:[1]},         // ← solo superadmin llega aquí
     loadComponent: () =>
       import('./register/register.component').then(m => m.RegisterComponent),
   },
