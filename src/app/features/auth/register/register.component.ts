@@ -22,40 +22,43 @@ export class RegisterComponent {
   isLoading = signal(false);
   error = signal('');
 
+  get f() {
+    return this.form.controls;
+  }
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
   ) {
-      this.form = this.fb.group(
-    {
-      fullName: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      phone: ['', [
-        Validators.required,
-        Validators.pattern('^[0-9]{10}$'), 
-      ]],
-      confirmPassword: ['', Validators.required],
-    },
-    { validators: passwordMatchValidator } 
-  );
-}
-
- id_role: number = 3;
-
+    this.form = this.fb.group(
+      {
+        fullName: ['', [Validators.required, Validators.minLength(2)]],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(8)]],
+        phone: ['', [
+          Validators.required,
+          Validators.pattern('^[0-9]{10}$'),
+        ]],
+        confirmPassword: ['', Validators.required],
+      },
+      { validators: passwordMatchValidator }
+    );
+  }
 
   submit(): void {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
     this.isLoading.set(true);
     this.error.set('');
 
     const { fullName, email, phone, password } = this.form.value;
 
-    this.authService.register({ name: fullName, email, phone, password, id_role: this.id_role }).subscribe({
+    this.authService.register({ name: fullName, email, phone, password, id_role: 3 }).subscribe({
       next: () => {
-        // Login automático 
         this.authService.login({ email, password }).subscribe({
           next: () => this.router.navigate(['/dashboard']),
           error: () => {
@@ -70,9 +73,7 @@ export class RegisterComponent {
     });
   }
 
-    Cambiar(): void{
-      this.router.navigate(['/login']);
-    }
-
-
+  Cambiar(): void{
+    this.router.navigate(['/login']);
+  }
 }
