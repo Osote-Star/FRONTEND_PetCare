@@ -9,8 +9,8 @@ export const appointmentUserRoutes: Routes = [
     {
     path: 'ubicacion',
     loadComponent: () =>
-      import('./appointment-user/pages/ubicacion/ubicacion.component')
-        .then(m => m.UbicacionComponent),
+      import('./appointment-user/pages/clinic/clinic.component')
+        .then(m => m.ClinicComponent),
   },
    {
     path: 'servicioss',
@@ -18,17 +18,12 @@ export const appointmentUserRoutes: Routes = [
       import('./appointment-user/pages/servicioss/servicioss.component')
         .then(m => m.ServiciossComponent),
   },
+  
   {
-    path: 'datos-usuario',
+    path: 'datacites',
     loadComponent: () =>
-      import('./appointment-user/pages/datosusuario/datosusuario.component')
-        .then(m => m.DatosusuarioComponent),
-  },
-  {
-    path: 'datos-mascota',
-    loadComponent: () =>
-      import('./appointment-user/pages/datosperro/datosperro.component')
-        .then(m => m.DatosperroComponent),
+      import('./appointment-user/pages/datacite/datacite.component')
+        .then(m => m.dataciteComponent),
   },
   {
     path: 'confirmacion',

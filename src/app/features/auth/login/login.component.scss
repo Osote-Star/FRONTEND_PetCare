@@ -1,9 +1,4 @@
-/* ═══════════════════════════════════════════
-   login.component.scss
-   Las variables vienen de styles.scss (global)
-   ═══════════════════════════════════════════ */
 
-/* ─── LAYOUT ─── */
 .auth-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -11,9 +6,7 @@
   width: 100%;
 }
 
-/* ─────────────────────────────────────
-   LEFT — IMAGE PANEL
-───────────────────────────────────── */
+
 .panel-left {
   position: relative;
   overflow: hidden;

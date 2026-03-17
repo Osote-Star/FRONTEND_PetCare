@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { User } from '../models/user.model';
+import { User } from '../models/user.models';
 import { environment } from '../../environments/environment';
 import { inject } from '@angular/core';
 
@@ -31,5 +31,4 @@ export class AuthService {
     localStorage.removeItem('token');
   }
 }
-
 

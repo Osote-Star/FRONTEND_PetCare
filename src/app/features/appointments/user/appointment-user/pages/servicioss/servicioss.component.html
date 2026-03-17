@@ -1,28 +1,29 @@
 <div class="progress-header">
-    <div class="step-badge">2</div>
+  <div class="step-badge">2</div>
 
-    <div class="step-info">
-      <small>Nueva cita</small>
-      <h2>Escoge un servicio</h2>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="header-actions">
-      <button class="btn btn-back" (click)="atras()">← Atrás</button>
-      <button class="btn btn-next" (click)="siguiente()">Siguiente →</button>
-    </div>
-    
-    <div class="divider"></div>
-
-    <div class="steps-dots">
-      <div class="dot done"></div>
-      <div class="dot active"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-    </div>
+  <div class="step-info">
+    <small>Nueva cita</small>
+    <h2>Escoge un servicio</h2>
   </div>
+
+  <div class="divider"></div>
+
+  <div class="header-actions">
+    <button class="btn btn-back" (click)="atras()">← Atrás</button>
+    <button class="btn btn-next" (click)="siguiente()">Siguiente →</button>
+  </div>
+  
+  <div class="divider"></div>
+
+  <div class="steps-dots">
+    <div class="dot done"></div>
+    <div class="dot active"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+</div>
+
 <!-- MAIN -->
 <main>
   <div class="card">
@@ -30,58 +31,77 @@
     <p class="card-subtitle">Selecciona el tipo de servicio para tu cita</p>
 
     <!-- BAÑO -->
-    <div class="service-option" onclick="selectService(this)">
+    <div 
+      class="service-option" 
+      [class.selected]="isServiceSelected(services[0])"
+      (click)="selectService(services[0])"
+    >
       <div class="service-header">
-        <div class="service-icon icon-bano">🛁</div>
+        <div class="service-icon icon-bano">{{ services[0].icon }}</div>
         <div class="service-text">
-          <div class="service-name">Baño</div>
-          <div class="service-desc">Baño completo con secado y perfume</div>
+          <div class="service-name">{{ services[0].name }}</div>
+          <div class="service-desc">{{ services[0].description }}</div>
         </div>
-        <div class="service-price">desde $200</div>
-        <div class="radio-circle"></div>
+        <div class="service-price">desde ${{ services[0].price }}</div>
+        <div class="radio-circle" [class.checked]="isServiceSelected(services[0])"></div>
       </div>
     </div>
 
     <!-- BAÑO Y CORTE -->
-    <div class="service-option" onclick="selectService(this)">
+    <div 
+      class="service-option" 
+      [class.selected]="isServiceSelected(services[1])"
+      (click)="selectService(services[1])"
+    >
       <div class="service-header">
-        <div class="service-icon icon-corte">✂️</div>
+        <div class="service-icon icon-corte">{{ services[1].icon }}</div>
         <div class="service-text">
-          <div class="service-name">Baño y Corte de pelo</div>
-          <div class="service-desc">Estética completa para tu mascota</div>
+          <div class="service-name">{{ services[1].name }}</div>
+          <div class="service-desc">{{ services[1].description }}</div>
         </div>
-        <div class="service-price">desde $350</div>
-        <div class="radio-circle"></div>
+        <div class="service-price">desde ${{ services[1].price }}</div>
+        <div class="radio-circle" [class.checked]="isServiceSelected(services[1])"></div>
       </div>
     </div>
 
     <!-- VISITA MÉDICA -->
-    <div class="service-option selected" onclick="selectService(this)">
+    <div 
+      class="service-option" 
+      [class.selected]="isServiceSelected(services[2])"
+      (click)="selectService(services[2])"
+    >
       <div class="service-header">
-        <div class="service-icon icon-medica">🩺</div>
+        <div class="service-icon icon-medica">{{ services[2].icon }}</div>
         <div class="service-text">
-          <div class="service-name">Visita médica</div>
-          <div class="service-desc">Consulta con médico veterinario</div>
+          <div class="service-name">{{ services[2].name }}</div>
+          <div class="service-desc">{{ services[2].description }}</div>
         </div>
-        <div class="service-price">desde $450</div>
-        <div class="radio-circle"></div>
+        <div class="service-price">desde ${{ services[2].price }}</div>
+        <div class="radio-circle" [class.checked]="isServiceSelected(services[2])"></div>
       </div>
-      <div class="sub-options">
-        <label>Razón de tu visita <span style="color:var(--terracotta)">*</span></label>
+
+      <!-- Sub-opciones para visita médica (solo visible si está seleccionado) -->
+      <div class="sub-options" *ngIf="isMedicalSelected">
+        <label>Razón de tu visita <span class="required-star">*</span></label>
         <div class="reasons-grid">
-          <div class="reason-chip" onclick="toggleChip(event, this)">Vómito</div>
-          <div class="reason-chip active" onclick="toggleChip(event, this)">Diarrea</div>
-          <div class="reason-chip" onclick="toggleChip(event, this)">Sangrado</div>
-          <div class="reason-chip" onclick="toggleChip(event, this)">Herida</div>
-          <div class="reason-chip" onclick="toggleChip(event, this)">Cirugía</div>
-          <div class="reason-chip" onclick="toggleChip(event, this)">Vacuna</div>
-          <div class="reason-chip" onclick="toggleChip(event, this)">Revisión</div>
+          <div 
+            *ngFor="let reason of medicalReasons"
+            class="reason-chip" 
+            [class.active]="isReasonActive(reason)"
+            (click)="toggleReason(reason)"
+          >
+            {{ reason }}
+          </div>
         </div>
-        <label style="margin-top: 4px;">Cuéntanos más</label>
-        <textarea class="notes-field" placeholder="Platicanos sobre tu visita..."></textarea>
+
+        <label style="margin-top: 16px;">Cuéntanos más</label>
+        <textarea 
+          class="notes-field" 
+          placeholder="Platícanos sobre tu visita..."
+          [(ngModel)]="visitNotes"
+        ></textarea>
       </div>
     </div>
 
   </div>
 </main>
-  

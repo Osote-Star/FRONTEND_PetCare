@@ -1,0 +1,366 @@
+<!-- HEADER -->
+<div class="progress-header">
+  <div class="step-badge">2</div>
+
+  <div class="step-info">
+    <small>Conociendo a tu mascota</small>
+    <h2>Datos de tu mascota</h2>
+  </div>
+  <div class="divider"></div>
+
+  <div class="header-actions">
+    <button class="btn btn-back" (click)="atras()">← Atrás</button>
+    <button class="btn btn-next" (click)="siguiente()">Siguiente →</button>
+  </div>
+  
+  <div class="divider"></div>
+
+  <div class="steps-dots">
+    <div class="dot" [class.done]="activeTab === 'mascota'" [class.active]="activeTab === 'tutor'"></div>
+    <div class="dot" [class.active]="activeTab === 'mascota'"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn" [class.active]="activeTab === 'tutor'" (click)="setActiveTab('tutor')">
+      🧑 Datos del tutor
+    </button>
+    <button class="tab-btn" [class.active]="activeTab === 'mascota'" (click)="setActiveTab('mascota')">
+      🐾 Datos de la mascota
+    </button>
+  </div>
+
+  <!-- CARD -->
+  <div class="card">
+
+    <!-- ── PANEL TUTOR ── -->
+    <div id="panel-tutor" class="panel" [class.active]="activeTab === 'tutor'">
+      <h1 class="card-title">¡Hola de nuevo!</h1>
+      <p class="card-subtitle">Confirma tus datos de contacto para la cita</p>
+
+      <!-- WELCOME BANNER -->
+      <div class="welcome-banner">
+        <div class="welcome-icon">👋</div>
+        <div class="welcome-text">
+          <h4>Hola, {{ getTutorControl('nombre').value || 'Tutor' }}</h4>
+          <p>Qué alegría verte de nuevo. Tus datos están precargados.</p>
+        </div>
+      </div>
+
+      <!-- EMAIL -->
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Correo electrónico <span class="required">*</span></label>
+          <div class="input-icon-wrapper">
+            <input 
+              [formControl]="getTutorControl('email')" 
+              type="email" 
+              class="form-input" 
+              [class.error]="hasError(tutorForm, 'email')"
+              placeholder="tu@correo.com"
+            >
+            <span class="input-icon">✉️</span>
+          </div>
+          <div *ngIf="hasError(tutorForm, 'email')" class="error-message">
+            {{ getErrorMessage(tutorForm, 'email') }}
+          </div>
+        </div>
+      </div>
+
+      <!-- NOMBRE + APELLIDO -->
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nombre <span class="required">*</span></label>
+          <input 
+            [formControl]="getTutorControl('nombre')" 
+            type="text" 
+            class="form-input" 
+            [class.error]="hasError(tutorForm, 'nombre')"
+            placeholder="Tu nombre"
+          >
+          <div *ngIf="hasError(tutorForm, 'nombre')" class="error-message">
+            {{ getErrorMessage(tutorForm, 'nombre') }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Apellido <span class="required">*</span></label>
+          <input 
+            [formControl]="getTutorControl('apellido')" 
+            type="text" 
+            class="form-input" 
+            [class.error]="hasError(tutorForm, 'apellido')"
+            placeholder="Tu apellido"
+          >
+          <div *ngIf="hasError(tutorForm, 'apellido')" class="error-message">
+            {{ getErrorMessage(tutorForm, 'apellido') }}
+          </div>
+        </div>
+      </div>
+
+      <!-- TELÉFONO + CÓMO ENTERASTE -->
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Teléfono <span class="required">*</span></label>
+          <div class="input-icon-wrapper">
+            <input 
+              [formControl]="getTutorControl('telefono')" 
+              type="tel" 
+              class="form-input" 
+              [class.error]="hasError(tutorForm, 'telefono')"
+              placeholder="55 1234 5678"
+            >
+            <span class="input-icon">📱</span>
+          </div>
+          <div *ngIf="hasError(tutorForm, 'telefono')" class="error-message">
+            {{ getErrorMessage(tutorForm, 'telefono') }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">¿Cómo nos encontraste?</label>
+          <div class="select-wrapper">
+            <select 
+              [formControl]="getTutorControl('comoEnteraste')" 
+              class="form-select"
+            >
+              <option value="" disabled selected>Selecciona</option>
+              <option *ngFor="let opt of comoEnterasteOptions" [value]="opt.value">
+                {{ opt.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="section-label">Preferencias de contacto</div>
+
+      <!-- RECORDATORIO VÍA -->
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Recordatorio de cita vía</label>
+          <div class="contact-options">
+            <button 
+              *ngFor="let opt of recordatorioOptions"
+              type="button"
+              class="contact-btn" 
+              [class.active]="getTutorControl('recordatorioVia').value === opt.value"
+              (click)="getTutorControl('recordatorioVia').setValue(opt.value)"
+            >
+              {{ opt.label }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTAS ADICIONALES -->
+      <div class="form-row full" style="margin-top:4px;">
+        <div class="form-group">
+          <label class="form-label">Notas adicionales para el veterinario</label>
+          <textarea 
+            [formControl]="getTutorControl('notas')" 
+            class="form-input" 
+            style="height:80px; resize:none;" 
+            placeholder="Algún detalle especial que debamos saber..."
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PANEL MASCOTA ── -->
+    <div id="panel-mascota" class="panel" [class.active]="activeTab === 'mascota'">
+      <h1 class="card-title">Tu mascota</h1>
+      <p class="card-subtitle">Cuéntanos sobre tu compañero peludo</p>
+
+      <!-- AVATAR UPLOAD -->
+      <div class="pet-avatar-section" id="avatar-upload-area" (click)="avatarInput.click()">
+        <div class="avatar-circle" id="avatar-preview">
+          <img *ngIf="avatarPreview" [src]="avatarPreview" alt="Preview" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+          <span *ngIf="!avatarPreview">🐾</span>
+        </div>
+        <div class="avatar-text">
+          <h4>Foto de tu mascota</h4>
+          <p>JPG, PNG · Máx 5 MB · Opcional pero adorable</p>
+        </div>
+        <input 
+          #avatarInput
+          id="avatar-input" 
+          type="file" 
+          accept="image/*" 
+          (change)="onAvatarSelected($event)"
+          style="display:none"
+        >
+      </div>
+
+      <!-- NOMBRE + EDAD -->
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nombre <span class="required">*</span></label>
+          <input 
+            [formControl]="getMascotaControl('nombre')" 
+            type="text" 
+            class="form-input" 
+            [class.error]="hasError(mascotaForm, 'nombre')"
+            placeholder="Ej. Luna, Max, Canela..."
+          >
+          <div *ngIf="hasError(mascotaForm, 'nombre')" class="error-message">
+            {{ getErrorMessage(mascotaForm, 'nombre') }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Edad</label>
+          <input 
+            [formControl]="getMascotaControl('edad')" 
+            type="text" 
+            class="form-input" 
+            placeholder="Ej. 2 años, 8 meses"
+          >
+        </div>
+      </div>
+
+      <!-- ESPECIE -->
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Especie <span class="required">*</span></label>
+          <div class="species-options">
+            <div 
+              *ngFor="let opt of especieOptions"
+              class="species-chip" 
+              [class.active]="getMascotaControl('especie').value === opt.value"
+              (click)="getMascotaControl('especie').setValue(opt.value)"
+            >
+              {{ opt.label }}
+            </div>
+          </div>
+          <div *ngIf="hasError(mascotaForm, 'especie')" class="error-message">
+            {{ getErrorMessage(mascotaForm, 'especie') }}
+          </div>
+        </div>
+      </div>
+
+      <!-- RAZA + PESO -->
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Raza</label>
+          <input 
+            [formControl]="getMascotaControl('raza')" 
+            type="text" 
+            class="form-input" 
+            placeholder="Ej. Labrador, Mestizo..."
+          >
+        </div>
+        <div class="form-group">
+          <label class="form-label">Peso aproximado</label>
+          <input 
+            [formControl]="getMascotaControl('peso')" 
+            type="text" 
+            class="form-input" 
+            placeholder="Ej. 5 kg"
+          >
+        </div>
+      </div>
+
+      <!-- SEXO -->
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Sexo</label>
+          <div class="gender-options">
+            <button 
+              *ngFor="let opt of sexoOptions"
+              type="button"
+              class="gender-btn" 
+              [class.active]="getMascotaControl('sexo').value === opt.value"
+              (click)="getMascotaControl('sexo').setValue(opt.value)"
+            >
+              {{ opt.label }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="section-label">Información médica</div>
+
+      <!-- ESTERILIZADO + ALERGIAS -->
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">¿Está esterilizado/a?</label>
+          <div class="select-wrapper">
+            <select 
+              [formControl]="getMascotaControl('esterilizado')" 
+              class="form-select"
+            >
+              <option value="" disabled selected>Selecciona</option>
+              <option *ngFor="let opt of esterilizadoOptions" [value]="opt.value">
+                {{ opt.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Alergias conocidas</label>
+          <input 
+            [formControl]="getMascotaControl('alergias')" 
+            type="text" 
+            class="form-input" 
+            placeholder="Ej. ninguna, pollo, polvo..."
+          >
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /card -->
+
+  <!-- SUMMARY SIDEBAR -->
+  <div class="summary-card">
+    <div class="summary-title">Resumen de tu cita</div>
+
+    <div class="summary-item">
+      <div class="summary-icon">🏥</div>
+      <div class="summary-item-text">
+        <small>Clínica</small>
+        <span>VetPaws — Condesa</span>
+      </div>
+    </div>
+
+    <div class="summary-item">
+      <div class="summary-icon">🩺</div>
+      <div class="summary-item-text">
+        <small>Servicio</small>
+        <span>Visita médica</span>
+      </div>
+    </div>
+
+    <div class="summary-item">
+      <div class="summary-icon">💊</div>
+      <div class="summary-item-text">
+        <small>Motivo</small>
+        <span>Diarrea</span>
+      </div>
+    </div>
+
+    <div class="summary-divider"></div>
+
+    <div class="summary-item">
+      <div class="summary-icon">📅</div>
+      <div class="summary-item-text">
+        <small>Fecha y hora</small>
+        <span>Por confirmar</span>
+      </div>
+    </div>
+
+    <div class="summary-divider"></div>
+
+    <div class="summary-total">
+      <span>Estimado</span>
+      <span>$450 MXN</span>
+    </div>
+  </div>
+
+</main>
