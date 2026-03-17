@@ -5,6 +5,7 @@ import { tap } from 'rxjs/operators';
 import {  ApiResponse, User, LoginDto, LoginResponseDto, RegisterDto, UserSessionDto,   } from '../models/auth.model';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
+import { RegisterVetDto } from '../models/vet.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -32,6 +33,10 @@ register(dto: RegisterDto): Observable<ApiResponse<string>> {
   return this.http.post<ApiResponse<string>>(`${this.base}/auth/register`, dto);
 }
 
+registerVet(dto: RegisterVetDto): Observable<ApiResponse<string>> {
+  return this.http.post<ApiResponse<string>>(`${this.base}/auth/register`, dto);
+}
+
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -52,6 +57,12 @@ getRole(): number | null {
   const user = this.getCurrentUser();
   return user ? user.id_role : null;
 }
+
+isAdmin(): boolean {
+  const user = this.getCurrentUser();
+  return user?.id_role === 1;
+}
+
 
 private loadFromStorage(): User | null {
     try {

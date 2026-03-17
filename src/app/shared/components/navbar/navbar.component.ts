@@ -16,6 +16,10 @@ export class NavbarComponent {
 
 isLoggedIn = this.authService.isLoggedIn;
 
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
+
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);

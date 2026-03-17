@@ -73,7 +73,4 @@ export class RegisterComponent {
     });
   }
 
-  Cambiar(): void{
-    this.router.navigate(['/login']);
-  }
 }

@@ -7,6 +7,10 @@
   <a routerLink="/donaciones">Donaciones</a>
   <a routerLink="/contacto">Contacto</a>
 
+  <a *ngIf="isLoggedIn() && isAdmin()" routerLink="/register-vet">
+    Admis. veterinarios
+  </a>
+
   <div class="nav-auth">
     <a *ngIf="!isLoggedIn()" routerLink="/login">Acceso</a>
     <button *ngIf="isLoggedIn()" (click)="logout()">Cerrar sesión</button>

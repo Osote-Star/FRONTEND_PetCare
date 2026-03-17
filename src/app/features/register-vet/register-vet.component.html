@@ -1,0 +1,97 @@
+<div class="page">
+
+  <div class="page-header">
+    <h1>Agregar veterinario</h1>
+    <p>Registro de nuevo personal veterinario del sistema</p>
+  </div>
+
+  <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+
+    <div class="grid">
+
+      <!-- Nombre -->
+      <div class="field">
+        <label>Nombre veterinario</label>
+        <input type="text" formControlName="nombreVet">
+        <small class="error"
+          *ngIf="form.get('nombreVet')?.touched && form.get('nombreVet')?.invalid">
+          Nombre requerido (mínimo 3 caracteres)
+        </small>
+      </div>
+
+      <!-- Correo -->
+      <div class="field">
+        <label>Correo electrónico</label>
+        <input type="email" formControlName="correo">
+        <small class="error"
+          *ngIf="form.get('correo')?.touched && form.get('correo')?.invalid">
+          Correo inválido
+        </small>
+      </div>
+
+      <!-- Numero -->
+      <div class="field">
+        <label>Número telefónico</label>
+        <input type="text" formControlName="numero">
+        <small class="error"
+          *ngIf="form.get('numero')?.touched && form.get('numero')?.invalid">
+          Debe contener 10 dígitos
+        </small>
+      </div>
+
+       <!-- Clinica -->
+      <div class="field">
+  <label>Clínica</label>
+ <select formControlName="clinicId">
+  <option [ngValue]="null" disabled>
+    Selecciona una clínica
+  </option>
+  <option *ngFor="let c of clinics()" [ngValue]="c.id_clinic">
+    {{ c.name }}
+  </option>
+</select>
+  <small class="error"
+    *ngIf="form.get('clinicId')?.touched && form.get('clinicId')?.invalid">
+    Debe seleccionar una clínica
+  </small>
+</div>
+
+      <!-- Password -->
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" formControlName="password">
+        <small class="error"
+          *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+          Mínimo 8 caracteres
+        </small>
+      </div>
+
+    </div>
+
+    <div class="actions">
+
+      <div class="backend-error" *ngIf="error()">
+        {{ error() }}
+      </div>
+
+      <button 
+        class="btn-primary"
+        type="submit"
+        [disabled]="form.invalid || isLoading()">
+        {{ isLoading() ? 'Registrando...' : 'Registrar veterinario' }}
+      </button>
+
+    </div>
+
+  </form>
+
+</div>
+
+<div class="success-modal" *ngIf="success()">
+  <div class="success-box">
+    <h3>Veterinario registrado ✅</h3>
+    <p>El veterinario fue agregado correctamente al sistema.</p>
+
+    <button (click)="closeSuccess()">Aceptar</button>
+  </div>
+</div>

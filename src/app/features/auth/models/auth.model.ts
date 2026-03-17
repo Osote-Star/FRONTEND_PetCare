@@ -37,3 +37,4 @@ export interface RegisterDto {
   phone: string
   id_role: number;
 }
+
