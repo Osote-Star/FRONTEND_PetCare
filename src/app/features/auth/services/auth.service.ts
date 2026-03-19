@@ -22,7 +22,6 @@ export class AuthService {
       tap(response => {
         if (response.data?.token) {
           localStorage.setItem('token', response.data.token);
-          localStorage.setItem('user', JSON.stringify(response.data.user));
           this._isLoggedIn.set(true); 
         }
       })
@@ -39,7 +38,6 @@ registerVet(dto: RegisterVetDto): Observable<ApiResponse<string>> {
 
   logout(): void {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
     this._isLoggedIn.set(false);
   }
 
@@ -47,31 +45,27 @@ registerVet(dto: RegisterVetDto): Observable<ApiResponse<string>> {
     return localStorage.getItem('token');
   }
 
+getUser() {
+  const token = localStorage.getItem('token');
+  if (!token) return null;
 
-getCurrentUser(): UserSessionDto | null {
-  const raw = localStorage.getItem('user');
-  return raw ? JSON.parse(raw) : null;
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  return payload;
 }
 
-getRole(): number | null {
-  const user = this.getCurrentUser();
-  return user ? user.id_role : null;
-}
+getUserRole(): string {
+  const user = this.getUser();
 
+  if (!user) return '';
+
+  return (
+    user['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ||
+    user['role'] ||
+    ''
+  );
+}
 isAdmin(): boolean {
-  const user = this.getCurrentUser();
-  return user?.id_role === 1;
+  return this.getUserRole().toLowerCase() === 'admin';
 }
 
-
-private loadFromStorage(): User | null {
-    try {
-      const raw = localStorage.getItem('user');
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
-  }
-
 }
-

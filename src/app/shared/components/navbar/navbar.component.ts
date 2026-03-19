@@ -14,6 +14,13 @@ export class NavbarComponent {
      private authService = inject(AuthService);
   private router = inject(Router);
 
+ngOnInit() {
+  console.log('USER:', this.authService.getUser());
+  console.log('ROLE:', this.authService.getUserRole());
+  console.log('IS ADMIN:', this.authService.isAdmin());
+}
+
+
 isLoggedIn = this.authService.isLoggedIn;
 
   isAdmin(): boolean {

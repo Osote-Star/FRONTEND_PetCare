@@ -33,8 +33,8 @@ export class RegisterVetComponent {
   this.form = this.fb.group({
     nombreVet: ['', [Validators.required]],
     correo: ['', [Validators.required, Validators.email]],
-    numero: ['', [Validators.required]],
-    password: ['', [Validators.required]],
+    numero: ['', [Validators.required, Validators.pattern('^[0-9]{10}$'),]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
     clinicId: [null, Validators.required]
   });
 }

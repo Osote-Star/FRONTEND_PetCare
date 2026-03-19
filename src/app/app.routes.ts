@@ -27,7 +27,7 @@ export const routes: Routes = [
   {
     path: 'citas/admin',
      canActivate: [authGuard, roleGuard], 
-    data:{roles:[1, 2]},
+    data:{roles:['admin', 'veterinario']},
     loadComponent: () =>
       import('./features/appointments/admin/appointment-admin/appointment-admin.component')
         .then(m => m.AppointmentAdminComponent)
@@ -69,7 +69,7 @@ export const routes: Routes = [
     {
       path: 'register-vet',
       canActivate: [authGuard, roleGuard], 
-    data:{roles:[1]},
+    data:{roles:['admin']},
     loadComponent: () =>
       import('./features/register-vet/register-vet.component')
         .then(m => m.RegisterVetComponent)
