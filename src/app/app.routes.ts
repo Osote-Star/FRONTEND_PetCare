@@ -23,14 +23,19 @@ export const routes: Routes = [
         .then(m => m.appointmentUserRoutes)
   },
 
+  {
+    path: 'citas-usuario',
+    loadComponent: () =>
+      import('./features/appointments/user/appointment-list/appointment-list.component')
+        .then(m => m.AppointmentListComponent)
+  },
+
   // 📌 ADMIN DE CITAS - RUTA SEPARADA (no va como hijo de /citas)
   {
-    path: 'citas/admin',
-     canActivate: [authGuard, roleGuard], 
-    data:{roles:[1, 2]},
+    path: 'citas-vet',
     loadComponent: () =>
-      import('./features/appointments/admin/appointment-admin/appointment-admin.component')
-        .then(m => m.AppointmentAdminComponent)
+      import('./features/appointments/admin/veterinario/veterinario.component')
+        .then(m => m.VeterinarioComponent)
   },
 
   {

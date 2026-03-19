@@ -20,15 +20,16 @@ interface Appointment {
   age: string;
   weight: string;
 }
+
 @Component({
-  selector: 'app-veterinario',
+  selector: 'app-appointment-list',
   standalone: true,
   imports: [CommonModule, FormsModule],
       encapsulation: ViewEncapsulation.None,
-  templateUrl: './veterinario.component.html',
-  styleUrl: './veterinario.component.scss'
+  templateUrl: './appointment-list.component.html',
+  styleUrl: './appointment-list.component.scss'
 })
-export class VeterinarioComponent implements OnInit {
+export class AppointmentListComponent {
 
   PAGE_SIZE = 6;
 
