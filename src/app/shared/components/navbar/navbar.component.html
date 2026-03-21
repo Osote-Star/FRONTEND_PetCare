@@ -1,4 +1,4 @@
-<!-- navbar.component.html -->
+<!-- shared/components/navbar/navbar.component.html -->
 <nav class="main-nav">
   <a routerLink="/">Inicio</a>
   <a routerLink="/sobre-nosotros">Sobre Nosotros</a>
@@ -7,8 +7,13 @@
   <a routerLink="/donaciones">Donaciones</a>
   <a routerLink="/contacto">Contacto</a>
 
+  <a *ngIf="isLoggedIn() && isAdmin()" routerLink="/register-vet">
+    Admis. veterinarios
+  </a>
+
   <div class="nav-auth">
-    <a *ngIf="!isLoggedIn()" routerLink="/login">Acceso</a>
+    <!-- 👈 ABRIR MODAL EN VEZ DE REDIRIGIR -->
+    <a *ngIf="!isLoggedIn()" (click)="openLoginModal()">Acceso</a>
     <button *ngIf="isLoggedIn()" (click)="logout()">Cerrar sesión</button>
   </div>
 </nav>

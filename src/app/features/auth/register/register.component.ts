@@ -1,13 +1,14 @@
+// features/auth/register/register.component.ts
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-
+import { AuthModalService } from '../services/auth-modal.service';
 
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password')?.value;
-  const confirm  = control.get('confirmPassword')?.value;
+  const confirm = control.get('confirmPassword')?.value;
   return password === confirm ? null : { passwordMismatch: true };
 }
 
@@ -16,49 +17,59 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './register.component.html',
+  styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent {
-  form: FormGroup;
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private authModal = inject(AuthModalService); // 👈 AÑADIR
+
   isLoading = signal(false);
   error = signal('');
 
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router
-  ) {
-      this.form = this.fb.group(
+  form: FormGroup = this.fb.group(
     {
       fullName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       phone: ['', [
         Validators.required,
-        Validators.pattern('^[0-9]{10}$'), 
+        Validators.pattern('^[0-9]{10}$'),
       ]],
       confirmPassword: ['', Validators.required],
     },
-    { validators: passwordMatchValidator } 
+    { validators: passwordMatchValidator }
   );
-}
 
- id_role: number = 3;
-
+  get f() {
+    return this.form.controls;
+  }
 
   submit(): void {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
     this.isLoading.set(true);
     this.error.set('');
 
     const { fullName, email, phone, password } = this.form.value;
 
-    this.authService.register({ name: fullName, email, phone, password, id_role: this.id_role }).subscribe({
+    this.authService.register({ name: fullName, email, phone, password, id_role: 3 }).subscribe({
       next: () => {
-        // Login automático 
+        // Login automático después del registro
         this.authService.login({ email, password }).subscribe({
-          next: () => this.router.navigate(['/dashboard']),
+          next: () => {
+            this.isLoading.set(false);
+            // ✅ Cerrar modal y redirigir
+            this.authModal.close();
+            this.authModal.runAfterLogin();
+          },
           error: () => {
+            this.isLoading.set(false);
+            this.authModal.close();
             this.router.navigate(['/login']);
           },
         });
@@ -70,9 +81,7 @@ export class RegisterComponent {
     });
   }
 
-    Cambiar(): void{
-      this.router.navigate(['/login']);
-    }
-
-
+  goLogin(): void {
+    this.authModal.openLogin();
+  }
 }

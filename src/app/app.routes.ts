@@ -1,3 +1,4 @@
+
 import { Routes } from '@angular/router';
 import { authGuard }       from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
@@ -27,7 +28,7 @@ export const routes: Routes = [
   {
     path: 'citas/admin',
      canActivate: [authGuard, roleGuard], 
-    data:{roles:[1, 2]},
+    data:{roles:['admin', 'veterinario']},
     loadComponent: () =>
       import('./features/appointments/admin/appointment-admin/appointment-admin.component')
         .then(m => m.AppointmentAdminComponent)
@@ -65,6 +66,15 @@ export const routes: Routes = [
       import('./features/auth/register/register.component')
         .then(m => m.RegisterComponent),
   },
+  //Registrar veterinarios
+    {
+      path: 'register-vet',
+      canActivate: [authGuard, roleGuard], 
+    data:{roles:['admin']},
+    loadComponent: () =>
+      import('./features/register-vet/register-vet.component')
+        .then(m => m.RegisterVetComponent)
+    },
 
   {
     path: '**',

@@ -1,1 +1,256 @@
-<p>contact works!</p>
+<!-- contact.component.html -->
+
+<!-- ══ BREADCRUMB ══ -->
+<div class="breadcrumb-bar">
+  <nav>
+    <a href="/">Inicio</a>
+    <span class="sep">›</span>
+    <span class="current">Contacto</span>
+  </nav>
+</div>
+
+<!-- ══ HERO ══ -->
+<section class="contact-hero">
+  <div class="hero-text">
+    <span class="hero-label">Estamos para ayudarte</span>
+    <h1>Habla con<br><em>nosotros</em></h1>
+    <p>Resolvemos tus dudas, agendamos tu cita o simplemente platicamos sobre el bienestar de tu mascota.</p>
+  </div>
+  <div class="hero-image">
+    <img
+      src="https://imgs.search.brave.com/lGlVwCbvNihLLhJlK9b7Ij8tskbkngfVZFobZewtlXI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTA0/MTk4NzQ4OC9lcy9m/b3RvL2xpbmRvLXBl/cnJvLWRlLXBvbmVy/LXN1LWNhcmEtZW4t/c3VzLXJvZGlsbGFz/LXktZWwtaG9tYnJl/LXNvbnJpZW50ZS1k/ZS1sYXMtbWFub3Mt/cmFzY2Fyc2UtZWwu/anBnP3M9NjEyeDYx/MiZ3PTAmaz0yMCZj/PV8tUXJHMVFpbXRY/UHR0dWVIZ1BTa2hj/aHdVY244RE50RWNs/VXBWOTkxQ2c9"
+      alt="Veterinario con mascota"
+    />
+    <div class="hero-badge">
+      <span class="badge-icon">⭐</span>
+      <div>
+        <strong>4.9 / 5</strong>
+        <small>+500 reseñas</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ INFO CARDS + FORMULARIO ══ -->
+<section class="contact-body">
+
+  <!-- ── Columna izquierda: info ── -->
+  <div class="info-col">
+
+    <div class="info-card">
+      <div class="info-icon">📍</div>
+      <div>
+        <h4>Dirección</h4>
+        <p>Blvd. García Morales 123<br>Cd. Obregón, Sonora, México</p>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-icon">📞</div>
+      <div>
+        <h4>Teléfono</h4>
+        <p>644 123 4567<br><small>Lun–Sáb · 8:00 a 20:00</small></p>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-icon">✉️</div>
+      <div>
+        <h4>Email</h4>
+        <p>hola&#64;vetpaws.mx<br><small>Respondemos en &lt; 24 h</small></p>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-icon">🕐</div>
+      <div>
+        <h4>Horario</h4>
+        <p>Lunes – Viernes: 8:00 – 20:00<br>Sábado: 9:00 – 15:00</p>
+      </div>
+    </div>
+
+    <!-- Redes -->
+    <div class="social-row">
+      <a class="social-btn" href="#" aria-label="Facebook">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+      </a>
+      <a class="social-btn" href="#" aria-label="Instagram">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      </a>
+      <a class="social-btn" href="#" aria-label="WhatsApp">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+      </a>
+      <a class="social-btn" href="#" aria-label="TikTok">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/></svg>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- ── Columna derecha: formulario ── -->
+  <div class="form-col">
+    <div class="form-card">
+
+      <div class="form-header">
+        <h2>Envíanos un mensaje</h2>
+        <p>Te contactamos a la brevedad posible</p>
+      </div>
+
+      <form class="contact-form" #contactForm="ngForm" (ngSubmit)="contactForm.valid && contactForm.resetForm()">
+
+        <div class="form-row">
+          <div class="field">
+            <label for="nombre">Nombre completo</label>
+            <input
+              id="nombre"
+              type="text"
+              name="nombre"
+              placeholder="Tu nombre"
+              ngModel
+              required
+              #nombre="ngModel"
+              [class.field-error]="nombre.invalid && nombre.touched"
+            />
+            <small class="error-msg" *ngIf="nombre.invalid && nombre.touched">El nombre es obligatorio</small>
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              placeholder="correo@ejemplo.com"
+              ngModel
+              required
+              email
+              #emailRef="ngModel"
+              [class.field-error]="emailRef.invalid && emailRef.touched"
+            />
+            <small class="error-msg" *ngIf="emailRef.invalid && emailRef.touched">Email inválido</small>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="telefono">Teléfono <span class="optional">(opcional)</span></label>
+            <input
+              id="telefono"
+              type="tel"
+              name="telefono"
+              placeholder="644 000 0000"
+              ngModel
+            />
+          </div>
+
+          <div class="field">
+            <label for="asunto">Asunto</label>
+            <select id="asunto" name="asunto" ngModel required #asunto="ngModel" [class.field-error]="asunto.invalid && asunto.touched">
+              <option value="">Selecciona un asunto</option>
+              <option value="cita">Agendar cita</option>
+              <option value="presupuesto">Presupuesto</option>
+              <option value="adopcion">Adopciones</option>
+              <option value="otro">Otro</option>
+            </select>
+            <small class="error-msg" *ngIf="asunto.invalid && asunto.touched">Selecciona un asunto</small>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="mensaje">Mensaje</label>
+          <textarea
+            id="mensaje"
+            name="mensaje"
+            rows="5"
+            placeholder="Cuéntanos cómo podemos ayudarte..."
+            ngModel
+            required
+            minlength="10"
+            #mensaje="ngModel"
+            [class.field-error]="mensaje.invalid && mensaje.touched"
+          ></textarea>
+          <small class="error-msg" *ngIf="mensaje.invalid && mensaje.touched">Escribe al menos 10 caracteres</small>
+        </div>
+
+        <button type="submit" class="btn-send" [disabled]="contactForm.invalid">
+          <span>Enviar mensaje</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══ MAPA / UBICACIÓN ══ -->
+<section class="map-section">
+  <div class="map-header">
+    <h2>¿Cómo llegar?</h2>
+    <p>Estamos en el corazón de Ciudad Obregón, Sonora</p>
+  </div>
+  <div class="map-wrap">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3713.5!2d-109.9406!3d27.4863!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjfCsDI5JzExLjAiTiAxMDnCsDU2JzI2LjIiVw!5e0!3m2!1ses!2smx!4v1234567890"
+      width="100%"
+      height="100%"
+      style="border:0;"
+      allowfullscreen
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      title="Ubicación VetPaws"
+    ></iframe>
+    <div class="map-card">
+      <div class="map-card-icon">📍</div>
+      <div>
+        <strong>VetPaws Clínica Veterinaria</strong>
+        <p>Blvd. García Morales 123<br>Cd. Obregón, Son. C.P. 85000</p>
+        <a href="https://maps.google.com" target="_blank" rel="noopener" class="directions-link">Ver en Google Maps →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col brand-col">
+      <div class="footer-logo">🐾 VetPaws</div>
+      <p>Cuidando mascotas con amor y ciencia desde 2010 en Ciudad Obregón, Sonora.</p>
+      <div class="footer-social">
+        <a href="#" class="fsoc-btn">f</a>
+        <a href="#" class="fsoc-btn">ig</a>
+        <a href="#" class="fsoc-btn">tt</a>
+        <a href="#" class="fsoc-btn">yt</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>Servicios</h5>
+      <a href="#">Consulta médica</a>
+      <a href="#">Baño y estética</a>
+      <a href="#">Cirugías</a>
+      <a href="#">Vacunación</a>
+    </div>
+    <div class="footer-col">
+      <h5>Empresa</h5>
+      <a href="#">Sobre nosotros</a>
+      <a href="#">Adopciones</a>
+      <a href="#">Donaciones</a>
+      <a href="#">Contacto</a>
+    </div>
+    <div class="footer-col">
+      <h5>Contacto</h5>
+      <span>📍 Cd. Obregón, Son.</span>
+      <span>📞 644 123 4567</span>
+      <span>✉️ hola&#64;vetpaws.mx</span>
+      <span>🕐 Lun–Sáb 8–20 h</span>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 VetPaws. Todos los derechos reservados.</span>
+    <div class="footer-links">
+      <a href="#">Privacidad</a>
+      <a href="#">Términos</a>
+    </div>
+  </div>
+</footer>

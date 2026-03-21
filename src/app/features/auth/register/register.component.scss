@@ -107,7 +107,7 @@
 
 /* ─── FORM FIELDS ─── */
 .field {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.05rem;
 }
 
 label {
@@ -130,7 +130,7 @@ input[type='password'],
 input[type='tel'],
 input[type='number']  {
   width: 100%;
-  padding: 0.85rem 1rem 0.85rem 1.3rem;
+  padding: 0.68rem 1rem 0.85rem 1.3rem;
   border: 1.5px solid #e8d5be;
   border-radius: 12px;
   background: #fff;
@@ -375,4 +375,16 @@ input[type='number']  {
   .feature-pills {
     display: none;
   }
+}
+
+.error small {
+  color: #b00020; /* rojo (ajusta a tu tema) */
+  display: block;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.alert-error {
+  color: #b00020;
+  margin: 0.5rem 0;
 }
