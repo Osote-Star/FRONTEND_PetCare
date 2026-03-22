@@ -56,6 +56,17 @@
   </small>
 </div>
 
+<!-- Horario -->
+<div class="field">
+  <label>Horario</label>
+  <input type="text" formControlName="schedule" placeholder="Ej: Lunes a Viernes 9:00 - 17:00">
+  
+  <small class="error"
+    *ngIf="form.get('schedule')?.touched && form.get('schedule')?.invalid">
+    El horario es obligatorio
+  </small>
+</div>
+
       <!-- Password -->
       <div class="field">
         <label>Contraseña</label>

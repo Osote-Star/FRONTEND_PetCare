@@ -5,7 +5,7 @@ import { tap } from 'rxjs/operators';
 import {  ApiResponse, User, LoginDto, LoginResponseDto, RegisterDto, UserSessionDto,   } from '../models/auth.model';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { RegisterVetDto } from '../models/vet.model';
+import { RegisterVetDto, UpdateVetDto } from '../models/vet.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -34,6 +34,13 @@ register(dto: RegisterDto): Observable<ApiResponse<string>> {
 
 registerVet(dto: RegisterVetDto): Observable<ApiResponse<string>> {
   return this.http.post<ApiResponse<string>>(`${this.base}/auth/register`, dto);
+}
+
+updateVet(id: string, dto: UpdateVetDto){
+  return this.http.put<ApiResponse<any>>(
+    `${this.base}/users/${id}`,
+    dto
+  );
 }
 
   logout(): void {

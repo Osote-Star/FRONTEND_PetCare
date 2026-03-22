@@ -74,7 +74,15 @@ export const routes: Routes = [
       import('./features/register-vet/register-vet.component')
         .then(m => m.RegisterVetComponent)
     },
-
+    //Administrar usuarios
+    {
+      path: 'admin-usu',
+      canActivate: [authGuard, roleGuard], 
+    data:{roles:['admin']},
+    loadComponent: () =>
+      import('./features/users/admin-users/admin-users.component')
+        .then(m => m.AdminUsersComponent)
+    },
   {
     path: '**',
     redirectTo: '',

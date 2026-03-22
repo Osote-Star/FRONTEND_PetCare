@@ -31,12 +31,13 @@ export class RegisterVetComponent {
 ) {
 
   this.form = this.fb.group({
-    nombreVet: ['', [Validators.required]],
-    correo: ['', [Validators.required, Validators.email]],
-    numero: ['', [Validators.required, Validators.pattern('^[0-9]{10}$'),]],
-    password: ['', [Validators.required, Validators.minLength(8)]],
-    clinicId: [null, Validators.required]
-  });
+  nombreVet: ['', [Validators.required]],
+  correo: ['', [Validators.required, Validators.email]],
+  numero: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+  password: ['', [Validators.required, Validators.minLength(8)]],
+  clinicId: [null, Validators.required],
+  schedule: ['', Validators.required] 
+});
 }
 
 //Clinicas
@@ -56,14 +57,12 @@ loadClinics(){
   });
 }
 
-
-
 //registrar
   submit(): void {
   if (this.form.invalid) return;
   this.isLoading.set(true);
   this.error.set('');
- const { nombreVet, correo, numero, password, clinicId } = this.form.value;
+ const { nombreVet, correo, numero, password, clinicId, schedule } = this.form.value;
 
 this.authService.registerVet({
   name: nombreVet!,
@@ -71,7 +70,8 @@ this.authService.registerVet({
   phone: numero!,
   password: password!,
   id_role: this.VET_ROLE,
-  id_clinic: clinicId!
+  id_clinic: clinicId!,
+  schedule: schedule!
 }).subscribe({
 
     next: () => {

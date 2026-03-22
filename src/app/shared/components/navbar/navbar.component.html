@@ -11,6 +11,10 @@
     Admis. veterinarios
   </a>
 
+    <a *ngIf="isLoggedIn() && isAdmin()" routerLink="/admin-usu">
+    Admis. Usuarios
+  </a>
+
   <div class="nav-auth">
     <a *ngIf="!isLoggedIn()" routerLink="/login">Acceso</a>
     <button *ngIf="isLoggedIn()" (click)="logout()">Cerrar sesión</button>
