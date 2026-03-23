@@ -59,11 +59,30 @@
 <!-- Horario -->
 <div class="field">
   <label>Horario</label>
-  <input type="text" formControlName="schedule" placeholder="Ej: Lunes a Viernes 9:00 - 17:00">
-  
+
+  <div class="time-grid">
+
+    <select formControlName="startHour">
+      <option [ngValue]="null" disabled>Hora inicio</option>
+      <option *ngFor="let h of hours" [ngValue]="h">
+        {{ h }}
+      </option>
+    </select>
+
+    <span class="separator">a</span>
+
+    <select formControlName="endHour">
+      <option [ngValue]="null" disabled>Hora fin</option>
+      <option *ngFor="let h of hours" [ngValue]="h">
+        {{ h }}
+      </option>
+    </select>
+
+  </div>
+
   <small class="error"
-    *ngIf="form.get('schedule')?.touched && form.get('schedule')?.invalid">
-    El horario es obligatorio
+    *ngIf="form.get('startHour')?.touched && form.get('startHour')?.invalid">
+    Selecciona horario válido
   </small>
 </div>
 

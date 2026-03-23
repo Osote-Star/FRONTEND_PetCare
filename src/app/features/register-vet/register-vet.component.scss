@@ -148,3 +148,13 @@ select:invalid{
 option.placeholder{
   color: #95a5a6;
 }
+
+.time-grid{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.separator{
+  font-weight: bold;
+}
