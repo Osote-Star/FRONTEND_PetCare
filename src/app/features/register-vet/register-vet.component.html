@@ -56,6 +56,36 @@
   </small>
 </div>
 
+<!-- Horario -->
+<div class="field">
+  <label>Horario</label>
+
+  <div class="time-grid">
+
+    <select formControlName="startHour">
+      <option [ngValue]="null" disabled>Hora inicio</option>
+      <option *ngFor="let h of hours" [ngValue]="h">
+        {{ h }}
+      </option>
+    </select>
+
+    <span class="separator">a</span>
+
+    <select formControlName="endHour">
+      <option [ngValue]="null" disabled>Hora fin</option>
+      <option *ngFor="let h of hours" [ngValue]="h">
+        {{ h }}
+      </option>
+    </select>
+
+  </div>
+
+  <small class="error"
+    *ngIf="form.get('startHour')?.touched && form.get('startHour')?.invalid">
+    Selecciona horario válido
+  </small>
+</div>
+
       <!-- Password -->
       <div class="field">
         <label>Contraseña</label>

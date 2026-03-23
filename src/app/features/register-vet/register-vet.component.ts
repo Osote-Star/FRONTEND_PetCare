@@ -21,7 +21,7 @@ export class RegisterVetComponent {
   success = signal(false);
 
   form!: FormGroup;
-
+  hours: string[] = [];
   clinics = signal<Clinic[]>([]);
 
   constructor(
@@ -31,17 +31,28 @@ export class RegisterVetComponent {
 ) {
 
   this.form = this.fb.group({
-    nombreVet: ['', [Validators.required]],
-    correo: ['', [Validators.required, Validators.email]],
-    numero: ['', [Validators.required, Validators.pattern('^[0-9]{10}$'),]],
-    password: ['', [Validators.required, Validators.minLength(8)]],
-    clinicId: [null, Validators.required]
-  });
+  nombreVet: ['', [Validators.required]],
+  correo: ['', [Validators.required, Validators.email]],
+  numero: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+  password: ['', [Validators.required, Validators.minLength(8)]],
+  clinicId: [null, Validators.required],
+
+  startHour: [null, Validators.required], 
+  endHour: [null, Validators.required]    
+});
+}
+
+generateHours() {
+  for(let i = 0; i < 24; i++){
+    const hour = i.toString().padStart(2, '0') + ':00';
+    this.hours.push(hour);
+  }
 }
 
 //Clinicas
 ngOnInit() {
   this.loadClinics();
+  this.generateHours();
 }
 
 loadClinics(){
@@ -56,14 +67,20 @@ loadClinics(){
   });
 }
 
-
-
 //registrar
   submit(): void {
   if (this.form.invalid) return;
   this.isLoading.set(true);
   this.error.set('');
- const { nombreVet, correo, numero, password, clinicId } = this.form.value;
+ const { nombreVet, correo, numero, password, clinicId, startHour, endHour } = this.form.value;
+
+const schedule = `${startHour} - ${endHour}`;
+
+if(startHour >= endHour){
+  this.error.set('La hora de inicio debe ser menor a la hora final');
+  this.isLoading.set(false);
+  return;
+}
 
 this.authService.registerVet({
   name: nombreVet!,
@@ -71,9 +88,9 @@ this.authService.registerVet({
   phone: numero!,
   password: password!,
   id_role: this.VET_ROLE,
-  id_clinic: clinicId!
+  id_clinic: clinicId!,
+  schedule: schedule
 }).subscribe({
-
     next: () => {
       this.isLoading.set(false);
       this.success.set(true);
