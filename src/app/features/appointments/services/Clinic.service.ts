@@ -14,8 +14,7 @@ export class ClinicService {
     return this.http.get<ApiResponse<Clinic[]>>(this.baseUrl)
       .pipe(
         map(response => {
-          console.log('✅ Respuesta completa:', response);
-          console.log('✅ Datos de clínicas:', response.data);
+       
           return response.data; // 👈 Extraemos el array del objeto response
         })
       );

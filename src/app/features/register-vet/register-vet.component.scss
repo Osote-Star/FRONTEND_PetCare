@@ -1,6 +1,6 @@
 /* ══════════════════════════════════════════════
    agregar-veterinario.component.scss — VetPaws
-   Paleta: bark #4A3728 · moss #5C7A4E · cream #FDF6EE · sand #E8D5B7
+   Paleta: bark #4A3728 · moss #5C7A4E · cream #FDF6EE
 ══════════════════════════════════════════════ */
 
 :root {
@@ -20,9 +20,9 @@
 
 :host { display: block; font-family: 'DM Sans', sans-serif; }
 
-/* ══ PAGE WRAPPER ══ */
+/* ══ PAGE ══ */
 .page {
-  max-width: 860px;
+  max-width: 820px;
   margin: 0 auto;
   padding: 44px 40px 64px;
   background: var(--cream);
@@ -45,20 +45,17 @@
   }
 
   p {
-    font-size: 0.88rem;
+    font-size: 0.875rem;
     color: var(--gray);
     margin: 0;
   }
 }
 
-/* ══ FORM ══ */
-.form { width: 100%; }
-
 /* ══ GRID ══ */
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px 32px;
+  gap: 22px 28px;
 }
 
 /* ══ FIELD ══ */
@@ -68,7 +65,7 @@
   gap: 6px;
 
   label {
-    font-size: 0.72rem;
+    font-size: 0.71rem;
     font-weight: 700;
     letter-spacing: 0.09em;
     text-transform: uppercase;
@@ -76,11 +73,10 @@
   }
 }
 
-/* ══ INPUTS / SELECT ══ */
+/* ══ INPUTS & SELECT ══ */
 input[type='text'],
 input[type='email'],
 input[type='password'],
-input[type='tel'],
 select {
   width: 100%;
   padding: 11px 14px;
@@ -108,16 +104,33 @@ select {
   }
 }
 
-/* Flecha select */
+/* Flecha custom en selects */
 select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239E9E9E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 14px center;
-  padding-right: 38px;
+  background-position: right 12px center;
+  padding-right: 36px;
   cursor: pointer;
-  color: var(--bark);
 
   option[disabled] { color: #C5B09A; }
+}
+
+/* ══ TIME GRID (horario) ══ */
+.time-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+
+  select { width: 100%; }
+}
+
+.separator {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gray);
+  text-align: center;
+  white-space: nowrap;
 }
 
 /* ══ ERROR INLINE ══ */
@@ -129,7 +142,7 @@ select {
 
 /* ══ ACTIONS ══ */
 .actions {
-  margin-top: 36px;
+  margin-top: 34px;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -146,7 +159,7 @@ select {
   flex: 1;
 }
 
-/* ══ BOTÓN ══ */
+/* ══ BOTÓN SUBMIT ══ */
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -177,14 +190,14 @@ select {
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 10px 26px rgba(92,122,78,0.42);
+    box-shadow: 0 10px 26px rgba(92,122,78,0.40);
     &::after { left: 160%; }
   }
 
   &:active:not(:disabled) { transform: translateY(0); }
 
   &:disabled {
-    opacity: 0.46;
+    opacity: 0.44;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
@@ -195,14 +208,14 @@ select {
 .success-modal {
   position: fixed;
   inset: 0;
-  background: rgba(18, 10, 5, 0.55);
+  background: rgba(18,10,5,0.55);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: overlayIn 0.2s ease both;
   padding: 1rem;
+  animation: overlayIn 0.2s ease both;
 }
 
 .success-box {
@@ -215,9 +228,8 @@ select {
   box-shadow:
     0 0 0 1px rgba(92,122,78,0.12),
     0 24px 56px rgba(18,10,5,0.28);
-  animation: modalUp 0.3s cubic-bezier(0.22,0.68,0,1.15) both;
+  animation: modalUp 0.32s cubic-bezier(0.22,0.68,0,1.15) both;
 
-  /* Icono decorativo */
   &::before {
     content: '🐾';
     display: block;
@@ -273,7 +285,7 @@ select {
 }
 
 /* ══ RESPONSIVE ══ */
-@media (max-width: 640px) {
+@media (max-width: 620px) {
   .page { padding: 28px 20px 48px; }
   .grid { grid-template-columns: 1fr; }
   .page-header h1 { font-size: 1.6rem; }

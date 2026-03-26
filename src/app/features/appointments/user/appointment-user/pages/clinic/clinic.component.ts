@@ -1,5 +1,5 @@
-// pages/clinic/clinic.component.ts
-import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
+// features/appointments/user/appointment-user/pages/clinic/clinic.component.ts
+import { Component, inject, OnInit, ViewEncapsulation, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ClinicService } from '../../../../services/Clinic.service';
@@ -15,63 +15,67 @@ import { Clinic } from '../../../../models/Clinic.model';
   styleUrls: ['./clinic.component.scss']
 })
 export class ClinicComponent implements OnInit {
-
   private router = inject(Router);
   private clinicService = inject(ClinicService);
-  wizardState = inject(WizardStateService);
+  private wizardState = inject(WizardStateService);
 
+  // ==================== ESTADO ====================
   clinics: Clinic[] = [];
   selectedClinic: Clinic | null = null;
-  loading = true;
-  error = '';
+  loading = signal(true);
+  error = signal<string | null>(null);
+  isNavigating = signal(false);
 
-  // Mapa (mock)
-  mapPins = [
+  // ✅ MAPA PINS - HACER PÚBLICO
+  readonly mapPins = [
     { id: '1', label: 'Condesa', left: '38%', top: '30%' },
     { id: '2', label: 'Polanco', left: '58%', top: '22%' },
     { id: '3', label: 'Interlomas', left: '20%', top: '55%' },
     { id: '4', label: 'Santa Fe', left: '14%', top: '38%' }
   ];
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadClinics();
   }
 
-  loadClinics() {
-    this.loading = true;
+  /**
+   * Carga todas las clínicas desde el backend
+   */
+  loadClinics(): void {
+    this.loading.set(true);
+    this.error.set(null);
 
     this.clinicService.getAllClinics().subscribe({
       next: (clinics) => {
-        console.log('Clínicas cargadas:', clinics);
         this.clinics = clinics;
-        this.loading = false;
-
-        // Restaurar selección
-        const saved = this.wizardState.getClinic();
-        if (saved && saved.id_clinic && clinics.length > 0) {
-          const found = clinics.find(c => c.id_clinic === saved.id_clinic);
-          if (found) {
-            this.selectedClinic = found;
-            console.log('Selección restaurada:', found);
-          }
-        }
+        this.loading.set(false);
+        this.restoreSelectedClinic();
       },
-      error: (err) => {
-        console.error('Error loading clinics:', err);
-        this.error = 'Error al cargar las clínicas';
-        this.loading = false;
+      error: () => {
+        this.error.set('No pudimos cargar las clínicas. Por favor intenta más tarde.');
+        this.loading.set(false);
       }
     });
   }
 
-  trackById(index: number, clinic: Clinic): string {
-    return clinic.id_clinic;
+  /**
+   * Restaura la clínica seleccionada previamente
+   */
+  private restoreSelectedClinic(): void {
+    const saved = this.wizardState.getClinic();
+    if (saved?.id_clinic && this.clinics.length > 0) {
+      const found = this.clinics.find(c => c.id_clinic === saved.id_clinic);
+      if (found) {
+        this.selectedClinic = found;
+      }
+    }
   }
 
-  getClinicByPin(pin: any): Clinic | null {
-    if (!this.clinics || this.clinics.length === 0 || !pin) {
-      return null;
-    }
+  /**
+   * Encuentra una clínica por su ubicación
+   */
+  getClinicByPin(pin: { label: string }): Clinic | null {
+    if (!this.clinics.length || !pin?.label) return null;
     
     const pinLabel = pin.label.toLowerCase().trim();
     
@@ -84,20 +88,24 @@ export class ClinicComponent implements OnInit {
     }) || null;
   }
 
-  selectClinicFromPin(pin: any) {
+  /**
+   * Selecciona una clínica desde un pin del mapa
+   */
+  selectClinicFromPin(pin: { label: string }): void {
     const clinic = this.getClinicByPin(pin);
     if (clinic) {
       this.selectClinic(clinic);
     }
   }
 
-  selectClinic(clinic: Clinic) {
-    if (!clinic) return;
+  /**
+   * Selecciona una clínica y la guarda en el wizard
+   */
+  selectClinic(clinic: Clinic): void {
+    if (!clinic?.id_clinic) return;
     
-    console.log('Seleccionando clínica:', clinic);
     this.selectedClinic = clinic;
 
-    // Guardar en wizardState
     const clinicData = {
       id_clinic: clinic.id_clinic,
       name: clinic.name,
@@ -106,31 +114,38 @@ export class ClinicComponent implements OnInit {
     };
     
     this.wizardState.setClinic(clinicData);
-    console.log('Guardado en wizardState:', this.wizardState.getClinic());
   }
 
+  /**
+   * Verifica si una clínica está seleccionada
+   */
   isSelected(clinic: Clinic): boolean {
-    return this.selectedClinic?.id_clinic === clinic.id_clinic;
+    return this.selectedClinic?.id_clinic === clinic?.id_clinic;
   }
 
-  isPinActive(pin: any): boolean {
+  /**
+   * Verifica si un pin corresponde a la clínica seleccionada
+   */
+  isPinActive(pin: { label: string }): boolean {
     if (!this.selectedClinic) return false;
-
     const location = this.selectedClinic.location.toLowerCase();
 
-    if (pin.label === 'Condesa' && location.includes('condesa')) return true;
-    if (pin.label === 'Polanco' && location.includes('polanco')) return true;
-    if (pin.label === 'Interlomas' && location.includes('interlomas')) return true;
-    if (pin.label === 'Santa Fe' && location.includes('santa fe')) return true;
-
-    return false;
+    switch (pin.label) {
+      case 'Condesa': return location.includes('condesa');
+      case 'Polanco': return location.includes('polanco');
+      case 'Interlomas': return location.includes('interlomas');
+      case 'Santa Fe': return location.includes('santa fe');
+      default: return false;
+    }
   }
 
-  getMapInfo() {
+  /**
+   * Obtiene información de la clínica seleccionada
+   */
+  getMapInfo(): { nombre: string; location: string; schedule: string } | null {
     if (!this.selectedClinic) return null;
 
     let shortName = this.selectedClinic.location;
-
     if (shortName.includes(',')) {
       shortName = shortName.split(',')[0];
     }
@@ -142,35 +157,40 @@ export class ClinicComponent implements OnInit {
     };
   }
 
-  next() {
-    console.log('Ejecutando next()');
-    console.log('selectedClinic:', this.selectedClinic);
-    console.log('wizardState:', this.wizardState.getClinic());
-    
+  /**
+   * Navega al siguiente paso
+   */
+  next(): void {
     if (!this.selectedClinic) {
-      alert('Por favor selecciona una clínica');
+      this.error.set('Por favor selecciona una clínica para continuar');
       return;
     }
 
-    // Verificar que se guardó correctamente
+    if (this.isNavigating()) return;
+    
+    this.isNavigating.set(true);
+    
     const saved = this.wizardState.getClinic();
-    if (!saved || !saved.id_clinic) {
-      console.error('Error: No se guardó la clínica en wizardState');
-      // Intentar guardar de nuevo
+    if (!saved?.id_clinic) {
       this.selectClinic(this.selectedClinic);
     }
-
-    console.log('Navegando a /citas/servicioss');
-    this.router.navigate(['/citas/servicioss']).then(success => {
-      if (success) {
-        console.log('Navegación exitosa');
-      } else {
-        console.error('Error en navegación');
-      }
+    
+    this.router.navigate(['/citas/servicioss']).finally(() => {
+      this.isNavigating.set(false);
     });
   }
 
-  back() {
+  /**
+   * Navega al paso anterior
+   */
+  back(): void {
     this.router.navigate(['/citas']);
+  }
+
+  /**
+   * TrackBy para optimizar la lista
+   */
+  trackById(_index: number, clinic: Clinic): string {
+    return clinic.id_clinic;
   }
 }

@@ -11,6 +11,10 @@
     Admis. veterinarios
   </a>
 
+    <a *ngIf="isLoggedIn() && isAdmin()" routerLink="/admin-usu">
+    Admis. Usuarios
+  </a>
+
   <div class="nav-auth">
     <!-- 👈 ABRIR MODAL EN VEZ DE REDIRIGIR -->
     <a *ngIf="!isLoggedIn()" (click)="openLoginModal()">Acceso</a>
