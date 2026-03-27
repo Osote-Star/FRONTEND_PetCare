@@ -1,0 +1,152 @@
+<!-- ══════════════════════════════════════════
+     PROGRESS HEADER
+══════════════════════════════════════════ -->
+<div class="progress-header">
+  <div class="step-badge">1</div>
+
+  <div class="step-info">
+    <small>Paso 1 de 5</small>
+    <h2>Elige tu clínica</h2>
+  </div>
+
+  <div class="h-divider"></div>
+
+  <div class="header-actions">
+    <button class="btn btn-back" type="button" (click)="back()">← Atrás</button>
+    <button
+      class="btn btn-next"
+      type="button"
+      (click)="next()"
+      [disabled]="!selectedClinic"
+    >Siguiente →</button>
+  </div>
+
+  <div class="h-divider"></div>
+
+  <div class="steps-dots">
+    <div class="dot active"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MAIN
+══════════════════════════════════════════ -->
+<main>
+
+  <!-- ── Page title ── -->
+  <div class="page-heading">
+    <h1 class="page-title">¿Cuál sucursal te queda mejor?</h1>
+    <p class="page-subtitle">Elige la clínica más cercana a ti para tu cita</p>
+  </div>
+
+  <!-- ── Loading ── -->
+  <div *ngIf="loading()" class="state-card state-loading">
+    <div class="spinner"></div>
+    <span>Cargando clínicas...</span>
+  </div>
+
+  <!-- ── Error ── -->
+  <div *ngIf="error() && !loading()" class="state-card state-error">
+    <div class="state-icon">⚠️</div>
+    <p>{{ error() }}</p>
+    <button class="btn-retry" type="button" (click)="loadClinics()">Reintentar</button>
+  </div>
+
+  <!-- ── Content grid ── -->
+  <div *ngIf="!loading() && !error() && clinics.length > 0" class="content-grid">
+
+    <!-- LEFT: clinic list -->
+    <div class="clinic-list">
+      <div
+        *ngFor="let clinic of clinics; trackBy: trackById"
+        class="clinic-card"
+        [class.selected]="isSelected(clinic)"
+        (click)="selectClinic(clinic)"
+        role="radio"
+        [attr.aria-checked]="isSelected(clinic)"
+        tabindex="0"
+        (keydown.enter)="selectClinic(clinic)"
+        (keydown.space)="selectClinic(clinic)"
+      >
+        <div class="clinic-icon-wrap">
+          <span class="clinic-emoji">🏥</span>
+        </div>
+
+        <div class="clinic-body">
+          <div class="clinic-name">{{ clinic.name || 'Sin nombre' }}</div>
+          <div class="clinic-address">{{ clinic.location || 'Sin dirección' }}</div>
+          <div class="clinic-meta">
+            <span class="meta-tag">🕐 {{ clinic.schedule || 'Horario no disponible' }}</span>
+          </div>
+        </div>
+
+        <div class="radio-pill" [class.checked]="isSelected(clinic)"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: map -->
+    <div class="map-panel">
+      <!-- Map visual area -->
+      <div class="map-area">
+        <div
+          *ngFor="let pin of mapPins"
+          class="map-pin"
+          [class.active]="isPinActive(pin)"
+          [ngStyle]="{ left: pin.left, top: pin.top }"
+          (click)="selectClinicFromPin(pin)"
+        >
+          <div class="pin-dot"></div>
+          <div class="pin-ring"></div>
+          <div class="pin-label">{{ pin.label }}</div>
+        </div>
+      </div>
+
+      <!-- Info box shown when a clinic is selected -->
+      <div class="map-info" *ngIf="getMapInfo() as info; else noSelection">
+        <div class="map-info-header">
+          <span class="map-info-icon">📍</span>
+          <strong>{{ info.nombre }}</strong>
+        </div>
+        <span class="map-info-address">{{ info.location }}</span>
+        <div class="map-info-row">
+          <span class="map-info-chip">🕐 {{ info.schedule }}</span>
+        </div>
+      </div>
+
+      <ng-template #noSelection>
+        <div class="map-info map-info--empty">
+          <span class="map-empty-icon">🗺️</span>
+          <p>Selecciona una clínica para ver su ubicación</p>
+        </div>
+      </ng-template>
+    </div>
+
+  </div>
+
+  <!-- Mensaje si no hay clínicas -->
+  <div *ngIf="!loading() && !error() && clinics.length === 0" class="state-card state-warning">
+    <p>No hay clínicas disponibles</p>
+  </div>
+
+</main>
+
+<!-- ══════════════════════════════════════════
+     FOOTER ACTIONS
+══════════════════════════════════════════ -->
+<div class="page-footer">
+  <button class="footer-btn footer-btn--secondary" type="button" (click)="back()">
+    ← Atrás
+  </button>
+  <button
+    class="footer-btn footer-btn--primary"
+    type="button"
+    (click)="next()"
+    [disabled]="!selectedClinic"
+  >
+    Continuar →
+  </button>
+</div>

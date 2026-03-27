@@ -1,60 +1,30 @@
-import { Component, inject, signal, ViewEncapsulation } from '@angular/core';
+// features/appointments/user/appointment-user/appointment-user.component.ts
+import { Component, inject, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
-import { AppointmentService } from '../../services/appointment.service';
+import { AuthService } from '../../../auth/services/auth.service';
+import { AuthModalService } from '../../../auth/services/auth-modal.service';
 
 @Component({
   selector: 'app-appointment-user',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, RouterModule],
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['./appointment-user.component.scss'],
   templateUrl: './appointment-user.component.html',
 })
 export class AppointmentUserComponent {
-
-  private readonly appointmentService = inject(AppointmentService);
-  private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly authModal = inject(AuthModalService);
 
-  isLoading = signal(false);
-  success   = signal(false);
-  error     = signal<string | null>(null);
-
-  form = this.fb.group({
-    ownerName:  ['', Validators.required],
-    ownerEmail: ['', [Validators.required, Validators.email]],
-    ownerPhone: ['', Validators.required],
-    petName:    ['', Validators.required],
-    petType:    ['', Validators.required],
-    type:       ['consultation', Validators.required],
-    date:       ['', Validators.required],
-    time:       ['', Validators.required],
-    notes:      [''],
-  });
-
- irAgendarCita(): void {
-  // Cambia de 'revision' a 'ubicacion'
-  this.router.navigate(['/citas/ubicacion']);
-}
-
-  submit(): void {
-    if (this.form.invalid) return;
-
-    this.isLoading.set(true);
-    this.error.set(null);
-
-    this.appointmentService.createAppointment(this.form.value as any).subscribe({
-      next: () => {
-        this.success.set(true);
-        this.isLoading.set(false);
-        this.form.reset();
-      },
-      error: (err) => {
-        this.error.set(err.error?.message ?? 'Error al agendar la cita');
-        this.isLoading.set(false);
-      },
-    });
+  irAgendarCita(): void {
+    if (this.authService.isLoggedIn()) {
+      // Está logueado, puede agendar
+      this.router.navigate(['/citas/ubicacion']);
+    } else {
+      // No está logueado, abrir modal
+      this.authModal.openLogin('/citas/ubicacion');
+    }
   }
 }
