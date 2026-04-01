@@ -117,11 +117,79 @@
 
 </div>
 
+<hr class="section-divider">
+
+<!-- ============================= -->
+<!-- FORMULARIO AGREGAR CLÍNICA -->
+<!-- ============================= -->
+
+<div class="page">
+
+  <div class="page-header">
+    <h1>Agregar clínica</h1>
+    <p>Registro de nuevas clínicas en el sistema</p>
+  </div>
+
+  <form class="form" [formGroup]="clinicForm" (ngSubmit)="submitClinic()" novalidate>
+
+    <div class="grid">
+
+      <!-- Nombre -->
+      <div class="field">
+        <label>Nombre de la clínica</label>
+        <input type="text" formControlName="name" placeholder="Ej: Clínica Veterinaria Central">
+      </div>
+
+      <!-- Ubicación -->
+      <div class="field">
+        <label>Ubicación</label>
+        <input type="text" formControlName="location" placeholder="Dirección completa">
+      </div>
+
+      <!-- Horario -->
+       <div class="field">
+      <label>Horario</label>
+      <input type="text" formControlName="schedule" placeholder="Ej: Lunes a Viernes 9:00 - 17:00">
+
+      <small class="error"
+        *ngIf="clinicScheduleInvalid">
+        El horario es obligatorio
+      </small>
+</div>
+
+    </div>
+
+    <div class="actions">
+
+      <button
+        class="btn-primary"
+        type="submit"
+        [disabled]="clinicForm.invalid || isClinicSubmitting()">
+        {{ isClinicSubmitting() ? 'Guardando...' : 'Agregar clínica' }}
+      </button>
+
+    </div>
+
+  </form>
+
+</div>
+
+
+
 <div class="success-modal" *ngIf="success()">
   <div class="success-box">
     <h3>Veterinario registrado ✅</h3>
     <p>El veterinario fue agregado correctamente al sistema.</p>
 
     <button (click)="closeSuccess()">Aceptar</button>
+  </div>
+</div>
+
+<div class="success-modal" *ngIf="clinicSuccess()">
+  <div class="success-box">
+    <h3>Clínica registrada ✅</h3>
+    <p>La clínica fue agregada correctamente al sistema.</p>
+
+    <button (click)="closeClinicSuccess()">Aceptar</button>
   </div>
 </div>
