@@ -1,0 +1,28 @@
+<!-- features/auth/auth-modal.component.html -->
+<div class="modal-overlay" *ngIf="modal.isOpen()" (click)="closeOnBackdrop($event)">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    
+    <!-- Header con tabs -->
+    <div class="modal-header">
+      <button 
+        class="tab-btn" 
+        [class.active]="modal.isLoginMode()"
+        (click)="modal.toggleMode()">
+        Iniciar Sesión
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="modal.isRegisterMode()"
+        (click)="modal.toggleMode()">
+        Crear Cuenta
+      </button>
+      <button class="close-btn" (click)="modal.close()">×</button>
+    </div>
+
+    <!-- Contenido -->
+    <div class="modal-body">
+      <app-login *ngIf="modal.isLoginMode()" />
+      <app-register *ngIf="modal.isRegisterMode()" />
+    </div>
+  </div>
+</div>

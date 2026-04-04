@@ -1,234 +1,246 @@
-import { Component, ViewEncapsulation, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, ViewEncapsulation, OnInit, inject } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { AppointmentService } from '../../services/appointment.service';
+import { Appointment, AppointmentStatus } from '../../models/appointment.model';
 
-interface Appointment {
-  id: number;
-  pet: string;
-  breed: string;
-  petEmoji: string;
-  owner: string;
-  phone: string;
-  service: string;
-  serviceLabel: string;
-  branch: string;
-  date: string;
-  time: string;
-  status: string;
-  reason: string;
-  notes: string;
-  age: string;
-  weight: string;
-}
+export type AppointmentRole = 'cliente' | 'veterinario';
+interface StatusInfo { label: string; cls: string; }
 
 @Component({
   selector: 'app-appointment-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
-      encapsulation: ViewEncapsulation.None,
+  imports: [CommonModule, FormsModule, DatePipe],
+  encapsulation: ViewEncapsulation.None,
   templateUrl: './appointment-list.component.html',
   styleUrl: './appointment-list.component.scss'
 })
-export class AppointmentListComponent {
+export class AppointmentListComponent implements OnInit {
 
-  PAGE_SIZE = 6;
+  @Input() role: AppointmentRole = 'cliente';
 
-  allData: Appointment[] = [];
+  private readonly appointmentService = inject(AppointmentService);
+  private readonly route               = inject(ActivatedRoute);
+
+  // ── Paginación ──────────────────────────────────────────
+  PAGE_SIZE    = 6;
+  currentPage  = 1;
+
+  // ── Datos ───────────────────────────────────────────────
+  allData:      Appointment[] = [];
   filteredData: Appointment[] = [];
 
-  currentPage = 1;
-  selectedId: number | null = null;
+  // ── UI ──────────────────────────────────────────────────
+  isLoading    = true;
+  errorMsg     = '';
+  cancellingId: string | null = null;
+  selectedId:   string | null = null;
 
-  searchText = '';
-  searchType = 'pet';
-
-  filterService = '';
+  // ── Filtros ─────────────────────────────────────────────
+  searchText   = '';
   filterStatus = '';
-  filterBranch = '';
+  dateFrom     = '';
+  dateTo       = '';
 
-  dateFrom = '';
-  dateTo = '';
-
-  STATUS_MAP: any = {
-    pending: { label: 'Pendiente', cls: 'badge-pending' },
-    confirmed: { label: 'Confirmada', cls: 'badge-confirmed' },
-    attended: { label: 'Atendida', cls: 'badge-attended' },
-    cancelled: { label: 'Cancelada', cls: 'badge-cancelled' }
+  // ── Status map ──────────────────────────────────────────
+  readonly STATUS_MAP: { [K in AppointmentStatus]: StatusInfo } = {
+    pendiente:  { label: 'Pendiente',  cls: 'badge-pending'   },
+    confirmada: { label: 'Confirmada', cls: 'badge-confirmed' },
+    atendida:   { label: 'Atendida',   cls: 'badge-attended'  },
+    cancelada:  { label: 'Cancelada',  cls: 'badge-cancelled' },
   };
 
-  ngOnInit() {
-    this.loadData(this.mockData());
+  // ════════════════════════════════════════════════════════
+  ngOnInit(): void {
+    // Permite recibir el rol también desde data de la ruta
+    const routeRole = this.route.snapshot.data['role'] as AppointmentRole;
+    if (routeRole) this.role = routeRole;
+
+    this.loadAppointments();
   }
 
-  loadData(data: Appointment[]) {
-    this.allData = data;
-    this.filteredData = [...data];
-    this.applyFilters();
+  // ── Carga según rol ──────────────────────────────────────
+  loadAppointments(): void {
+    this.isLoading = true;
+    this.errorMsg  = '';
+
+    const obs$ = this.role === 'veterinario'
+      ? this.appointmentService.getMyPatients()
+      : this.appointmentService.getMyAppointments();
+
+    obs$.subscribe({
+      next: (data) => {
+        this.allData   = data;
+        this.applyFilters();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMsg  = err.message ?? 'No se pudieron cargar las citas.';
+        this.isLoading = false;
+      }
+    });
   }
 
-  handleSearch() {
-    this.applyFilters();
+  // ── Helpers de rol ───────────────────────────────────────
+  get isCliente():     boolean { return this.role === 'cliente';     }
+  get isVeterinario(): boolean { return this.role === 'veterinario'; }
+
+  get pageTitle(): string {
+    return this.isVeterinario ? 'Mis Pacientes' : 'Mis Citas';
   }
 
-  setSearchType(type: string) {
-    this.searchType = type;
-    this.applyFilters();
+  get searchPlaceholder(): string {
+    return this.isVeterinario
+      ? 'Buscar por mascota o dueño...'
+      : 'Buscar por mascota o veterinario...';
   }
 
-  applyFilters() {
+  get loadingMsg(): string {
+    return this.isVeterinario ? 'Cargando tus pacientes...' : 'Cargando tus citas...';
+  }
 
-    const q = this.searchText.toLowerCase();
+  // Segunda columna de la tabla: dueño para vet, veterinario para cliente
+  getSecondColValue(a: Appointment): string {
+    return this.isVeterinario ? a.user_name : a.veterinarian_name;
+  }
+
+  get secondColHeader(): string {
+    return this.isVeterinario ? 'Dueño' : 'Veterinario';
+  }
+
+  // ── Filtros ──────────────────────────────────────────────
+  applyFilters(): void {
+    const q = this.searchText.toLowerCase().trim();
 
     this.filteredData = this.allData.filter(a => {
+      const matchQ = !q
+        || (a.pet_name          ?? '').toLowerCase().includes(q)
+        || (a.veterinarian_name ?? '').toLowerCase().includes(q)
+        || (a.user_name         ?? '').toLowerCase().includes(q);
 
-      let matchQ = true;
+      const matchStatus = !this.filterStatus || a.status === this.filterStatus;
+      const dateStr     = (a.date ?? '').substring(0, 10);
+      const matchFrom   = !this.dateFrom || dateStr >= this.dateFrom;
+      const matchTo     = !this.dateTo   || dateStr <= this.dateTo;
 
-      if (q) {
-        if (this.searchType === 'pet') matchQ = a.pet.toLowerCase().includes(q);
-        if (this.searchType === 'owner') matchQ = a.owner.toLowerCase().includes(q);
-        if (this.searchType === 'breed') matchQ = a.breed.toLowerCase().includes(q);
-      }
-
-      return matchQ
-        && (!this.filterService || a.service === this.filterService)
-        && (!this.filterStatus || a.status === this.filterStatus)
-        && (!this.filterBranch || a.branch === this.filterBranch)
-        && (!this.dateFrom || a.date >= this.dateFrom)
-        && (!this.dateTo || a.date <= this.dateTo);
-
+      return matchQ && matchStatus && matchFrom && matchTo;
     });
 
     this.currentPage = 1;
   }
 
-  clearFilters() {
-    this.searchText = '';
-    this.filterService = '';
+  clearFilters(): void {
+    this.searchText   = '';
     this.filterStatus = '';
-    this.filterBranch = '';
-    this.dateFrom = '';
-    this.dateTo = '';
-
+    this.dateFrom     = '';
+    this.dateTo       = '';
     this.filteredData = [...this.allData];
-    this.currentPage = 1;
+    this.currentPage  = 1;
   }
 
-  selectAppointment(id: number) {
-    this.selectedId = id;
+  // ── Selección ────────────────────────────────────────────
+  selectAppointment(id: string): void {
+    this.selectedId = this.selectedId === id ? null : id;
   }
 
-  closeDetail() {
-    this.selectedId = null;
-  }
-
-  changeStatus(id: number, status: string) {
-    const a = this.allData.find(x => x.id === id);
-    if (a) {
-      a.status = status;
-      this.applyFilters();
-    }
-  }
-
-  saveNotes(id: number, val: string) {
-    const a = this.allData.find(x => x.id === id);
-    if (a) a.notes = val;
-  }
+  closeDetail(): void { this.selectedId = null; }
 
   get selectedAppointment(): Appointment | undefined {
-    return this.allData.find(a => a.id === this.selectedId);
+    return this.allData.find(a => a.id_appointment === this.selectedId);
   }
 
-  get totalPages() {
-    return Math.ceil(this.filteredData.length / this.PAGE_SIZE);
+  // ── Acciones ─────────────────────────────────────────────
+  canCancel(a: Appointment): boolean {
+    // Solo el cliente puede cancelar, y solo si está pendiente o confirmada
+    return this.isCliente && (a.status === 'pendiente' || a.status === 'confirmada');
   }
 
-  get pageArray() {
+  cancelAppointment(id: string): void {
+    if (this.cancellingId) return;
+    this.cancellingId = id;
+
+    this.appointmentService.changeStatus(id, 'cancelada').subscribe({
+      next: (updated) => {
+        const idx = this.allData.findIndex(a => a.id_appointment === id);
+        if (idx !== -1) this.allData[idx] = updated;
+        this.applyFilters();
+        this.cancellingId = null;
+      },
+      error: (err) => {
+        alert(err.message ?? 'No se pudo cancelar la cita.');
+        this.cancellingId = null;
+      }
+    });
+  }
+
+  changeStatus(id: string, status: string): void {
+    this.appointmentService.changeStatus(id, status).subscribe({
+      next: (updated) => {
+        const idx = this.allData.findIndex(a => a.id_appointment === id);
+        if (idx !== -1) this.allData[idx] = updated;
+        this.applyFilters();
+      },
+      error: (err) => alert(err.message ?? 'Error al cambiar estado.')
+    });
+  }
+
+  isCancelling(id: string): boolean { return this.cancellingId === id; }
+
+  // ── Helpers de fecha ─────────────────────────────────────
+  formatDate(d: string): string {
+    if (!d) return '';
+    return new Date(d).toLocaleDateString('es-MX', {
+      weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'
+    });
+  }
+
+  formatDateShort(d: string): string {
+    if (!d) return '';
+    return new Date(d).toLocaleDateString('es-MX', {
+      day: '2-digit', month: 'short', year: 'numeric'
+    });
+  }
+
+  formatTime(d: string): string {
+    if (!d) return '';
+    return new Date(d).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  // ── Stats ────────────────────────────────────────────────
+  getStats(status: AppointmentStatus): number {
+    return this.allData.filter(a => a.status === status).length;
+  }
+
+  getStatusInfo(status: string): StatusInfo {
+    return this.STATUS_MAP[status as AppointmentStatus] ?? { label: status, cls: '' };
+  }
+
+  // ── Paginación ───────────────────────────────────────────
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredData.length / this.PAGE_SIZE));
+  }
+
+  get pageArray(): number[] {
     return Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
 
-  get paginatedData() {
+  get paginatedData(): Appointment[] {
     const start = (this.currentPage - 1) * this.PAGE_SIZE;
     return this.filteredData.slice(start, start + this.PAGE_SIZE);
   }
 
-  goPage(p: number) {
-    this.currentPage = p;
+  goPage(p: number): void {
+    if (p >= 1 && p <= this.totalPages) this.currentPage = p;
   }
 
-  getStats(status: string) {
-    return this.allData.filter(a => a.status === status).length;
+  getPageStart(): number {
+    return this.filteredData.length ? (this.currentPage - 1) * this.PAGE_SIZE + 1 : 0;
   }
 
-  getPageStart() {
-    if (!this.filteredData.length) return 0;
-    return (this.currentPage - 1) * this.PAGE_SIZE + 1;
-  }
-
-  getPageEnd() {
+  getPageEnd(): number {
     return Math.min(this.currentPage * this.PAGE_SIZE, this.filteredData.length);
   }
 
-  trackById(index: number, item: Appointment) {
-    return item.id;
-  }
-
-  mockData(): Appointment[] {
-    return [
-      {
-        id: 1,
-        pet: 'Toby',
-        breed: 'Labrador',
-        petEmoji: '🐶',
-        owner: 'Carlos Méndez',
-        phone: '6441112233',
-        service: 'medical',
-        serviceLabel: 'Visita médica',
-        branch: 'condesa',
-        date: '2026-03-10',
-        time: '09:00',
-        status: 'pending',
-        reason: 'Chequeo general',
-        notes: '',
-        age: '3 años',
-        weight: '25kg'
-      },
-      {
-        id: 2,
-        pet: 'Luna',
-        breed: 'Poodle',
-        petEmoji: '🐩',
-        owner: 'Ana López',
-        phone: '6449981122',
-        service: 'grooming',
-        serviceLabel: 'Baño y corte',
-        branch: 'polanco',
-        date: '2026-03-11',
-        time: '11:00',
-        status: 'confirmed',
-        reason: 'Corte de pelo',
-        notes: '',
-        age: '2 años',
-        weight: '8kg'
-      },
-      {
-        id: 3,
-        pet: 'Max',
-        breed: 'Bulldog',
-        petEmoji: '🐶',
-        owner: 'Pedro Ruiz',
-        phone: '6447765544',
-        service: 'bath',
-        serviceLabel: 'Baño',
-        branch: 'santafe',
-        date: '2026-03-12',
-        time: '15:00',
-        status: 'attended',
-        reason: 'Baño mensual',
-        notes: 'Todo bien',
-        age: '4 años',
-        weight: '18kg'
-      }
-    ];
-  }
-
+  trackById(_: number, item: Appointment): string { return item.id_appointment; }
 }

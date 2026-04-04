@@ -52,7 +52,6 @@ export class ClinicComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.error('Error loading clinics:', err);
         this.error = 'Error al cargar las clínicas';
         this.loading = false;
       }

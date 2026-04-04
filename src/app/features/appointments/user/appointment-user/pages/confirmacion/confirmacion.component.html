@@ -1,141 +1,180 @@
+<main>
+  <div class="card">
+    <h1 class="card-title">¿Cuándo los vemos?</h1>
+    <p class="card-subtitle">Selecciona el veterinario, día y horario de tu preferencia</p>
 
+    <!-- Mensajes de error/éxito -->
+    <div class="alert alert-error" *ngIf="error()">
+      <span>❌ {{ error() }}</span>
+      <button class="close-btn" (click)="error.set('')">×</button>
+    </div>
+    <div class="alert alert-success" *ngIf="success()">
+      <span>✅ ¡Cita creada exitosamente! Redirigiendo...</span>
+    </div>
 
-  <!-- HEADER -->
-  <div class="progress-header">
-    <div class="step-badge">4</div>
-    <div class="step-info">
-      <small>Gracias por confiar en nosotros</small>
-      <h2>Concluir cita</h2>
+    <!-- VETERINARIO -->
+    <div class="vet-selector">
+      <label class="field-label">Veterinario <span class="required">*</span></label>
+      <div class="select-wrapper">
+        <select class="form-select" (change)="onVeterinarianChange($event)" [disabled]="isLoadingVets()">
+          <option value="" disabled selected>Seleccione un veterinario</option>
+          <option *ngFor="let vet of veterinarios()" [value]="vet.id_user">
+            {{ vet.name }}
+          </option>
+        </select>
+        <div *ngIf="isLoadingVets()" class="loading-text">Cargando veterinarios...</div>
+      </div>
     </div>
-    <div class="divider"></div>
-    <div class="header-actions">
-      <button class="btn btn-back" (click)="atras()">← Atrás</button>
-      <button class="btn btn-next" (click)="siguiente()">Siguiente →</button>
+
+    <!-- CALENDARIO -->
+    <div class="section-label">Selecciona una fecha *</div>
+    <div class="calendar-container">
+      <div class="calendar-header">
+        <button class="cal-nav" (click)="prevMonth()" [disabled]="isLoadingDates()">‹</button>
+        <span class="cal-month">{{ months[currentMonth] }} {{ currentYear }}</span>
+        <button class="cal-nav" (click)="nextMonth()" [disabled]="isLoadingDates()">›</button>
+      </div>
+      
+      <div *ngIf="isLoadingDates()" class="loading-dates">
+        <div class="spinner"></div>
+        <span>Cargando fechas disponibles...</span>
+      </div>
+      
+      <table class="calendar-grid" *ngIf="!isLoadingDates()">
+        <thead>
+          <tr>
+            <th *ngFor="let day of weekDays">{{ day }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let week of getCalendarWeeks()">
+            <td *ngFor="let day of week" 
+                class="calendar-day"
+                [class.empty]="!day"
+                [class.available]="day && isDateAvailable(day)"
+                [class.unavailable]="day && !isDateAvailable(day)"
+                [class.selected]="day && isSelectedDate(day)"
+                [class.today]="day && isToday(day)"
+                (click)="day && isDateAvailable(day) && onDateSelect(day)">
+              <span *ngIf="day">{{ day }}</span>
+              <span *ngIf="day && isDateAvailable(day)" class="availability-dot"></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <div *ngIf="!isLoadingDates() && availableDates().length === 0 && selectedVeterinarianId()" class="no-dates-message">
+        📅 No hay fechas disponibles para este veterinario en los próximos 30 días
+      </div>
     </div>
-    <div class="divider"></div>
-    <div class="steps-dots">
-      <div class="dot done"></div>
-      <div class="dot done"></div>
-      <div class="dot done"></div>
-      <div class="dot active"></div>
-      <div class="dot"></div>
+
+    <!-- HORARIOS -->
+    <div class="slots-header" *ngIf="selectedDate()">
+      <span class="slots-label">Horarios disponibles</span>
+      <span class="slots-date">— {{ selectedDate() | date:'EEEE d \'de\' MMMM' | titlecase }}</span>
+    </div>
+    
+    <div class="slots-grid" *ngIf="!isLoadingSlots() && availableSlots().length > 0; else noSlots">
+      <button 
+        *ngFor="let slot of availableSlots()"
+        class="slot-btn"
+        [class.selected]="selectedTime() === slot"
+        (click)="selectTime(slot)">
+        {{ slot }}
+      </button>
+    </div>
+    
+    <ng-template #noSlots>
+      <div class="no-slots-message">
+        <p *ngIf="isLoadingSlots()">
+          <span class="spinner-small"></span> Cargando horarios...
+        </p>
+        <p *ngIf="!isLoadingSlots() && selectedDate() && availableSlots().length === 0">
+          📅 No hay horarios disponibles para esta fecha
+        </p>
+        <p *ngIf="!selectedDate()">
+          📅 Selecciona una fecha primero
+        </p>
+      </div>
+    </ng-template>
+
+    <div class="confirm-badge" [class.incomplete]="!isFormComplete()">
+      {{ isFormComplete() ? '✅ Todo listo para confirmar' : '⚠️ Selecciona veterinario, fecha y hora' }}
+    </div>
+
+    <div class="button-container">
+      <button class="btn-back" (click)="atras()" [disabled]="isLoading()">← Atrás</button>
+      <button class="btn-confirm" [disabled]="!isFormComplete() || isLoading()" (click)="crearCita()">
+        <span *ngIf="!isLoading()">📅 Confirmar cita</span>
+        <span *ngIf="isLoading()">⏳ Creando cita...</span>
+      </button>
     </div>
   </div>
 
-  <main>
-    <!-- CARD PRINCIPAL -->
-    <div class="card">
-      <h1 class="card-title">¿Cuándo los vemos?</h1>
-      <p class="card-subtitle">Selecciona el veterinario, día y horario de tu preferencia</p>
-
-      <!-- VETERINARIO -->
-      <div class="vet-selector">
-        <label class="field-label">Veterinario <span style="color:var(--terracotta)">*</span></label>
-        <div class="select-wrapper">
-          <select class="form-select">
-            <option>Dra. Rosa Alesys Angeles González</option>
-            <option>Dr. Marco Estrada Fuentes</option>
-            <option>Dra. Sofía Reyes Montoya</option>
-            <option>Sin preferencia — cualquier disponible</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- CALENDARIO -->
-      <div class="section-label">Selecciona una fecha</div>
-      <div class="calendar-wrap">
-        <div class="calendar-header">
-          <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
-          <span class="cal-month" id="cal-month"></span>
-          <button class="cal-nav" onclick="changeMonth(1)">›</button>
-        </div>
-        <table class="calendar-grid">
-          <thead>
-            <tr>
-              <th>LUN</th><th>MAR</th><th>MIÉ</th><th>JUE</th>
-              <th>VIE</th><th>SÁB</th><th>DOM</th>
-            </tr>
-          </thead>
-          <tbody id="cal-body"></tbody>
-        </table>
-      </div>
-
-      <!-- HORARIOS -->
-      <div class="slots-header">
-        <span class="slots-label">Horarios disponibles</span>
-        <span class="slots-date" id="selected-date-label">— Sábado 21 de febrero</span>
-      </div>
-      <div class="slots-grid" id="slots-grid">
-        <button class="slot-btn taken">12:15</button>
-        <button class="slot-btn" (click)="selectSlot('12:45')">12:45</button>
-        <button class="slot-btn" (click)="selectSlot('13:15')">13:15</button>
-        <button class="slot-btn taken">13:45</button>
-        <button class="slot-btn" (click)="selectSlot('16:15')">16:15</button>
-        <button class="slot-btn" (click)="selectSlot('16:45')">16:45</button>
-        <button class="slot-btn selected" (click)="selectSlot('17:15')">17:15</button>
-        <button class="slot-btn" (click)="selectSlot('17:45')">17:45</button>
-        <button class="slot-btn" (click)="selectSlot('18:15')">18:15</button>
-        <button class="slot-btn" (click)="selectSlot('18:45')">18:45</button>
+  <!-- SIDEBAR -->
+  <div class="summary-card">
+    <div class="summary-title">Resumen de tu cita</div>
+    
+    <div class="summary-item">
+      <div class="summary-icon">🏥</div>
+      <div class="summary-item-text">
+        <small>Clínica</small>
+        <span>{{ clinic().name || 'No seleccionada' }}</span>
       </div>
     </div>
-
-    <!-- SIDEBAR -->
-    <div class="summary-card">
-      <div class="summary-title">Resumen de tu cita</div>
-
-      <div class="summary-item">
-        <div class="summary-icon">🏥</div>
-        <div class="summary-item-text">
-          <small>Clínica</small>
-          <span>VetPaws — Condesa</span>
-        </div>
+    
+    <div class="summary-item">
+      <div class="summary-icon">🩺</div>
+      <div class="summary-item-text">
+        <small>Servicio</small>
+        <span>{{ service().name || 'No seleccionado' }}</span>
+        <div class="service-price">${{ service().price }} MXN</div>
       </div>
-      <div class="summary-item">
-        <div class="summary-icon">🩺</div>
-        <div class="summary-item-text">
-          <small>Servicio</small>
-          <span>Visita médica · Diarrea</span>
-        </div>
-      </div>
-      <div class="summary-item">
-        <div class="summary-icon">🐶</div>
-        <div class="summary-item-text">
-          <small>Paciente</small>
-          <span>Toby — Labrador</span>
-        </div>
-      </div>
-      <div class="summary-item">
-        <div class="summary-icon">👩‍⚕️</div>
-        <div class="summary-item-text">
-          <small>Veterinaria</small>
-          <span>Dra. Rosa Alesys A. G.</span>
-        </div>
-      </div>
-
-      <div class="summary-divider"></div>
-
-      <div class="summary-item">
-        <div class="summary-icon">📅</div>
-        <div class="summary-item-text">
-          <small>Fecha</small>
-          <span id="sidebar-date">Sábado 21 de febrero</span>
-        </div>
-      </div>
-      <div class="summary-item">
-        <div class="summary-icon">🕐</div>
-        <div class="summary-item-text">
-          <small>Hora</small>
-          <span id="sidebar-time">17:15 hrs</span>
-        </div>
-      </div>
-
-      <div class="summary-divider"></div>
-
-      <div class="summary-total">
-        <span>Total estimado</span>
-        <span>$450 MXN</span>
-      </div>
-
-      <div class="confirm-badge">✅ ¡Todo listo para confirmar!</div>
     </div>
-  </main>
+    
+    <div class="summary-item">
+      <div class="summary-icon">🐾</div>
+      <div class="summary-item-text">
+        <small>Mascota</small>
+        <span>{{ mascota().nombre || 'No registrada' }}</span>
+      </div>
+    </div>
+    
+    <div class="summary-divider"></div>
+    
+    <div class="summary-item">
+      <div class="summary-icon">👨‍⚕️</div>
+      <div class="summary-item-text">
+        <small>Veterinario</small>
+        <span>{{ selectedVeterinarianName() || 'Por seleccionar' }}</span>
+      </div>
+    </div>
+    
+    <div class="summary-item">
+      <div class="summary-icon">📅</div>
+      <div class="summary-item-text">
+        <small>Fecha</small>
+        <span>{{ (selectedDate() | date:'EEEE d \'de\' MMMM') || 'Por seleccionar' }}</span>
+      </div>
+    </div>
+    
+    <div class="summary-item">
+      <div class="summary-icon">🕐</div>
+      <div class="summary-item-text">
+        <small>Hora</small>
+        <span>{{ selectedTime() || 'Por seleccionar' }} hrs</span>
+      </div>
+    </div>
+    
+    <div class="summary-divider"></div>
+    
+    <div class="summary-total">
+      <span>Total estimado</span>
+      <span>${{ service().price || 0 }} MXN</span>
+    </div>
+    
+    <div class="summary-note">
+      <small>💡 La cita se confirmará al finalizar</small>
+    </div>
+  </div>
+</main>

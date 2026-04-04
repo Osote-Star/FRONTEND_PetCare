@@ -44,20 +44,20 @@
   </div>
 
   <!-- ── Loading ── -->
-  <div *ngIf="loading" class="state-card state-loading">
+  <div *ngIf="loading()" class="state-card state-loading">
     <div class="spinner"></div>
     <span>Cargando clínicas...</span>
   </div>
 
   <!-- ── Error ── -->
-  <div *ngIf="error && !loading" class="state-card state-error">
+  <div *ngIf="error() && !loading()" class="state-card state-error">
     <div class="state-icon">⚠️</div>
-    <p>{{ error }}</p>
+    <p>{{ error() }}</p>
     <button class="btn-retry" type="button" (click)="loadClinics()">Reintentar</button>
   </div>
 
   <!-- ── Content grid ── -->
-  <div *ngIf="!loading && !error && clinics.length > 0" class="content-grid">
+  <div *ngIf="!loading() && !error() && clinics.length > 0" class="content-grid">
 
     <!-- LEFT: clinic list -->
     <div class="clinic-list">
@@ -128,7 +128,7 @@
   </div>
 
   <!-- Mensaje si no hay clínicas -->
-  <div *ngIf="!loading && !error && clinics.length === 0" class="state-card state-warning">
+  <div *ngIf="!loading() && !error() && clinics.length === 0" class="state-card state-warning">
     <p>No hay clínicas disponibles</p>
   </div>
 

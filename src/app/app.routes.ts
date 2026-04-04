@@ -23,19 +23,24 @@ export const routes: Routes = [
         .then(m => m.appointmentUserRoutes)
   },
 
+  // 📌 MIS CITAS — cliente
   {
-    path: 'citas-usuario',
+    path: 'mis-citas',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['cliente'], role: 'cliente' },
     loadComponent: () =>
       import('./features/appointments/user/appointment-list/appointment-list.component')
         .then(m => m.AppointmentListComponent)
   },
-
-  // 📌 ADMIN DE CITAS - RUTA SEPARADA (no va como hijo de /citas)
+ 
+  // 📌 MIS PACIENTES — veterinario (mismo componente, distinto rol)
   {
-    path: 'citas-vet',
+    path: 'mis-pacientes',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['veterinario'], role: 'veterinario' },
     loadComponent: () =>
-      import('./features/appointments/admin/veterinario/veterinario.component')
-        .then(m => m.VeterinarioComponent)
+      import('./features/appointments/user/appointment-list/appointment-list.component')
+        .then(m => m.AppointmentListComponent)
   },
 
   {
@@ -70,7 +75,24 @@ export const routes: Routes = [
       import('./features/auth/register/register.component')
         .then(m => m.RegisterComponent),
   },
-
+  //Registrar veterinarios
+    {
+      path: 'register-vet',
+      canActivate: [authGuard, roleGuard], 
+    data:{roles:['admin']},
+    loadComponent: () =>
+      import('./features/register-vet/register-vet.component')
+        .then(m => m.RegisterVetComponent)
+    },
+    //Administrar usuarios
+    {
+      path: 'admin-usu',
+      canActivate: [authGuard, roleGuard], 
+    data:{roles:['admin']},
+    loadComponent: () =>
+      import('./features/users/admin-users/admin-users.component')
+        .then(m => m.AdminUsersComponent)
+    },
   {
     path: '**',
     redirectTo: '',

@@ -1,9 +1,10 @@
+// app.config.ts
 import { ApplicationConfig } from '@angular/core';
 import { PreloadAllModules,provideRouter, withComponentInputBinding, withPreloading } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-
 import { routes } from './app.routes';
-import { httpInterceptor } from './core/interceptors/http.interceptor';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -11,7 +12,7 @@ export const appConfig: ApplicationConfig = {
       withComponentInputBinding(),
       withPreloading(PreloadAllModules)),
     provideHttpClient(
-      withInterceptors([httpInterceptor])
+      withInterceptors([authInterceptor]) // ✅ Usar el interceptor correcto
     )
   ]
 };

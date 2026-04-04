@@ -91,7 +91,6 @@ export class ServiciossComponent implements OnInit {
   }
 
   selectService(service: Service) {
-    console.log('Servicio seleccionado:', service);
     this.selectedService = service;
     this.isMedicalSelected = service.id === 'medical';
     
@@ -108,7 +107,6 @@ export class ServiciossComponent implements OnInit {
     } else {
       this.selectedReason = reason; // Seleccionar nuevo
     }
-    console.log('Razón seleccionada:', this.selectedReason);
   }
 
   isReasonActive(reason: string): boolean {
@@ -148,7 +146,6 @@ export class ServiciossComponent implements OnInit {
 
     // Guardar en wizardState (como array para futura expansión)
     this.wizardState.setServices([serviceData]);
-    console.log('Servicio guardado en wizardState:', serviceData);
   }
 
   atras() {
