@@ -9,7 +9,7 @@ import { AuthService } from '../../../../../auth/services/auth.service';
 import { Pet, CreatePetDto, UpdatePetDto } from '../../../../models/pet.model';
 import { MascotaData } from '../../../../models/wizard.models';
 import { firstValueFrom } from 'rxjs';
-
+import { noXssValidator,  safeTextValidator } from '../../../../../../core/validators/security.validators';
 @Component({
   selector: 'app-datacite',
   standalone: true,
@@ -52,22 +52,22 @@ export class DataciteComponent implements OnInit {
   tutorForm: FormGroup;
   mascotaForm: FormGroup;
 
-  constructor() {
+    constructor() {
     this.tutorForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      nombre: ['', [Validators.required, Validators.minLength(2)]],
-      apellido: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email, noXssValidator()]],
+      nombre: ['', [Validators.required, Validators.minLength(2), safeTextValidator(), noXssValidator()]],
+      apellido: ['', [Validators.required, Validators.minLength(2), safeTextValidator(), noXssValidator()]],
       telefono: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-      comoEnteraste: [''],
-      recordatorioVia: ['email'],
-      notas: ['']
+      comoEnteraste: ['', [noXssValidator()]],
+      recordatorioVia: ['email', [noXssValidator()]],
+      notas: ['', [noXssValidator()]]
     });
 
     this.mascotaForm = this.fb.group({
-      nombre: ['', [Validators.required, Validators.minLength(2)]],
-      edad: ['', [Validators.pattern('^[0-9]+(\\.[0-9]+)?(\\s*(años|meses))?$')]],
-      raza: [''],
-      peso: ['', [Validators.pattern('^[0-9]+(\\.[0-9]+)?$')]]
+      nombre: ['', [Validators.required, Validators.minLength(2), safeTextValidator(), noXssValidator()]],
+      edad: ['', [Validators.pattern('^[0-9]+(\\.[0-9]+)?(\\s*(años|meses))?$'), noXssValidator()]],
+      raza: ['', [safeTextValidator(), noXssValidator()]],
+      peso: ['', [Validators.pattern('^[0-9]+(\\.[0-9]+)?$'), noXssValidator()]]
     });
   }
 
