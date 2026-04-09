@@ -1,24 +1,22 @@
+<!-- features/appointments/user/pages/datacite/datacite.component.html -->
+
 <!-- HEADER -->
 <div class="progress-header">
-  <div class="step-badge">2</div>
-
+  <div class="step-badge">3</div>
   <div class="step-info">
-    <small>Conociendo a tu mascota</small>
-    <h2>Datos de tu mascota</h2>
+    <small>Paso 3-4 de 5</small>
+    <h2>Datos</h2>
   </div>
-  <div class="divider"></div>
-
+  <div class="h-divider"></div>
   <div class="header-actions">
-    <button class="btn btn-back" (click)="atras()">← Atrás</button>
-    <button class="btn btn-next" (click)="siguiente()">Siguiente →</button>
+    <button class="btn btn-back" (click)="atras()" [disabled]="isSaving()">← Atrás</button>
+    <button class="btn btn-next" (click)="siguiente()" [disabled]="isSaving()">Siguiente →</button>
   </div>
-  
-  <div class="divider"></div>
-
+  <div class="h-divider"></div>
   <div class="steps-dots">
-    <div class="dot" [class.done]="activeTab === 'mascota'" [class.active]="activeTab === 'tutor'"></div>
-    <div class="dot" [class.active]="activeTab === 'mascota'"></div>
-    <div class="dot"></div>
+    <div class="dot done"></div>
+    <div class="dot done"></div>
+    <div class="dot active"></div>
     <div class="dot"></div>
     <div class="dot"></div>
   </div>
@@ -31,9 +29,11 @@
   <div class="tabs">
     <button class="tab-btn" [class.active]="activeTab === 'tutor'" (click)="setActiveTab('tutor')">
       🧑 Datos del tutor
+      <span class="tab-status" [class.valid]="isTutorFormValid()">✓</span>
     </button>
     <button class="tab-btn" [class.active]="activeTab === 'mascota'" (click)="setActiveTab('mascota')">
       🐾 Datos de la mascota
+      <span class="tab-status" [class.valid]="isMascotaFormValid()">✓</span>
     </button>
   </div>
 
@@ -41,7 +41,7 @@
   <div class="card">
 
     <!-- ── PANEL TUTOR ── -->
-    <div id="panel-tutor" class="panel" [class.active]="activeTab === 'tutor'">
+    <div class="panel" [class.active]="activeTab === 'tutor'">
       <h1 class="card-title">¡Hola de nuevo!</h1>
       <p class="card-subtitle">Confirma tus datos de contacto para la cita</p>
 
@@ -49,27 +49,53 @@
       <div class="welcome-banner">
         <div class="welcome-icon">👋</div>
         <div class="welcome-text">
-          <h4>Hola, {{ getTutorControl('nombre').value || 'Tutor' }}</h4>
+          <h4>Hola, {{ (getTutorControl('nombre').value || 'Tutor') | sanitize }}</h4>
           <p>Qué alegría verte de nuevo. Tus datos están precargados.</p>
         </div>
       </div>
 
+      <!-- Mensaje de éxito/error -->
+      @if (successMessage()) {
+        <div class="success-message">
+          <span class="success-icon">✅</span>
+          <span>{{ successMessage() }}</span>
+        </div>
+      }
+      
+      @if (error()) {
+        <div class="error-message-global">
+          <span class="error-icon">⚠️</span>
+          <span>{{ error() }}</span>
+        </div>
+      }
+
       <!-- EMAIL -->
       <div class="form-row full">
         <div class="form-group">
-          <label class="form-label">Correo electrónico <span class="required">*</span></label>
+          <label class="form-label">
+            Correo electrónico <span class="required">*</span>
+            <span class="field-status" [class.valid]="getFieldStatus(tutorForm, 'email') === 'valid'">
+              {{ getFieldIcon(tutorForm, 'email') }}
+            </span>
+          </label>
           <div class="input-icon-wrapper">
             <input 
               [formControl]="getTutorControl('email')" 
               type="email" 
               class="form-input" 
               [class.error]="hasError(tutorForm, 'email')"
-              placeholder="tu@correo.com"
+              [class.valid]="getFieldStatus(tutorForm, 'email') === 'valid'"
+              placeholder="tucorreo.com"
+              (focus)="onFieldFocus('email')"
+              (blur)="onFieldBlur()"
             >
             <span class="input-icon">✉️</span>
           </div>
-          <div *ngIf="hasError(tutorForm, 'email')" class="error-message">
-            {{ getErrorMessage(tutorForm, 'email') }}
+          @for (err of getFieldErrors(tutorForm, 'email'); track err) {
+            <div class="error-message">{{ err }}</div>
+          }
+          <div class="helper-text" *ngIf="!hasError(tutorForm, 'email') && fieldFocused() === 'email'">
+            📧 Ejemplo: nombredominio.com
           </div>
         </div>
       </div>
@@ -77,51 +103,83 @@
       <!-- NOMBRE + APELLIDO -->
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Nombre <span class="required">*</span></label>
+          <label class="form-label">
+            Nombre <span class="required">*</span>
+            <span class="field-status" [class.valid]="getFieldStatus(tutorForm, 'nombre') === 'valid'">
+              {{ getFieldIcon(tutorForm, 'nombre') }}
+            </span>
+          </label>
           <input 
             [formControl]="getTutorControl('nombre')" 
             type="text" 
             class="form-input" 
             [class.error]="hasError(tutorForm, 'nombre')"
+            [class.valid]="getFieldStatus(tutorForm, 'nombre') === 'valid'"
             placeholder="Tu nombre"
+            (focus)="onFieldFocus('nombre')"
+            (blur)="onFieldBlur()"
           >
-          <div *ngIf="hasError(tutorForm, 'nombre')" class="error-message">
-            {{ getErrorMessage(tutorForm, 'nombre') }}
+          @for (err of getFieldErrors(tutorForm, 'nombre'); track err) {
+            <div class="error-message">{{ err }}</div>
+          }
+          <div class="helper-text" *ngIf="!hasError(tutorForm, 'nombre') && fieldFocused() === 'nombre'">
+            📝 Solo letras, 2-50 caracteres
           </div>
         </div>
+        
         <div class="form-group">
-          <label class="form-label">Apellido <span class="required">*</span></label>
+          <label class="form-label">
+            Apellido <span class="required">*</span>
+            <span class="field-status" [class.valid]="getFieldStatus(tutorForm, 'apellido') === 'valid'">
+              {{ getFieldIcon(tutorForm, 'apellido') }}
+            </span>
+          </label>
           <input 
             [formControl]="getTutorControl('apellido')" 
             type="text" 
             class="form-input" 
             [class.error]="hasError(tutorForm, 'apellido')"
+            [class.valid]="getFieldStatus(tutorForm, 'apellido') === 'valid'"
             placeholder="Tu apellido"
+            (focus)="onFieldFocus('apellido')"
+            (blur)="onFieldBlur()"
           >
-          <div *ngIf="hasError(tutorForm, 'apellido')" class="error-message">
-            {{ getErrorMessage(tutorForm, 'apellido') }}
-          </div>
+          @for (err of getFieldErrors(tutorForm, 'apellido'); track err) {
+            <div class="error-message">{{ err }}</div>
+          }
         </div>
       </div>
 
       <!-- TELÉFONO + CÓMO ENTERASTE -->
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Teléfono <span class="required">*</span></label>
+          <label class="form-label">
+            Teléfono <span class="required">*</span>
+            <span class="field-status" [class.valid]="getFieldStatus(tutorForm, 'telefono') === 'valid'">
+              {{ getFieldIcon(tutorForm, 'telefono') }}
+            </span>
+          </label>
           <div class="input-icon-wrapper">
             <input 
               [formControl]="getTutorControl('telefono')" 
               type="tel" 
               class="form-input" 
               [class.error]="hasError(tutorForm, 'telefono')"
+              [class.valid]="getFieldStatus(tutorForm, 'telefono') === 'valid'"
               placeholder="55 1234 5678"
+              (focus)="onFieldFocus('telefono')"
+              (blur)="onFieldBlur()"
             >
             <span class="input-icon">📱</span>
           </div>
-          <div *ngIf="hasError(tutorForm, 'telefono')" class="error-message">
-            {{ getErrorMessage(tutorForm, 'telefono') }}
+          @for (err of getFieldErrors(tutorForm, 'telefono'); track err) {
+            <div class="error-message">{{ err }}</div>
+          }
+          <div class="helper-text" *ngIf="!hasError(tutorForm, 'telefono') && fieldFocused() === 'telefono'">
+            📞 10 dígitos, solo números
           </div>
         </div>
+        
         <div class="form-group">
           <label class="form-label">¿Cómo nos encontraste?</label>
           <div class="select-wrapper">
@@ -129,10 +187,10 @@
               [formControl]="getTutorControl('comoEnteraste')" 
               class="form-select"
             >
-              <option value="" disabled selected>Selecciona</option>
-              <option *ngFor="let opt of comoEnterasteOptions" [value]="opt.value">
-                {{ opt.label }}
-              </option>
+              <option value="" disabled>Selecciona una opción</option>
+              @for (opt of comoEnterasteOptions; track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+              }
             </select>
           </div>
         </div>
@@ -146,35 +204,48 @@
         <div class="form-group">
           <label class="form-label">Recordatorio de cita vía</label>
           <div class="contact-options">
-            <button 
-              *ngFor="let opt of recordatorioOptions"
-              type="button"
-              class="contact-btn" 
-              [class.active]="getTutorControl('recordatorioVia').value === opt.value"
-              (click)="getTutorControl('recordatorioVia').setValue(opt.value)"
-            >
-              {{ opt.label }}
-            </button>
+            @for (opt of recordatorioOptions; track opt.value) {
+              <button 
+                type="button"
+                class="contact-btn" 
+                [class.active]="getTutorControl('recordatorioVia').value === opt.value"
+                (click)="getTutorControl('recordatorioVia').setValue(opt.value)"
+              >
+                {{ opt.label }}
+              </button>
+            }
           </div>
         </div>
       </div>
 
       <!-- NOTAS ADICIONALES -->
-      <div class="form-row full" style="margin-top:4px;">
+      <div class="form-row full">
         <div class="form-group">
-          <label class="form-label">Notas adicionales para el veterinario</label>
+          <label class="form-label">
+            Notas adicionales para el veterinario
+            <span class="optional">(opcional)</span>
+          </label>
           <textarea 
             [formControl]="getTutorControl('notas')" 
             class="form-input" 
-            style="height:80px; resize:none;" 
+            [class.error]="hasError(tutorForm, 'notas')"
+            rows="3"
             placeholder="Algún detalle especial que debamos saber..."
+            (focus)="onFieldFocus('notas')"
+            (blur)="onFieldBlur()"
           ></textarea>
+          @for (err of getFieldErrors(tutorForm, 'notas'); track err) {
+            <div class="error-message">{{ err }}</div>
+          }
+          <div class="char-counter" *ngIf="fieldFocused() === 'notas'">
+            {{ getTutorControl('notas').value?.length || 0 }}/500 caracteres
+          </div>
         </div>
       </div>
     </div>
 
     <!-- ── PANEL MASCOTA ── -->
-    <div id="panel-mascota" class="panel" [class.active]="activeTab === 'mascota'">
+    <div class="panel" [class.active]="activeTab === 'mascota'">
       <h1 class="card-title">Tu mascota</h1>
       <p class="card-subtitle">Selecciona una mascota existente o registra una nueva</p>
 
@@ -183,74 +254,231 @@
         <label class="form-label">¿Para quién es la cita? <span class="required">*</span></label>
         <div class="select-wrapper">
           <select class="form-select" (change)="onPetSelect($event)">
-            <option value="new" selected>📝 Registrar nueva mascota</option>
-            <option *ngFor="let pet of userPets" [value]="pet.id_pet">
-              🐾 {{ pet.name }} 
-              <span *ngIf="pet.breed">({{ pet.breed }})</span>
-              <span *ngIf="!pet.breed">(Sin raza)</span>
-            </option>
+            <option value="new" [selected]="isNewPet">📝 + Registrar nueva mascota</option>
+            @for (pet of userPets; track pet.id_pet) {
+              <option [value]="pet.id_pet" [selected]="selectedPetId === pet.id_pet">
+                🐾 {{ pet.name | sanitize }}
+                @if (pet.breed) {
+                  <span>({{ pet.breed | sanitize }})</span>
+                }
+                @if (!pet.breed) {
+                  <span>(Sin raza)</span>
+                }
+              </option>
+            }
           </select>
         </div>
-        <div *ngIf="isLoadingPets" class="loading-text">Cargando tus mascotas...</div>
+        @if (isLoadingPets()) {
+          <div class="loading-text">
+            <span class="spinner"></span> Cargando tus mascotas...
+          </div>
+        }
       </div>
 
       <!-- FORMULARIO DE MASCOTA -->
-      <div class="pet-form">
+      <div class="pet-form" [class.disabled]="!isNewPet && !selectedPetId">
         
         <!-- NOMBRE + EDAD -->
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Nombre <span class="required">*</span></label>
+            <label class="form-label">
+              Nombre <span class="required">*</span>
+              <span class="field-status" [class.valid]="getFieldStatus(mascotaForm, 'nombre') === 'valid'">
+                {{ getFieldIcon(mascotaForm, 'nombre') }}
+              </span>
+            </label>
             <input 
               [formControl]="getMascotaControl('nombre')" 
               type="text" 
               class="form-input" 
               [class.error]="hasError(mascotaForm, 'nombre')"
+              [class.valid]="getFieldStatus(mascotaForm, 'nombre') === 'valid'"
               placeholder="Ej. Luna, Max, Canela..."
+              (focus)="onFieldFocus('mascota_nombre')"
+              (blur)="onFieldBlur()"
             >
-            <div *ngIf="hasError(mascotaForm, 'nombre')" class="error-message">
-              {{ getErrorMessage(mascotaForm, 'nombre') }}
-            </div>
+            @for (err of getFieldErrors(mascotaForm, 'nombre'); track err) {
+              <div class="error-message">{{ err }}</div>
+            }
           </div>
+          
           <div class="form-group">
-            <label class="form-label">Edad</label>
+            <label class="form-label">
+              Edad
+              <span class="field-status" [class.valid]="getFieldStatus(mascotaForm, 'edad') === 'valid'">
+                {{ getFieldIcon(mascotaForm, 'edad') }}
+              </span>
+            </label>
             <input 
               [formControl]="getMascotaControl('edad')" 
               type="text" 
               class="form-input" 
-              placeholder="Ej. 2 años, 8 meses"
+              [class.error]="hasError(mascotaForm, 'edad')"
+              [class.valid]="getFieldStatus(mascotaForm, 'edad') === 'valid'"
+              placeholder="Ej. 2 años, 8 meses, 1.5"
+              (focus)="onFieldFocus('edad')"
+              (blur)="onFieldBlur()"
             >
+            @for (err of getFieldErrors(mascotaForm, 'edad'); track err) {
+              <div class="error-message">{{ err }}</div>
+            }
+            <div class="helper-text" *ngIf="fieldFocused() === 'edad'">
+              🐾 Ejemplos: 2, 2.5, 6 meses, 1 año
+            </div>
           </div>
         </div>
 
-        <!-- RAZA + PESO -->
+        <!-- ESPECIE + RAZA -->
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Raza</label>
+            <label class="form-label">Especie</label>
+            <div class="select-wrapper">
+              <select 
+                [formControl]="getMascotaControl('especie')" 
+                class="form-select"
+              >
+                @for (opt of especieOptions; track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">
+              Raza
+              <span class="optional">(opcional)</span>
+            </label>
             <input 
               [formControl]="getMascotaControl('raza')" 
               type="text" 
               class="form-input" 
-              placeholder="Ej. Labrador, Mestizo..."
+              placeholder="Ej. Labrador, Mestizo, Siames..."
+              (focus)="onFieldFocus('raza')"
+              (blur)="onFieldBlur()"
             >
+            @for (err of getFieldErrors(mascotaForm, 'raza'); track err) {
+              <div class="error-message">{{ err }}</div>
+            }
           </div>
+        </div>
+
+        <!-- PESO + SEXO -->
+        <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Peso aproximado (kg)</label>
+            <label class="form-label">
+              Peso aproximado (kg)
+              <span class="field-status" [class.valid]="getFieldStatus(mascotaForm, 'peso') === 'valid'">
+                {{ getFieldIcon(mascotaForm, 'peso') }}
+              </span>
+            </label>
             <input 
               [formControl]="getMascotaControl('peso')" 
               type="number" 
               step="0.1"
               class="form-input" 
-              placeholder="Ej. 5"
+              [class.error]="hasError(mascotaForm, 'peso')"
+              [class.valid]="getFieldStatus(mascotaForm, 'peso') === 'valid'"
+              placeholder="Ej. 5.5"
+              (focus)="onFieldFocus('peso')"
+              (blur)="onFieldBlur()"
             >
+            @for (err of getFieldErrors(mascotaForm, 'peso'); track err) {
+              <div class="error-message">{{ err }}</div>
+            }
+            <div class="helper-text" *ngIf="fieldFocused() === 'peso'">
+              ⚖️ Rango: 0.1 - 200 kg
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Sexo</label>
+            <div class="select-wrapper">
+              <select 
+                [formControl]="getMascotaControl('sexo')" 
+                class="form-select"
+              >
+                <option value="" disabled selected>Selecciona</option>
+                @for (opt of sexoOptions; track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- ESTERILIZADO + ALERGIAS -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">¿Está esterilizado/a?</label>
+            <div class="select-wrapper">
+              <select 
+                [formControl]="getMascotaControl('esterilizado')" 
+                class="form-select"
+              >
+                <option value="" disabled selected>Selecciona</option>
+                @for (opt of esterilizadoOptions; track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">
+              Alergias o condiciones médicas
+              <span class="optional">(opcional)</span>
+            </label>
+            <input 
+              [formControl]="getMascotaControl('alergias')" 
+              type="text" 
+              class="form-input" 
+              placeholder="Ej. Alergia a pulgas, diabetes..."
+              (focus)="onFieldFocus('alergias')"
+              (blur)="onFieldBlur()"
+            >
+            @for (err of getFieldErrors(mascotaForm, 'alergias'); track err) {
+              <div class="error-message">{{ err }}</div>
+            }
+            <div class="char-counter" *ngIf="fieldFocused() === 'alergias'">
+              {{ getMascotaControl('alergias').value?.length || 0 }}/200 caracteres
+            </div>
           </div>
         </div>
 
         <!-- MENSAJE INFORMATIVO -->
-        <div *ngIf="!isNewPet" class="info-message">
-          ℹ️ Puedes editar los datos de esta mascota. Los cambios se guardarán.
-        </div>
+        @if (!isNewPet && selectedPetId) {
+          <div class="info-message">
+            ℹ️ Puedes editar los datos de esta mascota. Los cambios se guardarán automáticamente.
+          </div>
+        }
+        
+        @if (isNewPet) {
+          <div class="info-message success">
+            ✨ ¡Registra una nueva mascota! Todos los campos son seguros y validados.
+          </div>
+        }
       </div>
     </div>
 
   </div><!-- /card -->
+
+  <!-- FOOTER BUTTONS -->
+  <div class="page-footer">
+    <button class="footer-btn footer-btn--secondary" (click)="atras()" [disabled]="isSaving()">
+      ← Volver
+    </button>
+    <button 
+      class="footer-btn footer-btn--primary" 
+      (click)="siguiente()" 
+      [disabled]="isSaving() || (activeTab === 'tutor' ? !isTutorFormValid() : !isMascotaFormValid())"
+    >
+      @if (isSaving()) {
+        <span class="spinner-btn"></span> Guardando...
+      } @else {
+        Continuar →
+      }
+    </button>
+  </div>
+
+</main>
