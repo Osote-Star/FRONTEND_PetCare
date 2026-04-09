@@ -74,6 +74,15 @@ export const routes: Routes = [
       import('./features/register-vet/register-vet.component')
         .then(m => m.RegisterVetComponent)
     },
+    //AdmClinicas
+    {
+      path: 'adm-clinics',
+      canActivate: [authGuard, roleGuard], 
+    data:{roles:['admin']},
+    loadComponent: () =>
+      import('./features/adm-clinics/adm-clinics.component')
+        .then(m => m.AdmClinicsComponent)
+    },
     //Administrar usuarios
     {
       path: 'admin-usu',

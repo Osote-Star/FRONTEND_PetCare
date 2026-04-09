@@ -17,6 +17,7 @@ import { ClinicService } from '../auth/services/clinic.service';
 })
 export class RegisterVetComponent implements OnInit {
   private readonly VET_ROLE = 2;
+  private readonly ADM_ROLE = 1;
   private readonly MIN_PASSWORD_LENGTH = 8;
   private readonly PHONE_PATTERN = /^[0-9]{10}$/;
 
@@ -26,15 +27,22 @@ export class RegisterVetComponent implements OnInit {
   success = signal(false);
   isSubmitting = signal(false);
 
-  // ==================== ESTADO CLÍNICA ====================
-  clinicLoading = signal(false);
-  clinicError = signal<string | null>(null);
-  clinicSuccess = signal(false);
-  isClinicSubmitting = signal(false);
+  //Administradores
+    isLoadingAdm = signal(false);
+    isSubmittingAdm = signal(false);
+    successAdm = signal(false);
+  errorAdm = signal<string | null>(null);
 
-  // ==================== FORMULARIOS ====================
-  form!: FormGroup;       // veterinario
-  clinicForm!: FormGroup; // clínica
+
+  AgrVet = signal(true);
+  AgrAdm = signal(false);
+
+
+    clinicLoading = signal(false);
+  clinicError = signal<string | null>(null);
+
+  form!: FormGroup; 
+  formAdm!: FormGroup; 
 
   hours: string[] = [];
   clinics = signal<Clinic[]>([]);
@@ -42,13 +50,13 @@ export class RegisterVetComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private clinicService: ClinicService
+    private clinicService: ClinicService,
+    private router: Router
   ) {
     this.initForms();
   }
 
   private initForms(): void {
-    // Formulario veterinario
     this.form = this.fb.group({
       nombreVet: ['', [Validators.required, Validators.minLength(3)]],
       correo: ['', [Validators.required, Validators.email]],
@@ -58,13 +66,13 @@ export class RegisterVetComponent implements OnInit {
       startHour: [null, [Validators.required]],
       endHour: [null, [Validators.required]]
     });
+ this.formAdm = this.fb.group({
+      nombreAdm: ['', [Validators.required, Validators.minLength(3)]],
+      correoAdm: ['', [Validators.required, Validators.email]],
+      numeroAdm: ['', [Validators.required, Validators.pattern(this.PHONE_PATTERN)]],
+      passwordAdm: ['', [Validators.required, Validators.minLength(this.MIN_PASSWORD_LENGTH)]]
 
-    // Formulario clínica
-    this.clinicForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      location: ['', [Validators.required, Validators.minLength(5)]],
-      schedule: ['', [Validators.required, Validators.minLength(5)]]
-    });
+});
   }
 
   generateHours(): void {
@@ -80,7 +88,7 @@ export class RegisterVetComponent implements OnInit {
     this.generateHours();
   }
 
-  loadClinics(): void {
+ loadClinics(): void {
     this.clinicLoading.set(true);
     this.clinicError.set(null);
 
@@ -151,43 +159,40 @@ export class RegisterVetComponent implements OnInit {
     });
   }
 
-  submitClinic(): void {
-    if (this.clinicForm.invalid) {
-      this.clinicForm.markAllAsTouched();
+//ADministradores
+submitAdm(){
+if (this.formAdm.invalid) {
+      this.formAdm.markAllAsTouched();
       return;
     }
 
-    if (this.isClinicSubmitting()) return;
+    if (this.isSubmittingAdm()) return;
 
-    this.isClinicSubmitting.set(true);
-    this.clinicLoading.set(true);
-    this.clinicError.set(null);
+    this.isSubmittingAdm.set(true);
+    this.isLoadingAdm.set(true);
+    this.errorAdm.set(null);
 
-    const { name, location, schedule } = this.clinicForm.value;
+    const { nombreAdm, correoAdm, numeroAdm, passwordAdm} = this.formAdm.value;
 
-    this.clinicService.create({
-      name,
-      location,
-      schedule
-    }).subscribe({
+this.authService.register({ name: nombreAdm, email: correoAdm, phone: numeroAdm, password: passwordAdm, id_role: 1 }).subscribe({
       next: () => {
-        this.clinicSuccess.set(true);
-        this.resetClinicForm();
-        this.loadClinics();
-        this.isClinicSubmitting.set(false);
-        this.clinicLoading.set(false);
+ this.isLoadingAdm.set(false);
+        this.successAdm.set(true);
+        this.resetAdmForm();
+        this.isSubmittingAdm.set(false);
 
         setTimeout(() => {
-          this.closeClinicSuccess();
+          this.closeSuccessAdm();
         }, 3000);
       },
       error: () => {
-        this.clinicError.set('No pudimos registrar la clínica. Por favor intenta más tarde.');
-        this.isClinicSubmitting.set(false);
-        this.clinicLoading.set(false);
+        this.errorAdm.set('No pudimos registrar al administrador. Por favor intenta más tarde.');
+        this.isLoadingAdm.set(false);
+        this.isSubmittingAdm.set(false);
       }
     });
-  }
+}
+
 
   private resetVetForm(): void {
     this.form.reset({
@@ -204,42 +209,48 @@ export class RegisterVetComponent implements OnInit {
     this.form.markAsUntouched();
   }
 
-  private resetClinicForm(): void {
-    this.clinicForm.reset({
-      name: '',
-      location: '',
-      schedule: ''
+ private resetAdmForm(): void {
+    this.formAdm.reset({
+      nombreAdm: '',
+      correoAdm: '',
+      numeroAdm: '',
+      passwordAdm: ''
     });
 
-    this.clinicForm.markAsPristine();
-    this.clinicForm.markAsUntouched();
+    this.formAdm.markAsPristine();
+    this.formAdm.markAsUntouched();
   }
+
+
 
   closeSuccess(): void {
     this.success.set(false);
   }
 
-  closeClinicSuccess(): void {
-    this.clinicSuccess.set(false);
+  closeSuccessAdm(): void {
+    this.successAdm.set(false);
   }
+
+
+
+
+//Controlar modales
+changeToResAdm()
+{
+  this.AgrVet = signal(false);
+  this.AgrAdm = signal(true);
+}
+
+changeToResVet()
+{
+  this.AgrVet = signal(true);
+  this.AgrAdm = signal(false);
+}
+
+
 
   get nombreVetInvalid(): boolean {
     const control = this.form.get('nombreVet');
-    return !!control?.invalid && control.touched;
-  }
-
-  get clinicNameInvalid(): boolean {
-    const control = this.clinicForm.get('name');
-    return !!control?.invalid && control.touched;
-  }
-
-  get clinicLocationInvalid(): boolean {
-    const control = this.clinicForm.get('location');
-    return !!control?.invalid && control.touched;
-  }
-
-  get clinicScheduleInvalid(): boolean {
-    const control = this.clinicForm.get('schedule');
     return !!control?.invalid && control.touched;
   }
   
@@ -272,4 +283,31 @@ export class RegisterVetComponent implements OnInit {
     const control = this.form.get('endHour');
     return !!control?.invalid && control.touched;
   }
+
+//Administradores
+
+  get nombreAdmiInvalid(): boolean {
+    const control = this.formAdm.get('nombreAdm');
+    return !!control?.invalid && control.touched;
+  }
+  
+  get correoAdmInvalid(): boolean {
+    const control = this.formAdm.get('correoAdm');
+    return !!control?.invalid && control.touched;
+  }
+
+  get numeroAdmInvalid(): boolean {
+    const control = this.formAdm.get('numeroAdm');
+    return !!control?.invalid && control.touched;
+  }
+
+  get passworAdmdInvalid(): boolean {
+    const control = this.formAdm.get('passwordAdm');
+    return !!control?.invalid && control.touched;
+  }
+
+goToAdmClinics() {
+  this.router.navigate(['/adm-clinics']);
+}
+
 }

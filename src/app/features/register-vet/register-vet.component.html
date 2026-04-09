@@ -1,195 +1,185 @@
 <div class="page">
 
-  <div class="page-header">
-    <h1>Agregar veterinario</h1>
-    <p>Registro de nuevo personal veterinario del sistema</p>
+  <div class="tabs">
+    <button class="tab-btn" [class.active]="AgrVet()" (click)="changeToResVet()">
+      <span class="tab-icon">+</span>
+      Agregar veterinario
+    </button>
+    <button class="tab-btn" [class.active]="AgrAdm()" (click)="changeToResAdm()">
+      <span class="tab-icon">x</span>
+      Agregar administrador
+    </button>
   </div>
 
-  <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <!-- Registro Veterinario -->
+  <div *ngIf="AgrVet()" class="form-section">
+    <div class="section-header">
+      <h2>Nuevo veterinario</h2>
+      <p>Completa los campos para registrar personal veterinario en el sistema</p>
+    </div>
 
-    <div class="grid">
+    <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="grid">
 
-      <!-- Nombre -->
-      <div class="field">
-        <label>Nombre veterinario</label>
-        <input type="text" formControlName="nombreVet">
-        <small class="error"
-          *ngIf="form.get('nombreVet')?.touched && form.get('nombreVet')?.invalid">
-          Nombre requerido (mínimo 3 caracteres)
-        </small>
+        <div class="field">
+          <label>Nombre</label>
+          <input type="text" formControlName="nombreVet" placeholder="Nombre completo">
+          <small class="error" *ngIf="form.get('nombreVet')?.touched && form.get('nombreVet')?.invalid">
+            Nombre requerido (mínimo 3 caracteres)
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Correo electrónico</label>
+          <input type="email" formControlName="correo" placeholder="correo@ejemplo.com">
+          <small class="error" *ngIf="form.get('correo')?.touched && form.get('correo')?.invalid">
+            Correo inválido
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Número telefónico</label>
+          <input type="text" formControlName="numero" placeholder="10 dígitos">
+          <small class="error" *ngIf="form.get('numero')?.touched && form.get('numero')?.invalid">
+            Debe contener 10 dígitos
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Clínica asignada</label>
+          <div class="select-wrapper">
+            <select formControlName="clinicId">
+              <option [ngValue]="null" disabled>Selecciona una clínica</option>
+              <option *ngFor="let c of clinics()" [ngValue]="c.id_clinic">{{ c.name }}</option>
+            </select>
+            <span class="select-arrow">▾</span>
+          </div>
+          <small class="error" *ngIf="form.get('clinicId')?.touched && form.get('clinicId')?.invalid">
+            Debe seleccionar una clínica
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Horario</label>
+          <div class="time-grid">
+            <div class="select-wrapper">
+              <select formControlName="startHour">
+                <option [ngValue]="null" disabled>Hora inicio</option>
+                <option *ngFor="let h of hours" [ngValue]="h">{{ h }}</option>
+              </select>
+              <span class="select-arrow">▾</span>
+            </div>
+            <span class="separator">a</span>
+            <div class="select-wrapper">
+              <select formControlName="endHour">
+                <option [ngValue]="null" disabled>Hora fin</option>
+                <option *ngFor="let h of hours" [ngValue]="h">{{ h }}</option>
+              </select>
+              <span class="select-arrow">▾</span>
+            </div>
+          </div>
+          <small class="error" *ngIf="form.get('startHour')?.touched && form.get('startHour')?.invalid">
+            Selecciona un horario válido
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Contraseña</label>
+          <input type="password" formControlName="password" placeholder="Mínimo 8 caracteres">
+          <small class="error" *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+            Mínimo 8 caracteres
+          </small>
+        </div>
+
       </div>
 
-      <!-- Correo -->
-      <div class="field">
-        <label>Correo electrónico</label>
-        <input type="email" formControlName="correo">
-        <small class="error"
-          *ngIf="form.get('correo')?.touched && form.get('correo')?.invalid">
-          Correo inválido
-        </small>
+      <div class="actions">
+        <div class="backend-error" *ngIf="error()">{{ error() }}</div>
+        <button class="btn-primary" type="submit" [disabled]="form.invalid || isLoading()">
+          {{ isLoading() ? 'Registrando...' : 'Registrar veterinario' }}
+        </button>
       </div>
-
-      <!-- Numero -->
-      <div class="field">
-        <label>Número telefónico</label>
-        <input type="text" formControlName="numero">
-        <small class="error"
-          *ngIf="form.get('numero')?.touched && form.get('numero')?.invalid">
-          Debe contener 10 dígitos
-        </small>
-      </div>
-
-       <!-- Clinica -->
-      <div class="field">
-  <label>Clínica</label>
- <select formControlName="clinicId">
-  <option [ngValue]="null" disabled>
-    Selecciona una clínica
-  </option>
-  <option *ngFor="let c of clinics()" [ngValue]="c.id_clinic">
-    {{ c.name }}
-  </option>
-</select>
-  <small class="error"
-    *ngIf="form.get('clinicId')?.touched && form.get('clinicId')?.invalid">
-    Debe seleccionar una clínica
-  </small>
-</div>
-
-<!-- Horario -->
-<div class="field">
-  <label>Horario</label>
-
-  <div class="time-grid">
-
-    <select formControlName="startHour">
-      <option [ngValue]="null" disabled>Hora inicio</option>
-      <option *ngFor="let h of hours" [ngValue]="h">
-        {{ h }}
-      </option>
-    </select>
-
-    <span class="separator">a</span>
-
-    <select formControlName="endHour">
-      <option [ngValue]="null" disabled>Hora fin</option>
-      <option *ngFor="let h of hours" [ngValue]="h">
-        {{ h }}
-      </option>
-    </select>
-
+    </form>
   </div>
 
-  <small class="error"
-    *ngIf="form.get('startHour')?.touched && form.get('startHour')?.invalid">
-    Selecciona horario válido
-  </small>
-</div>
-
-      <!-- Password -->
-      <div class="field">
-        <label>Contraseña</label>
-        <input type="password" formControlName="password">
-        <small class="error"
-          *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
-          Mínimo 8 caracteres
-        </small>
-      </div>
-
+  <!-- Registro Administrador -->
+  <div *ngIf="AgrAdm()" class="form-section">
+    <div class="section-header">
+      <h2>Nuevo administrador</h2>
+      <p>Completa los campos para registrar un administrador en el sistema</p>
     </div>
 
-    <div class="actions">
+    <form class="form" [formGroup]="formAdm" (ngSubmit)="submitAdm()" novalidate>
+      <div class="grid">
 
-      <div class="backend-error" *ngIf="error()">
-        {{ error() }}
+        <div class="field">
+          <label>Nombre</label>
+          <input type="text" formControlName="nombreAdm" placeholder="Nombre completo">
+          <small class="error" *ngIf="formAdm.get('nombreAdm')?.touched && formAdm.get('nombreAdm')?.invalid">
+            Nombre requerido (mínimo 3 caracteres)
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Correo electrónico</label>
+          <input type="email" formControlName="correoAdm" placeholder="correo@ejemplo.com">
+          <small class="error" *ngIf="formAdm.get('correoAdm')?.touched && formAdm.get('correoAdm')?.invalid">
+            Correo inválido
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Número telefónico</label>
+          <input type="text" formControlName="numeroAdm" placeholder="10 dígitos">
+          <small class="error" *ngIf="formAdm.get('numeroAdm')?.touched && formAdm.get('numeroAdm')?.invalid">
+            Debe contener 10 dígitos
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Contraseña</label>
+          <input type="password" formControlName="passwordAdm" placeholder="Mínimo 8 caracteres">
+          <small class="error" *ngIf="formAdm.get('passwordAdm')?.touched && formAdm.get('passwordAdm')?.invalid">
+            Mínimo 8 caracteres
+          </small>
+        </div>
+
       </div>
 
-      <button 
-        class="btn-primary"
-        type="submit"
-        [disabled]="form.invalid || isLoading()">
-        {{ isLoading() ? 'Registrando...' : 'Registrar veterinario' }}
-      </button>
-
-    </div>
-
-  </form>
-
-</div>
-
-<hr class="section-divider">
-
-<!-- ============================= -->
-<!-- FORMULARIO AGREGAR CLÍNICA -->
-<!-- ============================= -->
-
-<div class="page">
-
-  <div class="page-header">
-    <h1>Agregar clínica</h1>
-    <p>Registro de nuevas clínicas en el sistema</p>
+      <div class="actions">
+        <div class="backend-error" *ngIf="errorAdm()">{{ errorAdm() }}</div>
+        <button class="btn-primary" type="submit" [disabled]="formAdm.invalid || isLoadingAdm()">
+          {{ isLoadingAdm() ? 'Registrando...' : 'Registrar administrador' }}
+        </button>
+      </div>
+    </form>
   </div>
 
-  <form class="form" [formGroup]="clinicForm" (ngSubmit)="submitClinic()" novalidate>
-
-    <div class="grid">
-
-      <!-- Nombre -->
-      <div class="field">
-        <label>Nombre de la clínica</label>
-        <input type="text" formControlName="name" placeholder="Ej: Clínica Veterinaria Central">
-      </div>
-
-      <!-- Ubicación -->
-      <div class="field">
-        <label>Ubicación</label>
-        <input type="text" formControlName="location" placeholder="Dirección completa">
-      </div>
-
-      <!-- Horario -->
-       <div class="field">
-      <label>Horario</label>
-      <input type="text" formControlName="schedule" placeholder="Ej: Lunes a Viernes 9:00 - 17:00">
-
-      <small class="error"
-        *ngIf="clinicScheduleInvalid">
-        El horario es obligatorio
-      </small>
-</div>
-
-    </div>
-
-    <div class="actions">
-
-      <button
-        class="btn-primary"
-        type="submit"
-        [disabled]="clinicForm.invalid || isClinicSubmitting()">
-        {{ isClinicSubmitting() ? 'Guardando...' : 'Agregar clínica' }}
-      </button>
-
-    </div>
-
-  </form>
+  <!-- Botón navegación -->
+  <div class="nav-action">
+    <a class="btn-outline" (click)="goToAdmClinics()">
+      Administrar clínicas →
+    </a>
+  </div>
 
 </div>
 
-
-
-<div class="success-modal" *ngIf="success()">
-  <div class="success-box">
-    <h3>Veterinario registrado ✅</h3>
+<!-- Modal éxito veterinario -->
+<div class="overlay" *ngIf="success()">
+  <div class="modal-box">
+    <div class="modal-icon success-icon">✓</div>
+    <h3>Veterinario registrado</h3>
     <p>El veterinario fue agregado correctamente al sistema.</p>
-
-    <button (click)="closeSuccess()">Aceptar</button>
+    <button class="btn-primary full" (click)="closeSuccess()">Aceptar</button>
   </div>
 </div>
 
-<div class="success-modal" *ngIf="clinicSuccess()">
-  <div class="success-box">
-    <h3>Clínica registrada ✅</h3>
-    <p>La clínica fue agregada correctamente al sistema.</p>
-
-    <button (click)="closeClinicSuccess()">Aceptar</button>
+<!-- Modal éxito administrador -->
+<div class="overlay" *ngIf="successAdm()">
+  <div class="modal-box">
+    <div class="modal-icon success-icon">✓</div>
+    <h3>Administrador registrado</h3>
+    <p>El administrador fue registrado correctamente en el sistema.</p>
+    <button class="btn-primary full" (click)="closeSuccessAdm()">Aceptar</button>
   </div>
 </div>

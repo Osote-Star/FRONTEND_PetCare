@@ -28,4 +28,14 @@ export class ClinicService {
       map(response => response.data)
     );
   }
+
+  update(id: string, data: any): Observable<Clinic> {
+      return this.http.put<ApiResponse<Clinic>>(`${this.baseUrl}/${id}`, data)
+        .pipe(map(response => response.data));
+    }
+
+    delete(id: string): Observable<void> {
+        return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`)
+          .pipe(map(response => { console.log(response.message); }));
+      }
 }

@@ -239,6 +239,11 @@ export class AuthService {
     );
   }
 
+//registrar admin 
+
+
+
+
   /**
    * Actualiza datos de un veterinario
    */
