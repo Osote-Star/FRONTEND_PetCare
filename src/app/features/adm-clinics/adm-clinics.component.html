@@ -71,17 +71,17 @@
       <div class="grid">
         <div class="field">
           <label>Nombre de la clínica</label>
-          <input type="text" formControlName="name" placeholder="Ej: Clínica Veterinaria Central" [attr.disabled]="!clinicSelected ? '' : null">
+          <input type="text" formControlName="name"  [attr.disabled]="!clinicSelected ? '' : null">
           <small class="error" *ngIf="clinicNameInvalid">El nombre es obligatorio</small>
         </div>
         <div class="field">
           <label>Ubicación</label>
-          <input type="text" formControlName="location" placeholder="Dirección completa" [attr.disabled]="!clinicSelected ? '' : null">
+          <input type="text" formControlName="location"  [attr.disabled]="!clinicSelected ? '' : null">
           <small class="error" *ngIf="clinicLocationInvalid">La ubicación es obligatoria</small>
         </div>
         <div class="field full-width">
           <label>Horario</label>
-          <input type="text" formControlName="schedule" placeholder="Ej: Lunes a Viernes 9:00 - 17:00" [attr.disabled]="!clinicSelected ? '' : null">
+          <input type="text" formControlName="schedule"  [attr.disabled]="!clinicSelected ? '' : null">
           <small class="error" *ngIf="clinicScheduleInvalid">El horario es obligatorio</small>
         </div>
       </div>

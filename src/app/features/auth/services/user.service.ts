@@ -32,4 +32,5 @@ export class UserService {
     return this.http.delete<ApiResponse<void>>(`${this.base}/users/${id}`)
       .pipe(map(response => { console.log(response.message); }));
   }
+ 
 }

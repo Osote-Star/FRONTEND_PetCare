@@ -1,174 +1,244 @@
 <div class="page">
 
-  <div class="page-header">
-    <h1>Usuarios</h1>
+  <div class="section-header">
+    <h2>Usuarios</h2>
     <p>Listado de usuarios registrados en el sistema</p>
   </div>
 
-  <!-- Error -->
-  <div class="error" *ngIf="error()">
-    {{ error() }}
+  <!-- Barra de búsqueda y filtro -->
+ <div class="search-wrapper">
+  <input
+    #searchInput
+    type="text"
+    class="search-input"
+    placeholder="Buscar por nombre o correo..."
+    [value]="searchQuery()"
+    (input)="onSearchChange(searchInput.value)"
+      />
+
+    <div class="role-filters">
+      <button
+        class="filter-chip"
+        [class.active]="selectedRole() === null"
+        (click)="onRoleFilter(null)">
+        Todos
+      </button>
+      <button
+        class="filter-chip role-admin"
+        [class.active]="selectedRole() === 1"
+        (click)="onRoleFilter(1)">
+        Admin
+      </button>
+      <button
+        class="filter-chip role-vet"
+        [class.active]="selectedRole() === 2"
+        (click)="onRoleFilter(2)">
+        Veterinario
+      </button>
+      <button
+        class="filter-chip role-user"
+        [class.active]="selectedRole() === 3"
+        (click)="onRoleFilter(3)">
+        Usuario
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Contador de resultados -->
+  <div class="results-info">
+    <span>{{ filteredUsers().length }} usuario(s) encontrado(s)</span>
   </div>
 
   <!-- Tabla -->
-  <table class="table">
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Teléfono</th>
+          <th>Rol</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let user of pagedUsers()"
+          (click)="selectUser(user)"
+          [class.selected]="selectedUser()?.id_user === user.id_user">
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.phone }}</td>
+          <td>
+            <span class="role-badge" [ngClass]="{
+              'role-admin': user.id_role === 1,
+              'role-vet':   user.id_role === 2,
+              'role-user':  user.id_role === 3
+            }">
+              {{ user.id_role === 1 ? 'Admin' : user.id_role === 2 ? 'Veterinario' : 'Usuario' }}
+            </span>
+          </td>
+        </tr>
 
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Correo</th>
-        <th>Teléfono</th>
-        <th>Rol</th>
-      </tr>
-    </thead>
+        <!-- Sin resultados -->
+        <tr *ngIf="pagedUsers().length === 0">
+          <td colspan="4" class="empty-state">No se encontraron usuarios con los filtros aplicados.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-    <tbody>
-      <tr 
-        *ngFor="let user of users()"
-        (click)="selectUser(user)"
-        [class.selected]="selectedUser()?.id_user === user.id_user">
+  <!-- Paginación -->
+  <div class="pagination" *ngIf="totalPages() > 1">
+    <button
+      class="page-btn"
+      [disabled]="currentPage() === 1"
+      (click)="goToPage(1)">
+      «
+    </button>
+    <button
+      class="page-btn"
+      [disabled]="currentPage() === 1"
+      (click)="goToPage(currentPage() - 1)">
+      ‹
+    </button>
 
-        <td>{{ user.name }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.phone }}</td>
-        <td>{{ user.id_role }}</td>
+    <button
+      *ngFor="let page of visiblePages()"
+      class="page-btn"
+      [class.active]="page === currentPage()"
+      (click)="goToPage(page)">
+      {{ page }}
+    </button>
 
-      </tr>
-    </tbody>
+    <button
+      class="page-btn"
+      [disabled]="currentPage() === totalPages()"
+      (click)="goToPage(currentPage() + 1)">
+      ›
+    </button>
+    <button
+      class="page-btn"
+      [disabled]="currentPage() === totalPages()"
+      (click)="goToPage(totalPages())">
+      »
+    </button>
 
-  </table>
+    <span class="page-info">
+      Página {{ currentPage() }} de {{ totalPages() }}
+    </span>
+  </div>
 
-<!-- FORMULARIO EDICIÓN -->
-<div class="edit-section" *ngIf="selectedUser()">
+  <!-- Formulario edición -->
+  <div class="edit-section" *ngIf="selectedUser()">
 
-  <h3>Editar usuario</h3>
-
-  <form [formGroup]="form">
-
-    <div class="grid">
-
-      <div class="field">
-    <label>ID Usuario</label>
-    <input type="text" formControlName="id_user">
+    <div class="edit-header">
+      <h3>Editar usuario</h3>
+      <p>Modifica los datos del usuario seleccionado</p>
     </div>
 
-      <div class="field">
-        <label>Nombre</label>
-        <input type="text" formControlName="name">
-        <small class="error"
-        *ngIf="form.get('name')?.touched && form.get('name')?.invalid">
-        Mínimo 3 caracteres
-      </small>
+    <form [formGroup]="form">
+      <div class="grid">
+
+        <div class="field">
+          <label>ID Usuario</label>
+          <input type="text" formControlName="id_user">
+        </div>
+
+        <div class="field">
+          <label>Nombre</label>
+          <input type="text" formControlName="name" placeholder="Nombre completo">
+          <small class="error-msg" *ngIf="form.get('name')?.touched && form.get('name')?.invalid">
+            Mínimo 3 caracteres
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Correo</label>
+          <input type="email" formControlName="email" placeholder="correo@ejemplo.com">
+          <small class="error-msg" *ngIf="form.get('email')?.touched && form.get('email')?.invalid">
+            Correo inválido
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Teléfono</label>
+          <input type="text" formControlName="phone" placeholder="10 dígitos">
+          <small class="error-msg" *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid">
+            Debe contener 10 dígitos
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Rol</label>
+          <div class="select-wrapper">
+            <select formControlName="id_role">
+              <option [value]="1">Admin</option>
+              <option [value]="2">Veterinario</option>
+              <option [value]="3">Usuario</option>
+            </select>
+            <span class="select-arrow">▾</span>
+          </div>
+        </div>
+
+        <div class="field" *ngIf="form.get('id_role')?.value == 2">
+          <label>Clínica</label>
+          <div class="select-wrapper">
+            <select formControlName="id_clinic">
+              <option [ngValue]="null" disabled>Selecciona una clínica</option>
+              <option *ngFor="let c of clinics()" [ngValue]="c.id_clinic">{{ c.name }}</option>
+            </select>
+            <span class="select-arrow">▾</span>
+          </div>
+          <small class="error-msg" *ngIf="form.get('id_clinic')?.touched && form.get('id_clinic')?.invalid">
+            La clínica es obligatoria
+          </small>
+        </div>
+
+        <div class="field" *ngIf="form.get('id_role')?.value == 2">
+          <label>Horario</label>
+          <input type="text" formControlName="schedule" placeholder="Ej: Lunes a Viernes 9:00 - 17:00">
+          <small class="error-msg" *ngIf="form.get('schedule')?.touched && form.get('schedule')?.invalid">
+            El horario es obligatorio
+          </small>
+        </div>
+
       </div>
 
-      <div class="field">
-        <label>Correo</label>
-        <input type="email" formControlName="email">
-        <small class="error"
-        *ngIf="form.get('email')?.touched && form.get('email')?.invalid">
-        Correo inválido
-      </small>
+      <div class="actions">
+        <button type="button" class="btn-primary" (click)="updateUser()" [disabled]="form.invalid">
+          Guardar cambios
+        </button>
+        <button type="button" class="btn-danger" (click)="deleteUser()">
+          Eliminar usuario
+        </button>
       </div>
 
-      <div class="field">
-        <label>Teléfono</label>
-        <input type="text" formControlName="phone">
-        <small class="error"
-        *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid">
-        Debe contener 10 dígitos
-      </small>
-      </div>
+    </form>
+  </div>
 
-      <div class="field">
-        <label>Rol</label>
-        <select formControlName="id_role">
-          <option [value]="1">Admin</option>
-          <option [value]="2">Veterinario</option>
-          <option [value]="3">Usuario</option>
-        </select>
-      </div>
-
-  <div class="field" *ngIf="form.get('id_role')?.value == 2">
-
-  <label>Clínica</label>
-
-  <select formControlName="id_clinic">
-
-    <option [ngValue]="null" disabled>
-      Selecciona una clínica
-    </option>
-
-    <option *ngFor="let c of clinics()" [ngValue]="c.id_clinic">
-      {{ c.name }}
-    </option>
-
-  </select>
-  <small class="error"
-    *ngIf="form.get('id_clinic')?.touched && form.get('id_clinic')?.invalid">
-    La clinica es obligatoria
-  </small>
-
+  <div class="backend-error" *ngIf="error()">{{ error() }}</div>
 </div>
 
-  <div class="field" *ngIf="form.get('id_role')?.value == 2">
-
-  <label>Horario</label>
-
-  <input type="text" formControlName="schedule" placeholder="Ej: Lunes a Viernes 9:00 - 17:00">
-
-  <small class="error"
-    *ngIf="form.get('schedule')?.touched && form.get('schedule')?.invalid">
-    El horario es obligatorio
-  </small>
-
-</div>
-
-    </div>
-
-    <!-- mensajes -->
-    <div class="success" *ngIf="success()">
-      {{ success() }}
-    </div>
-
-    <div class="error" *ngIf="error()">
-      {{ error() }}
-    </div>
-
-    <!-- botones -->
-    <div class="actions">
-      <button type="button" class="btn-primary" (click)="updateUser()" [disabled]="form.invalid">
-        Guardar cambios
-      </button>
-
-      <button type="button" class="btn-danger" (click)="deleteUser()">
-        Eliminar usuario
-      </button>
-    </div>
-
-  </form>
-
-</div>
-
-</div>
-<div class="modal" *ngIf="confirmDeleteModal()">
+<!-- Modalews-->
+<div class="overlay" *ngIf="confirmDeleteModal()">
   <div class="modal-box">
+    <div class="modal-icon danger-icon">!</div>
     <h3>¿Eliminar usuario?</h3>
-    <p>¿Estás seguro que deseas eliminar este usuario?</p>
-
-    <div class="actions">
-      <button class="btn-danger" (click)="confirmDelete()">Sí, eliminar</button>
+    <p>Esta acción no se puede deshacer. El usuario será removido permanentemente del sistema.</p>
+    <div class="modal-actions">
       <button class="btn-secondary" (click)="cancelDelete()">Cancelar</button>
+      <button class="btn-danger" (click)="confirmDelete()">Sí, eliminar</button>
     </div>
   </div>
 </div>
 
-<div class="modal" *ngIf="success()">
+<!-- Modal éxito -->
+<div class="overlay" *ngIf="success()">
   <div class="modal-box">
-    <h3>Operación exitosa ✅</h3>
+    <div class="modal-icon success-icon">✓</div>
+    <h3>Operación exitosa</h3>
     <p>{{ success() }}</p>
-
-    <button class="btn-primary" (click)="closeSuccess()">
-      Aceptar
-    </button>
+    <button class="btn-primary full" (click)="closeSuccess()">Aceptar</button>
   </div>
 </div>
