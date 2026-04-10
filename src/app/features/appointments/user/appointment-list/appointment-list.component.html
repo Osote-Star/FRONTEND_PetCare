@@ -170,7 +170,7 @@
  
                   <button class="action-btn attended" title="Marcar atendida"
                     *ngIf="isVeterinario && (a.status === 'pendiente' || a.status === 'confirmada')"
-                    (click)="$event.stopPropagation(); changeStatus(a.id_appointment, 'atendida')">✔✔</button>
+                    (click)="$event.stopPropagation(); changeStatus(a.id_appointment, 'atendida')">✔</button>
  
                 </div>
               </td>

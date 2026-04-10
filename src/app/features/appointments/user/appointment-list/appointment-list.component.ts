@@ -24,7 +24,7 @@ export class AppointmentListComponent implements OnInit {
   private readonly route               = inject(ActivatedRoute);
 
   // ── Paginación ──────────────────────────────────────────
-  PAGE_SIZE    = 6;
+  PAGE_SIZE    = 9;
   currentPage  = 1;
 
   // ── Datos ───────────────────────────────────────────────
@@ -155,12 +155,12 @@ export class AppointmentListComponent implements OnInit {
     // Solo el cliente puede cancelar, y solo si está pendiente o confirmada
     return this.isCliente && (a.status === 'pendiente' || a.status === 'confirmada');
   }
-
+ 
   cancelAppointment(id: string): void {
     if (this.cancellingId) return;
     this.cancellingId = id;
-
-    this.appointmentService.changeStatus(id, 'cancelada').subscribe({
+ 
+    this.appointmentService.cancelMyAppointment(id).subscribe({
       next: (updated) => {
         const idx = this.allData.findIndex(a => a.id_appointment === id);
         if (idx !== -1) this.allData[idx] = updated;

@@ -98,12 +98,12 @@ export class AppointmentService {
    */
   changeStatus(id_appointment: string, status: string): Observable<Appointment> {
     if (!id_appointment) throw new Error('ID de cita requerido');
- 
+
     const validStatuses = ['pendiente', 'confirmada', 'atendida', 'cancelada'];
     if (!validStatuses.includes(status)) {
       throw new Error(`Estado inválido. Valores permitidos: ${validStatuses.join(', ')}`);
     }
- 
+
     return this.http.patch<ApiResponse<Appointment>>(
       `${this.baseUrl}/${id_appointment}/status`,
       { status }
@@ -112,6 +112,19 @@ export class AppointmentService {
       catchError(e => this.handleError(e))
     );
   }
+
+  // ── Cancelar propia cita (cliente) ────────────────────────
+  cancelMyAppointment(id_appointment: string): Observable<Appointment> {
+    if (!id_appointment) throw new Error('ID de cita requerido');
+
+    return this.http.patch<ApiResponse<Appointment>>(
+      `${this.baseUrl}/mias/${id_appointment}/cancelar`, {}
+    ).pipe(
+      map(r => r.data),
+      catchError(e => this.handleError(e))
+    );
+  }
+
 
   /**
    * Actualiza una cita
