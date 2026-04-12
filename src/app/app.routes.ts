@@ -43,6 +43,16 @@ export const routes: Routes = [
         .then(m => m.AppointmentListComponent)
   },
 
+    // 📌 CITAS DE MI CLÍNICA — admin (mismo componente, distinto rol)
+    {
+      path: 'admin-citas',
+      canActivate: [authGuard, roleGuard],
+      data: { roles: ['admin'], role: 'admin' },
+      loadComponent: () =>
+        import('./features/appointments/user/appointment-list/appointment-list.component')
+          .then(m => m.AppointmentListComponent)
+    },
+
   {
     path: 'presupuesto-cirugias',
     loadComponent: () =>

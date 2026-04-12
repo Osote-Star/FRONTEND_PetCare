@@ -71,6 +71,15 @@ export class AppointmentService {
     );
   }
 
+  // ── Citas de la clínica (admin) ───────────────────
+  getMyClinicAppointments(): Observable<Appointment[]> {
+    return this.http.get<ApiResponse<Appointment[]>>(`${this.baseUrl}/mi-clinica`).pipe(
+      map(r => r.data),
+      catchError(e => this.handleError(e))
+    );
+  }
+
+
   /**
    * Obtiene los pacientes del veterinario (solo veterinario)
    */
@@ -118,13 +127,21 @@ export class AppointmentService {
     if (!id_appointment) throw new Error('ID de cita requerido');
 
     return this.http.patch<ApiResponse<Appointment>>(
-      `${this.baseUrl}/mias/${id_appointment}/cancelar`, {}
+      `${this.baseUrl}/cancelar/${id_appointment}`, {}
     ).pipe(
       map(r => r.data),
       catchError(e => this.handleError(e))
     );
   }
 
+  // ── Eliminar cita (admin) ────────────────────────────────
+  deleteAppointment(id_appointment: string): Observable<void> {
+    if (!id_appointment) throw new Error('ID de cita requerido');
+
+    return this.http.delete<void>(`${this.baseUrl}/${id_appointment}`).pipe(
+      catchError(e => this.handleError(e))
+    );
+  }
 
   /**
    * Actualiza una cita

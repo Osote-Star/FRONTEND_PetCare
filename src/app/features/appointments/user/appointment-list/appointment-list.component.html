@@ -4,67 +4,74 @@
   <div class="topbar-stats">
     <div class="stat-pill">
       <div class="dot" style="background:#F59E0B"></div>
-      <div><div class="num">{{ getStats('pendiente') }}</div><div class="lbl">Pendientes</div></div>
+      <div>
+        <div class="num">{{ getStats('pendiente') }}</div>
+        <div class="lbl">Pendientes</div>
+      </div>
     </div>
     <div class="stat-pill">
       <div class="dot" style="background:#5C7A4E"></div>
-      <div><div class="num">{{ getStats('confirmada') }}</div><div class="lbl">Confirmadas</div></div>
+      <div>
+        <div class="num">{{ getStats('confirmada') }}</div>
+        <div class="lbl">Confirmadas</div>
+      </div>
     </div>
     <div class="stat-pill">
       <div class="dot" style="background:#6366F1"></div>
-      <div><div class="num">{{ getStats('atendida') }}</div><div class="lbl">Atendidas</div></div>
+      <div>
+        <div class="num">{{ getStats('atendida') }}</div>
+        <div class="lbl">Atendidas</div>
+      </div>
     </div>
     <div class="stat-pill">
       <div class="dot" style="background:#EF4444"></div>
-      <div><div class="num">{{ getStats('cancelada') }}</div><div class="lbl">Canceladas</div></div>
+      <div>
+        <div class="num">{{ getStats('cancelada') }}</div>
+        <div class="lbl">Canceladas</div>
+      </div>
     </div>
   </div>
 </div>
- 
+
 <!-- ══ LAYOUT ══ -->
 <div class="layout">
- 
+
   <!-- ── PANEL IZQUIERDO ── -->
   <div class="left-panel">
- 
+
     <!-- Cargando -->
     <div class="state-placeholder" *ngIf="isLoading">
       <div class="spinner"></div>
       <p>{{ loadingMsg }}</p>
     </div>
- 
+
     <!-- Error -->
     <div class="state-placeholder state-error" *ngIf="!isLoading && errorMsg">
       <div class="state-icon">⚠️</div>
       <p>{{ errorMsg }}</p>
       <button class="btn-retry" (click)="loadAppointments()">Reintentar</button>
     </div>
- 
+
     <!-- Contenido -->
     <ng-container *ngIf="!isLoading && !errorMsg">
- 
+
       <!-- FILTROS -->
       <div class="filters-bar">
         <div class="search-row">
           <div class="search-input-wrap">
             <span class="search-icon">🔍</span>
-            <input
-              type="text"
-              class="search-input"
-              [placeholder]="searchPlaceholder"
-              [(ngModel)]="searchText"
-              (ngModelChange)="applyFilters()"
-            >
+            <input type="text" class="search-input" [placeholder]="searchPlaceholder" [(ngModel)]="searchText"
+              (ngModelChange)="applyFilters()">
           </div>
         </div>
- 
+
         <div class="filters-row">
           <div class="date-range">
             <input type="date" class="date-input" [(ngModel)]="dateFrom" (ngModelChange)="applyFilters()">
             <span class="date-sep">—</span>
             <input type="date" class="date-input" [(ngModel)]="dateTo" (ngModelChange)="applyFilters()">
           </div>
- 
+
           <select class="filter-select" [(ngModel)]="filterStatus" (ngModelChange)="applyFilters()">
             <option value="">Todos los estados</option>
             <option value="pendiente">🟡 Pendiente</option>
@@ -72,32 +79,48 @@
             <option value="atendida">🔵 Atendida</option>
             <option value="cancelada">🔴 Cancelada</option>
           </select>
- 
-          <!-- Tags activos -->
-          <span class="filter-tag" *ngIf="filterStatus">
-            {{ getStatusInfo(filterStatus).label }}
-            <button (click)="filterStatus = ''; applyFilters()">×</button>
-          </span>
-          <span class="filter-tag" *ngIf="dateFrom || dateTo">
-            {{ dateFrom || '...' }} → {{ dateTo || '...' }}
-            <button (click)="dateFrom = ''; dateTo = ''; applyFilters()">×</button>
-          </span>
-          <span class="filter-tag" *ngIf="searchText">
-            "{{ searchText }}"
-            <button (click)="searchText = ''; applyFilters()">×</button>
-          </span>
- 
-          <button class="clear-btn" (click)="clearFilters()">✕ Limpiar</button>
+
+          <!-- BARRA DE ACCIONES MÚLTIPLES (solo admin) -->
+          <div class="bulk-bar" *ngIf="isAdmin && selectedIds.size > 0">
+            <div class="bulk-actions">
+              <button class="bulk-btn-cancel" (click)="clearSelection()">Deseleccionar</button>
+              <span><--></span>
+              <button class="bulk-btn-delete" [disabled]="isDeletingBulk" (click)="deleteSelected()">
+                <span *ngIf="!isDeletingBulk">Eliminar seleccionadas</span>
+                <span *ngIf="isDeletingBulk">Eliminando...</span>
+              </button>
+              <span class="bulk-count">{{ selectedIds.size }} cita{{ selectedIds.size > 1 ? 's' : '' }} seleccionada{{
+                selectedIds.size > 1 ? 's' : '' }}</span>
+            </div>
+          </div>
         </div>
+
+        <!-- Tags activos -->
+        <span class="filter-tag" *ngIf="filterStatus">
+          {{ getStatusInfo(filterStatus).label }}
+          <button (click)="filterStatus = ''; applyFilters()">×</button>
+        </span>
+        <span class="filter-tag" *ngIf="dateFrom || dateTo">
+          {{ dateFrom || '...' }} → {{ dateTo || '...' }}
+          <button (click)="dateFrom = ''; dateTo = ''; applyFilters()">×</button>
+        </span>
+        <span class="filter-tag" *ngIf="searchText">
+          "{{ searchText }}"
+          <button (click)="searchText = ''; applyFilters()">×</button>
+        </span>
+
+        <button class="clear-btn" (click)="clearFilters()">✕ Limpiar</button>
       </div>
- 
+
       <!-- TABLA -->
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
+              <th>Checkbox</th>
               <th>Mascota</th>
               <th>{{ secondColHeader }}</th>
+              <th *ngIf="isAdmin">Dueño</th>
               <th>Servicio</th>
               <th>Fecha</th>
               <th>Hora</th>
@@ -106,80 +129,79 @@
             </tr>
           </thead>
           <tbody>
- 
+
             <tr *ngIf="paginatedData.length === 0">
-              <td colspan="7" style="text-align:center;padding:40px;color:var(--gray);font-size:14px;">
+              <td [attr.colspan]="isAdmin ? 8 : 7"
+                style="text-align:center;padding:40px;color:var(--gray);font-size:14px;">
                 😕 No se encontraron citas con esos filtros
               </td>
             </tr>
- 
-            <tr
-              *ngFor="let a of paginatedData; trackBy: trackById"
-              [class.selected]="a.id_appointment === selectedId"
-              (click)="selectAppointment(a.id_appointment)"
-            >
-              <!-- Mascota -->
-              <td>
-                <div class="pet-cell">
-                  <div class="pet-avatar">🐾</div>
-                  <div class="pet-name">{{ a.pet_name }}</div>
-                </div>
+
+            <tr *ngFor="let a of paginatedData; trackBy: trackById" [class.selected]="a.id_appointment === selectedId"
+              [class.bulk-selected]="isSelected(a.id_appointment)" (click)="selectAppointment(a.id_appointment)">
+
+              <td *ngIf="isAdmin" class="td-check" (click)="$event.stopPropagation()">
+                <input type="checkbox" class="row-check" [checked]="isSelected(a.id_appointment)"
+                  (change)="toggleSelect(a.id_appointment, $event)">
               </td>
- 
-              <!-- Dueño (vet) / Veterinario (cliente) -->
-              <td>
-                <div class="owner-name">{{ getSecondColValue(a) }}</div>
-              </td>
- 
-              <!-- Servicio -->
-              <td><span class="service-badge">{{ a.service }}</span></td>
- 
-              <!-- Fecha / Hora -->
-              <td><span class="date-cell">{{ formatDateShort(a.date) }}</span></td>
-              <td><span class="time-cell">{{ formatTime(a.date) }}</span></td>
- 
-              <!-- Estado -->
-              <td>
-                <span class="status-badge" [ngClass]="getStatusInfo(a.status).cls">
-                  <span class="status-dot"></span>
-                  {{ getStatusInfo(a.status).label }}
-                </span>
-              </td>
- 
-              <!-- Acciones -->
-              <td>
-                <div class="actions-cell">
- 
-                  <!-- Ver detalle (ambos roles) -->
-                  <button class="action-btn" title="Ver detalle"
-                    (click)="$event.stopPropagation(); selectAppointment(a.id_appointment)">👁</button>
- 
-                  <!-- Cancelar (solo cliente) -->
-                  <button class="action-btn danger" title="Cancelar cita"
-                    *ngIf="isCliente && canCancel(a)"
-                    [disabled]="isCancelling(a.id_appointment)"
-                    (click)="$event.stopPropagation(); cancelAppointment(a.id_appointment)">
-                    <span *ngIf="!isCancelling(a.id_appointment)">✕</span>
-                    <span *ngIf="isCancelling(a.id_appointment)" class="mini-spinner"></span>
-                  </button>
- 
-                  <!-- Confirmar / Marcar atendida (solo veterinario) -->
-                  <button class="action-btn confirm" title="Confirmar"
-                    *ngIf="isVeterinario && a.status === 'pendiente'"
-                    (click)="$event.stopPropagation(); changeStatus(a.id_appointment, 'confirmada')">✓</button>
- 
-                  <button class="action-btn attended" title="Marcar atendida"
-                    *ngIf="isVeterinario && (a.status === 'pendiente' || a.status === 'confirmada')"
-                    (click)="$event.stopPropagation(); changeStatus(a.id_appointment, 'atendida')">✔</button>
- 
-                </div>
-              </td>
-            </tr>
- 
+
+              <!-- Fila con datos -->
+              <ng-container *ngIf="a">
+                <td>
+                  <div class="pet-cell">
+                    <div class="pet-avatar">🐾</div>
+                    <div class="pet-name">{{ a.pet_name }}</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="owner-name">{{ getSecondColValue(a) }}</div>
+                </td>
+                <td *ngIf="isAdmin">
+                  <div class="owner-name">{{ a.user_name }}</div>
+                </td>
+                <td><span class="service-badge">{{ a.service }}</span></td>
+                <td><span class="date-cell">{{ formatDateShort(a.date) }}</span></td>
+                <td><span class="time-cell">{{ formatTime(a.date) }}</span></td>
+                <td>
+                  <span class="status-badge" [ngClass]="getStatusInfo(a.status).cls">
+                    <span class="status-dot"></span>{{ getStatusInfo(a.status).label }}
+                  </span>
+                </td>
+                <td>
+                  <div class="actions-cell">
+                    <!-- Cancelar (solo cliente) -->
+                    <button class="action-btn danger" title="Cancelar cita" *ngIf="isCliente && canCancel(a)"
+                      [disabled]="isCancelling(a.id_appointment)"
+                      (click)="$event.stopPropagation(); cancelAppointment(a.id_appointment)">
+                      <span *ngIf="!isCancelling(a.id_appointment)">✕</span>
+                      <span *ngIf="isCancelling(a.id_appointment)" class="mini-spinner"></span>
+                    </button>
+
+                    <!-- Confirmar (veterinario y admin) -->
+                    <button class="action-btn confirm" title="Confirmar"
+                      *ngIf="(isVeterinario || isAdmin) && a.status === 'pendiente'"
+                      (click)="$event.stopPropagation(); changeStatus(a.id_appointment, 'confirmada')">✓</button>
+
+                    <!-- Marcar atendida (veterinario y admin) -->
+                    <button class="action-btn attended" title="Marcar atendida"
+                      *ngIf="(isVeterinario || isAdmin) && (a.status === 'pendiente' || a.status === 'confirmada')"
+                      (click)="$event.stopPropagation(); changeStatus(a.id_appointment, 'atendida')">✔✔</button>
+
+                    <!-- Eliminar (solo admin) -->
+                    <button class="action-btn delete" title="Eliminar cita" *ngIf="isAdmin"
+                      [disabled]="isDeleting(a.id_appointment)"
+                      (click)="$event.stopPropagation(); deleteAppointment(a.id_appointment)">
+                      <span *ngIf="!isDeleting(a.id_appointment)">🗑</span>
+                      <span *ngIf="isDeleting(a.id_appointment)" class="mini-spinner"></span>
+                    </button>
+                  </div>
+                </td>
+              </ng-container>
+
           </tbody>
         </table>
       </div>
- 
+
       <!-- PAGINACIÓN -->
       <div class="pagination">
         <div class="page-info">
@@ -188,24 +210,25 @@
         </div>
         <div class="page-controls">
           <button class="page-btn" [disabled]="currentPage === 1" (click)="goPage(currentPage - 1)">‹</button>
-          <button class="page-btn" *ngFor="let p of pageArray" [class.active]="p === currentPage" (click)="goPage(p)">{{ p }}</button>
+          <button class="page-btn" *ngFor="let p of pageArray" [class.active]="p === currentPage" (click)="goPage(p)">{{
+            p }}</button>
           <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goPage(currentPage + 1)">›</button>
         </div>
       </div>
- 
+
     </ng-container>
   </div><!-- /left-panel -->
- 
+
   <!-- ── PANEL DETALLE ── -->
   <div class="detail-panel">
- 
+
     <div class="empty-detail" *ngIf="!selectedAppointment">
       <div class="icon">📋</div>
       <p>Selecciona una cita para ver su detalle</p>
     </div>
- 
+
     <ng-container *ngIf="selectedAppointment as a">
- 
+
       <div class="detail-header">
         <div>
           <h3>Detalle de cita</h3>
@@ -213,49 +236,53 @@
         </div>
         <button class="close-btn" (click)="closeDetail()">×</button>
       </div>
- 
+
       <!-- Mascota + badge estado -->
       <div class="detail-pet">
         <div class="detail-pet-avatar">🐾</div>
         <div>
           <div class="detail-pet-name">{{ a.pet_name }}</div>
-          <span class="status-badge" [ngClass]="getStatusInfo(a.status).cls" style="margin-top:6px;display:inline-flex;">
+          <span class="status-badge" [ngClass]="getStatusInfo(a.status).cls"
+            style="margin-top:6px;display:inline-flex;">
             <span class="status-dot"></span>{{ getStatusInfo(a.status).label }}
           </span>
         </div>
       </div>
- 
+
       <!-- Sección: Mascota -->
       <div class="detail-section">
         <div class="detail-section-title">🐾 Mascota</div>
         <div class="detail-grid">
           <div class="detail-item"><small>Nombre</small><span>{{ a.pet_name }}</span></div>
           <div class="detail-item"><small>Raza</small><span>{{ a.pet_breed }}</span></div>
-          <div class="detail-item"><small>Edad</small><span>{{ a.pet_age }} año{{ a.pet_age === 1 ? '' : 's' }}</span></div>
+          <div class="detail-item"><small>Edad</small><span>{{ a.pet_age }} año{{ a.pet_age === 1 ? '' : 's' }}</span>
+          </div>
           <div class="detail-item"><small>Peso</small><span>{{ a.pet_weight }} kg</span></div>
         </div>
       </div>
- 
-      <!-- Sección: Dueño — solo veterinario -->
-      <div class="detail-section" *ngIf="isVeterinario">
+
+      <!-- Sección: Dueño — veterinario y admin -->
+      <div class="detail-section" *ngIf="isVeterinario || isAdmin">
         <div class="detail-section-title">👤 Dueño</div>
         <div class="detail-grid">
           <div class="detail-item"><small>Nombre</small><span>{{ a.user_name }}</span></div>
         </div>
       </div>
- 
-      <!-- Sección: Veterinario — solo cliente -->
-      <div class="detail-section" *ngIf="isCliente">
+
+      <!-- Sección: Veterinario — cliente y admin -->
+      <div class="detail-section" *ngIf="isCliente || isAdmin">
         <div class="detail-section-title">🩺 Veterinario</div>
         <div class="detail-grid">
           <div class="detail-item"><small>Nombre</small><span>{{ a.veterinarian_name }}</span></div>
           <div class="detail-item"><small>Email</small><span>{{ a.veterinarian_email }}</span></div>
-          <div class="detail-item" *ngIf="a.veterinarian_phone"><small>Teléfono</small><span>{{ a.veterinarian_phone }}</span></div>
+          <div class="detail-item" *ngIf="a.veterinarian_phone"><small>Teléfono</small><span>{{ a.veterinarian_phone
+              }}</span></div>
           <div class="detail-item" *ngIf="a.clinic_name"><small>Clínica</small><span>{{ a.clinic_name }}</span></div>
-          <div class="detail-item" *ngIf="a.clinic_location"><small>Ubicación</small><span>{{ a.clinic_location }}</span></div>
+          <div class="detail-item" *ngIf="a.clinic_location"><small>Ubicación</small><span>{{ a.clinic_location
+              }}</span></div>
         </div>
       </div>
- 
+
       <!-- Sección: Cita -->
       <div class="detail-section">
         <div class="detail-section-title">📅 Cita</div>
@@ -266,51 +293,21 @@
           <div class="detail-item"><small>Costo</small><span>${{ a.cost | number:'1.2-2' }}</span></div>
         </div>
       </div>
- 
-      <!-- Acciones del panel detalle -->
-      <div class="detail-actions">
- 
-        <!-- Cliente: cancelar -->
-        <ng-container *ngIf="isCliente">
-          <button class="btn-cancel"
-            *ngIf="canCancel(a)"
-            [disabled]="isCancelling(a.id_appointment)"
-            (click)="cancelAppointment(a.id_appointment)">
-            <span *ngIf="!isCancelling(a.id_appointment)">✕ Cancelar cita</span>
-            <span *ngIf="isCancelling(a.id_appointment)">Cancelando...</span>
-          </button>
-          <p class="no-action-msg" *ngIf="!canCancel(a)">
-            <span *ngIf="a.status === 'atendida'">✔ Esta cita ya fue atendida.</span>
-            <span *ngIf="a.status === 'cancelada'">✕ Esta cita ya está cancelada.</span>
-          </p>
-        </ng-container>
- 
-        <!-- Veterinario: confirmar / atendida / cancelar -->
-        <ng-container *ngIf="isVeterinario">
-          <button class="btn-confirm"
-            *ngIf="a.status === 'pendiente'"
-            (click)="changeStatus(a.id_appointment, 'confirmada')">
-            ✓ Confirmar cita
-          </button>
-          <button class="btn-attended"
-            *ngIf="a.status === 'pendiente' || a.status === 'confirmada'"
-            (click)="changeStatus(a.id_appointment, 'atendida')">
-            ✔✔ Marcar como atendida
-          </button>
-          <button class="btn-cancel"
-            *ngIf="a.status !== 'cancelada' && a.status !== 'atendida'"
-            (click)="changeStatus(a.id_appointment, 'cancelada')">
-            ✕ Cancelar cita
-          </button>
-          <p class="no-action-msg" *ngIf="a.status === 'atendida' || a.status === 'cancelada'">
-            <span *ngIf="a.status === 'atendida'">✔ Cita atendida.</span>
-            <span *ngIf="a.status === 'cancelada'">✕ Cita cancelada.</span>
-          </p>
-        </ng-container>
- 
-      </div>
- 
+
+
     </ng-container>
   </div><!-- /detail-panel -->
- 
+
 </div><!-- /layout -->
+
+<!-- ══ MODAL DE CONFIRMACIÓN ══ -->
+<div class="confirm-overlay" *ngIf="confirmDialog.visible" (click)="cancelConfirm()">
+  <div class="confirm-modal" (click)="$event.stopPropagation()">
+    <div class="confirm-icon">⚠️</div>
+    <p class="confirm-message">{{ confirmDialog.message }}</p>
+    <div class="confirm-btns">
+      <button class="confirm-btn-cancel" (click)="cancelConfirm()">No, volver</button>
+      <button class="confirm-btn-ok" (click)="confirmAction()">Sí, continuar</button>
+    </div>
+  </div>
+</div>

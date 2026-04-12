@@ -16,6 +16,7 @@
   <a routerLink="/mis-pacientes" *ngIf="isLoggedIn() && isVeterinarian()">Mis Pacientes</a>
  
   <!-- Solo admin -->
+  <a routerLink="/admin-citas"  *ngIf="isLoggedIn() && isAdmin()">Citas de mi Clínica</a>
   <a routerLink="/register-vet" *ngIf="isLoggedIn() && isAdmin()">Admis. veterinarios</a>
   <a routerLink="/admin-usu"    *ngIf="isLoggedIn() && isAdmin()">Admis. Usuarios</a>
  

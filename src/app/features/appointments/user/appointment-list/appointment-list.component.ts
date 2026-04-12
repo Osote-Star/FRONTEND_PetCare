@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AppointmentService } from '../../services/appointment.service';
 import { Appointment, AppointmentStatus } from '../../models/appointment.model';
 
-export type AppointmentRole = 'cliente' | 'veterinario';
+export type AppointmentRole = 'cliente' | 'veterinario' | 'admin';
 interface StatusInfo { label: string; cls: string; }
 
 @Component({
@@ -21,34 +21,46 @@ export class AppointmentListComponent implements OnInit {
   @Input() role: AppointmentRole = 'cliente';
 
   private readonly appointmentService = inject(AppointmentService);
-  private readonly route               = inject(ActivatedRoute);
+  private readonly route = inject(ActivatedRoute);
 
   // ── Paginación ──────────────────────────────────────────
-  PAGE_SIZE    = 9;
-  currentPage  = 1;
+  PAGE_SIZE = 12;
+  currentPage = 1;
 
   // ── Datos ───────────────────────────────────────────────
-  allData:      Appointment[] = [];
+  allData: Appointment[] = [];
   filteredData: Appointment[] = [];
 
   // ── UI ──────────────────────────────────────────────────
-  isLoading    = true;
-  errorMsg     = '';
+  isLoading = true;
+  errorMsg = '';
   cancellingId: string | null = null;
-  selectedId:   string | null = null;
+  deletingId: string | null = null;
+
+  // ── Selección múltiple (solo admin) ─────────────────────
+  selectedIds: Set<string> = new Set();
+  isDeletingBulk = false;
+
+  // ── Modal de confirmación ────────────────────────────────
+  confirmDialog: {
+    visible: boolean;
+    message: string;
+    action: () => void;
+  } = { visible: false, message: '', action: () => { } };
+  selectedId: string | null = null;
 
   // ── Filtros ─────────────────────────────────────────────
-  searchText   = '';
+  searchText = '';
   filterStatus = '';
-  dateFrom     = '';
-  dateTo       = '';
+  dateFrom = '';
+  dateTo = '';
 
   // ── Status map ──────────────────────────────────────────
   readonly STATUS_MAP: { [K in AppointmentStatus]: StatusInfo } = {
-    pendiente:  { label: 'Pendiente',  cls: 'badge-pending'   },
+    pendiente: { label: 'Pendiente', cls: 'badge-pending' },
     confirmada: { label: 'Confirmada', cls: 'badge-confirmed' },
-    atendida:   { label: 'Atendida',   cls: 'badge-attended'  },
-    cancelada:  { label: 'Cancelada',  cls: 'badge-cancelled' },
+    atendida: { label: 'Atendida', cls: 'badge-attended' },
+    cancelada: { label: 'Cancelada', cls: 'badge-cancelled' },
   };
 
   // ════════════════════════════════════════════════════════
@@ -63,41 +75,49 @@ export class AppointmentListComponent implements OnInit {
   // ── Carga según rol ──────────────────────────────────────
   loadAppointments(): void {
     this.isLoading = true;
-    this.errorMsg  = '';
+    this.errorMsg = '';
 
-    const obs$ = this.role === 'veterinario'
+    const role = this.role as string;
+    const obs$ = role === 'veterinario'
       ? this.appointmentService.getMyPatients()
-      : this.appointmentService.getMyAppointments();
+      : role === 'admin'
+        ? this.appointmentService.getMyClinicAppointments()
+        : this.appointmentService.getMyAppointments();
 
     obs$.subscribe({
       next: (data) => {
-        this.allData   = data;
+        this.allData = data;
         this.applyFilters();
         this.isLoading = false;
       },
       error: (err) => {
-        this.errorMsg  = err.message ?? 'No se pudieron cargar las citas.';
+        this.errorMsg = err.message ?? 'No se pudieron cargar las citas.';
         this.isLoading = false;
       }
     });
   }
 
   // ── Helpers de rol ───────────────────────────────────────
-  get isCliente():     boolean { return this.role === 'cliente';     }
-  get isVeterinario(): boolean { return this.role === 'veterinario'; }
+  get isCliente(): boolean { return (this.role as string) === 'cliente'; }
+  get isVeterinario(): boolean { return (this.role as string) === 'veterinario'; }
+  get isAdmin(): boolean { return (this.role as string) === 'admin'; }
 
   get pageTitle(): string {
-    return this.isVeterinario ? 'Mis Pacientes' : 'Mis Citas';
+    if (this.isVeterinario) return 'Mis Pacientes';
+    if (this.isAdmin) return 'Citas de mi Clínica';
+    return 'Mis Citas';
   }
 
   get searchPlaceholder(): string {
-    return this.isVeterinario
-      ? 'Buscar por mascota o dueño...'
-      : 'Buscar por mascota o veterinario...';
+    if (this.isVeterinario) return 'Buscar por mascota o dueño...';
+    if (this.isAdmin) return 'Buscar por mascota, dueño o veterinario...';
+    return 'Buscar por mascota o veterinario...';
   }
 
   get loadingMsg(): string {
-    return this.isVeterinario ? 'Cargando tus pacientes...' : 'Cargando tus citas...';
+    if (this.isVeterinario) return 'Cargando tus pacientes...';
+    if (this.isAdmin) return 'Cargando citas de tu clínica...';
+    return 'Cargando tus citas...';
   }
 
   // Segunda columna de la tabla: dueño para vet, veterinario para cliente
@@ -109,20 +129,23 @@ export class AppointmentListComponent implements OnInit {
     return this.isVeterinario ? 'Dueño' : 'Veterinario';
   }
 
+  // Admin también ve al dueño en columna extra
+  get showOwnerCol(): boolean { return this.isAdmin; }
+
   // ── Filtros ──────────────────────────────────────────────
   applyFilters(): void {
     const q = this.searchText.toLowerCase().trim();
 
     this.filteredData = this.allData.filter(a => {
       const matchQ = !q
-        || (a.pet_name          ?? '').toLowerCase().includes(q)
+        || (a.pet_name ?? '').toLowerCase().includes(q)
         || (a.veterinarian_name ?? '').toLowerCase().includes(q)
-        || (a.user_name         ?? '').toLowerCase().includes(q);
+        || (a.user_name ?? '').toLowerCase().includes(q);
 
       const matchStatus = !this.filterStatus || a.status === this.filterStatus;
-      const dateStr     = (a.date ?? '').substring(0, 10);
-      const matchFrom   = !this.dateFrom || dateStr >= this.dateFrom;
-      const matchTo     = !this.dateTo   || dateStr <= this.dateTo;
+      const dateStr = (a.date ?? '').substring(0, 10);
+      const matchFrom = !this.dateFrom || dateStr >= this.dateFrom;
+      const matchTo = !this.dateTo || dateStr <= this.dateTo;
 
       return matchQ && matchStatus && matchFrom && matchTo;
     });
@@ -131,12 +154,12 @@ export class AppointmentListComponent implements OnInit {
   }
 
   clearFilters(): void {
-    this.searchText   = '';
+    this.searchText = '';
     this.filterStatus = '';
-    this.dateFrom     = '';
-    this.dateTo       = '';
+    this.dateFrom = '';
+    this.dateTo = '';
     this.filteredData = [...this.allData];
-    this.currentPage  = 1;
+    this.currentPage = 1;
   }
 
   // ── Selección ────────────────────────────────────────────
@@ -150,16 +173,36 @@ export class AppointmentListComponent implements OnInit {
     return this.allData.find(a => a.id_appointment === this.selectedId);
   }
 
+  // ── Modal de confirmación ───────────────────────────────────
+  openConfirm(message: string, action: () => void): void {
+    this.confirmDialog = { visible: true, message, action };
+  }
+
+  confirmAction(): void {
+    this.confirmDialog.action();
+    this.confirmDialog.visible = false;
+  }
+
+  cancelConfirm(): void {
+    this.confirmDialog.visible = false;
+  }
+
   // ── Acciones ─────────────────────────────────────────────
   canCancel(a: Appointment): boolean {
-    // Solo el cliente puede cancelar, y solo si está pendiente o confirmada
-    return this.isCliente && (a.status === 'pendiente' || a.status === 'confirmada');
+    return (this.isCliente || this.isAdmin)
+      && (a.status === 'pendiente' || a.status === 'confirmada');
   }
- 
+
   cancelAppointment(id: string): void {
+    this.openConfirm('¿Estás seguro de que deseas cancelar esta cita?', () => {
+      this._doCancelAppointment(id);
+    });
+  }
+
+  private _doCancelAppointment(id: string): void {
     if (this.cancellingId) return;
     this.cancellingId = id;
- 
+
     this.appointmentService.cancelMyAppointment(id).subscribe({
       next: (updated) => {
         const idx = this.allData.findIndex(a => a.id_appointment === id);
@@ -175,6 +218,82 @@ export class AppointmentListComponent implements OnInit {
   }
 
   changeStatus(id: string, status: string): void {
+    const messages: Record<string, string> = {
+      confirmada: '¿Confirmar esta cita?',
+      atendida: '¿Marcar esta cita como atendida?',
+      cancelada: '¿Cancelar esta cita? Esta acción no se puede deshacer.',
+    };
+    const msg = messages[status] ?? '¿Estás seguro de realizar esta acción?';
+
+    this.openConfirm(msg, () => this._doChangeStatus(id, status));
+  }
+
+  // ── Métodos de selección múltiple ───────────────────────
+  toggleSelect(id: string, event: Event): void {
+    event.stopPropagation();
+    if (this.selectedIds.has(id)) {
+      this.selectedIds.delete(id);
+    } else {
+      this.selectedIds.add(id);
+    }
+    this.selectedIds = new Set(this.selectedIds); // trigger change detection
+  }
+
+  isSelected(id: string): boolean {
+    return this.selectedIds.has(id);
+  }
+
+  get allPageSelected(): boolean {
+    return this.paginatedData.length > 0
+      && this.paginatedData.every(a => this.selectedIds.has(a.id_appointment));
+  }
+
+  toggleSelectAll(): void {
+    if (this.allPageSelected) {
+      this.paginatedData.forEach(a => this.selectedIds.delete(a.id_appointment));
+    } else {
+      this.paginatedData.forEach(a => this.selectedIds.add(a.id_appointment));
+    }
+    this.selectedIds = new Set(this.selectedIds);
+  }
+
+  clearSelection(): void {
+    this.selectedIds = new Set();
+  }
+
+  deleteSelected(): void {
+    const count = this.selectedIds.size;
+    this.openConfirm(
+      `¿Eliminar ${count} cita${count > 1 ? 's' : ''}? Esta acción es permanente.`,
+      () => this._doDeleteBulk()
+    );
+  }
+
+  private _doDeleteBulk(): void {
+    if (this.isDeletingBulk) return;
+    this.isDeletingBulk = true;
+
+    const ids = Array.from(this.selectedIds);
+    const requests = ids.map(id => this.appointmentService.deleteAppointment(id));
+
+    Promise.all(
+      requests.map(req => new Promise<string | null>((resolve) => {
+        req.subscribe({
+          next: () => resolve(null),
+          error: () => resolve('error')
+        });
+      }))
+    ).then(() => {
+      this.allData = this.allData.filter(a => !ids.includes(a.id_appointment));
+      if (ids.includes(this.selectedId ?? '')) this.selectedId = null;
+      this.selectedIds = new Set();
+      this.applyFilters();
+      this.isDeletingBulk = false;
+    });
+  }
+
+
+  private _doChangeStatus(id: string, status: string): void {
     this.appointmentService.changeStatus(id, status).subscribe({
       next: (updated) => {
         const idx = this.allData.findIndex(a => a.id_appointment === id);
@@ -186,6 +305,32 @@ export class AppointmentListComponent implements OnInit {
   }
 
   isCancelling(id: string): boolean { return this.cancellingId === id; }
+  isDeleting(id: string): boolean { return this.deletingId === id; }
+
+  deleteAppointment(id: string): void {
+    this.openConfirm(
+      '¿Eliminar esta cita? Esta acción es permanente y no se puede deshacer.',
+      () => this._doDelete(id)
+    );
+  }
+
+  private _doDelete(id: string): void {
+    if (this.deletingId) return;
+    this.deletingId = id;
+
+    this.appointmentService.deleteAppointment(id).subscribe({
+      next: () => {
+        this.allData = this.allData.filter(a => a.id_appointment !== id);
+        if (this.selectedId === id) this.selectedId = null;
+        this.applyFilters();
+        this.deletingId = null;
+      },
+      error: (err) => {
+        alert(err.message ?? 'No se pudo eliminar la cita.');
+        this.deletingId = null;
+      }
+    });
+  }
 
   // ── Helpers de fecha ─────────────────────────────────────
   formatDate(d: string): string {
