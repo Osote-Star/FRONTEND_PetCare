@@ -117,7 +117,7 @@
         <table>
           <thead>
             <tr>
-              <th>Checkbox</th>
+              <th *ngIf="isAdmin">Checkbox</th>
               <th>Mascota</th>
               <th>{{ secondColHeader }}</th>
               <th *ngIf="isAdmin">Dueño</th>
