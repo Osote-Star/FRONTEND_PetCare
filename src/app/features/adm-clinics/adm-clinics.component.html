@@ -23,17 +23,17 @@
         <div class="field">
           <label>Nombre de la clínica</label>
           <input type="text" formControlName="name" placeholder="Ej: Clínica Veterinaria Central">
-          <small class="error" *ngIf="clinicNameInvalid">El nombre es obligatorio</small>
+          <small class="error" *ngIf="clinicNameInvalid">El nombre es obligatorio (min 3 caracteres)</small>
         </div>
         <div class="field">
           <label>Ubicación</label>
           <input type="text" formControlName="location" placeholder="Dirección completa">
-          <small class="error" *ngIf="clinicLocationInvalid">La ubicación es obligatoria</small>
+          <small class="error" *ngIf="clinicLocationInvalid">La ubicación es obligatoria (min 5 caracteres)</small>
         </div>
         <div class="field full-width">
           <label>Horario</label>
           <input type="text" formControlName="schedule" placeholder="Ej: Lunes a Viernes 9:00 - 17:00">
-          <small class="error" *ngIf="clinicScheduleInvalid">El horario es obligatorio</small>
+          <small class="error" *ngIf="clinicScheduleInvalid">El horario es obligatorio (min 5 caracteres)</small>
         </div>
       </div>
 
@@ -72,17 +72,17 @@
         <div class="field">
           <label>Nombre de la clínica</label>
           <input type="text" formControlName="name"  [attr.disabled]="!clinicSelected ? '' : null">
-          <small class="error" *ngIf="clinicNameInvalid">El nombre es obligatorio</small>
+          <small class="error" *ngIf="clinicNameInvalid">El nombre es obligatorio (min 3 caracteres)</small>
         </div>
         <div class="field">
           <label>Ubicación</label>
           <input type="text" formControlName="location"  [attr.disabled]="!clinicSelected ? '' : null">
-          <small class="error" *ngIf="clinicLocationInvalid">La ubicación es obligatoria</small>
+          <small class="error" *ngIf="clinicLocationInvalid">La ubicación es obligatoria (min 5 caracteres)</small>
         </div>
         <div class="field full-width">
           <label>Horario</label>
           <input type="text" formControlName="schedule"  [attr.disabled]="!clinicSelected ? '' : null">
-          <small class="error" *ngIf="clinicScheduleInvalid">El horario es obligatorio</small>
+          <small class="error" *ngIf="clinicScheduleInvalid">El horario es obligatorio (min 5 caracteres)</small>
         </div>
       </div>
 
