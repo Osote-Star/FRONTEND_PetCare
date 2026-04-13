@@ -218,4 +218,8 @@ export class NavbarComponent implements OnInit {
     
     this.closeMobileMenu();
   }
+  goToLogin(): void {
+  this.router.navigate(['/login']);
+  this.closeMobileMenu(); 
+}
 }

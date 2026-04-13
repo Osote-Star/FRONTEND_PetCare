@@ -17,7 +17,7 @@
 
   <div class="nav-auth">
     <!-- 👈 ABRIR MODAL EN VEZ DE REDIRIGIR -->
-    <a *ngIf="!isLoggedIn()" (click)="openLoginModal()">Acceso</a>
+    <a *ngIf="!isLoggedIn()" (click)="goToLogin()">Acceso</a>
     <button *ngIf="isLoggedIn()" (click)="logout()">Cerrar sesión</button>
   </div>
 </nav>
