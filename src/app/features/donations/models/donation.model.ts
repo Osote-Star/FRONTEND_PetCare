@@ -6,18 +6,25 @@ export interface DonationOption {
   description: string;
 }
 
-export interface DonationRequest {
+export interface CreateDonationDto {
   amount: number;
-  type: DonationType;
-  donorName?: string;
-  donorEmail?: string;
+  donor_name: string;
+  donor_email?: string;
   message?: string;
 }
 
-export interface DonationResponse {
-  id: string;
+export interface CaptureDonationDto {
+  paypal_order_id: string;
+}
+
+export interface Donation {
+  id_donation: string;
+  paypal_order_id: string;
+  approval_url: string;
   amount: number;
-  type: DonationType;
-  paymentUrl: string;
-  createdAt: Date;
+  status: string;
+  donor_name: string;
+  donor_email?: string;
+  message?: string;
+  created_at: string;
 }

@@ -40,10 +40,10 @@ export const routes: Routes = [
         .then(m => m.SurgeryBudgetComponent),
   },
   {
-    path: 'donaciones',
-    loadComponent: () =>
-      import('./features/donations/donations.component')
-        .then(m => m.DonationsComponent),
+  path: 'donaciones',
+  loadChildren: () =>
+    import('./features/donations/donations.routes')
+      .then(m => m.donationRoutes)
   },
   {
     path: 'contacto',

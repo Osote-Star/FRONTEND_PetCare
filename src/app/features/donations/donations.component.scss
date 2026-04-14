@@ -1,0 +1,187 @@
+/* ── VARIABLES ── */
+:root {
+  --bark:       #4A3728;
+  --moss:       #5C7A4E;
+  --moss-light: #8BAF78;
+  --sand:       #E8D5B7;
+  --cream:      #FDF6EE;
+}
+
+/* ── COLOR UTILS ── */
+.text-bark     { color: var(--bark) !important; }
+.text-moss     { color: var(--moss) !important; }
+.text-white-75 { color: rgba(255,255,255,0.75) !important; }
+.bg-cream      { background-color: var(--cream); }
+
+/* ── HERO ── */
+.hero-donations { 
+  min-height: 88vh; 
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.hero-left {
+  background-color: var(--bark);
+  position: relative;
+  overflow: hidden;
+  min-height: 88vh;
+}
+
+.hero-left::before {
+  content: '';
+  position: absolute;
+  width: 480px; height: 480px; border-radius: 50%;
+  background: rgba(92,122,78,0.1);
+  top: -100px; left: -120px;
+  pointer-events: none;
+}
+
+.hero-tag {
+  background: rgba(139,175,120,0.2) !important;
+  border: 1px solid rgba(139,175,120,0.4) !important;
+  color: var(--moss-light) !important;
+  font-size: 12px !important;
+  letter-spacing: 1px;
+}
+
+.hero-title em { color: var(--sand); }
+
+.hero-desc {
+  color: rgba(255,255,255,0.65);
+  font-weight: 300;
+}
+
+.stat-num {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 28px; font-weight: 700;
+  color: var(--sand); line-height: 1;
+}
+
+.stat-lbl {
+  font-size: 11px; color: rgba(255,255,255,0.45);
+  text-transform: uppercase; letter-spacing: 0.7px; margin-top: 3px;
+}
+
+/* ── HERO IMAGE COL ── */
+.hero-img-col { 
+  min-height: 91vh; 
+  position: relative;
+}
+
+.hero-img { 
+  object-fit: cover;
+  object-position: center top; 
+  min-height: 88vh;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to right, rgba(74,55,40,0.2), transparent 40%);
+}
+.badge-icon {
+  width: 46px; height: 46px;
+  background: #ECFDF5;
+}
+
+/* ── DONATION CARD ── */
+.donation-card {
+  background: #fff;
+  box-shadow: 0 8px 40px rgba(74,55,40,0.12);
+}
+
+/* ── MONTO BUTTONS ── */
+.monto-btn {
+  background: var(--cream);
+  border: 2px solid #EEE;
+  color: var(--bark);
+  transition: all 0.2s;
+  text-align: center;
+
+  &:hover {
+    border-color: var(--moss-light);
+    background: #EEF5EA;
+  }
+
+  &.active {
+    border-color: var(--moss) !important;
+    background: #EEF5EA !important;
+    color: var(--moss) !important;
+    box-shadow: 0 0 0 3px rgba(92,122,78,0.15);
+  }
+}
+
+/* ── DONATE BUTTON ── */
+.btn-donate {
+  background: var(--moss);
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  transition: background 0.2s, transform 0.2s;
+
+  &:hover:not(:disabled) {
+    background: #6e9260;
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+/* ── FORM CONTROLS ── */
+.form-control {
+  border: 1.5px solid #EEE;
+  color: var(--bark);
+
+  &:focus {
+    border-color: var(--moss);
+    box-shadow: 0 0 0 3px rgba(92,122,78,0.15);
+  }
+}
+
+.input-group-text {
+  background: var(--cream);
+  border: 1.5px solid #EEE;
+  color: var(--moss);
+  font-weight: 700;
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--moss);
+}
+
+.label-line {
+  display: inline-block; width: 24px; height: 2px;
+  background: var(--moss); border-radius: 2px;
+}
+
+/* ── IMPACT CARDS ── */
+.impact-card {
+  background: var(--cream);
+  border: 1.5px solid #EEE;
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 48px rgba(74,55,40,0.1);
+    border-color: var(--moss-light);
+  }
+}
+
+.impact-icon {
+  width: 60px; height: 60px;
+  background: #EEF5EA;
+}
+
+/* ── CTA BANNER ── */
+.cta-banner {
+  background: linear-gradient(135deg, var(--moss) 0%, #3D5C32 100%);
+}

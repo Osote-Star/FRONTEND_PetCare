@@ -1,0 +1,256 @@
+/* ── VARIABLES ── */
+:root {
+  --bark:       #4A3728;
+  --moss:       #5C7A4E;
+  --moss-light: #8BAF78;
+  --sand:       #E8D5B7;
+  --cream:      #FDF6EE;
+}
+
+/* ── COLOR UTILS ── */
+.text-bark     { color: var(--bark) !important; }
+.text-moss     { color: var(--moss) !important; }
+.text-white-75 { color: rgba(255,255,255,0.75) !important; }
+.bg-cream      { background-color: var(--cream); }
+
+/* ── HERO ── */
+.hero-budget { min-height: 91vh; }
+
+.hero-left {
+  background-color: var(--bark);
+  position: relative;
+  overflow: hidden;
+  min-height: 91vh;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 0;
+}
+
+.hero-left::before {
+  content: '';
+  position: absolute;
+  width: 480px; height: 480px; border-radius: 50%;
+  background: rgba(92,122,78,0.1);
+  top: -100px; left: -120px;
+  pointer-events: none;
+}
+
+.hero-tag {
+  background: rgba(139,175,120,0.2) !important;
+  border: 1px solid rgba(139,175,120,0.4) !important;
+  color: var(--moss-light) !important;
+  font-size: 12px !important;
+  letter-spacing: 1px;
+}
+
+.hero-title em { color: var(--sand); font-style: italic; }
+
+.hero-desc {
+  color: rgba(255,255,255,0.65);
+  font-weight: 300;
+}
+
+.hero-btn {
+  background-color: var(--moss) !important;
+  border-color: var(--moss) !important;
+  color: white !important;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(92,122,78,0.4) !important;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    background-color: #6e9260 !important;
+    transform: translateY(-2px);
+  }
+}
+
+.hero-img { object-position: center top; min-height: 91vh; }
+
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to right, rgba(74,55,40,0.2), transparent 40%);
+}
+
+.hero-badge {
+  position: absolute; bottom: 80px; right: 32px;
+  min-width: 210px;
+}
+
+.badge-icon { width: 46px; height: 46px; background: #ECFDF5; }
+
+.stat-num {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 30px; font-weight: 700;
+  color: var(--sand); line-height: 1;
+}
+
+.stat-lbl {
+  font-size: 11px; color: rgba(255,255,255,0.45);
+  text-transform: uppercase; letter-spacing: 0.7px; margin-top: 4px;
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--moss);
+}
+
+.label-line {
+  display: inline-block; width: 24px; height: 2px;
+  background: var(--moss); border-radius: 2px;
+}
+
+/* ── FILTROS ── */
+.filter-btn {
+  background: #fff;
+  border: 2px solid #EEE;
+  color: var(--bark);
+  font-weight: 600;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: var(--moss-light);
+    background: #EEF5EA;
+  }
+
+  &.active {
+    background: var(--moss) !important;
+    border-color: var(--moss) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 16px rgba(92,122,78,0.3);
+  }
+}
+
+/* ── SERVICE CARDS ── */
+.service-card {
+  background: #fff;
+  border: 2px solid #EEE;
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 48px rgba(74,55,40,0.1);
+    border-color: var(--moss-light);
+  }
+
+  &.en-carrito {
+    border-color: var(--moss) !important;
+    background: #F7FBF5 !important;
+  }
+}
+
+.service-icon {
+  width: 52px; height: 52px;
+  flex-shrink: 0;
+}
+
+.icon-cirugia {
+  background: #FFF0F0;
+  color: #C4704A;
+}
+
+.icon-medicamento {
+  background: #EEF5EA;
+  color: var(--moss);
+}
+
+/* ── CATEGORY BADGES ── */
+.category-badge {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+.badge-cirugia {
+  background: #FCE7D8 !important;
+  color: #C4704A !important;
+}
+
+.badge-medicamento {
+  background: #EEF5EA !important;
+  color: var(--moss) !important;
+}
+
+/* ── PRICE TAG ── */
+.price-tag {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 22px;
+  color: var(--bark);
+}
+
+/* ── ADD BUTTON ── */
+.add-btn {
+  background: var(--cream);
+  border: 2px solid #EEE;
+  color: var(--bark);
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: var(--moss);
+    background: #EEF5EA;
+    color: var(--moss);
+  }
+
+  &.added {
+    background: var(--moss) !important;
+    border-color: var(--moss) !important;
+    color: #fff !important;
+  }
+}
+
+/* ── BUDGET CARD ── */
+.budget-card {
+  background: #fff;
+  box-shadow: 0 8px 40px rgba(74,55,40,0.08);
+  border: 1.5px solid #EEE;
+}
+
+.budget-item {
+  background: var(--cream);
+  border: 1.5px solid #EEE;
+}
+
+.budget-item-icon {
+  width: 40px; height: 40px;
+  background: #EEF5EA;
+  flex-shrink: 0;
+}
+
+/* ── TOTAL BAR ── */
+.total-bar {
+  background: linear-gradient(135deg, var(--moss) 0%, #3D5C32 100%);
+}
+
+.total-amount {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 28px;
+}
+
+/* ── FORM CONTROLS ── */
+.form-control, .form-select {
+  border: 1.5px solid #EEE;
+  color: var(--bark);
+
+  &:focus {
+    border-color: var(--moss);
+    box-shadow: 0 0 0 3px rgba(92,122,78,0.15);
+  }
+}
+
+/* ── DONATE BUTTON ── */
+.btn-donate {
+  background: var(--moss);
+  border: none;
+  color: #fff;
+  transition: background 0.2s, transform 0.2s;
+
+  &:hover {
+    background: #6e9260;
+    transform: translateY(-2px);
+  }
+}
+
+/* ── CTA BANNER ── */
+.cta-banner {
+  background: linear-gradient(135deg, var(--moss) 0%, #3D5C32 100%);
+}

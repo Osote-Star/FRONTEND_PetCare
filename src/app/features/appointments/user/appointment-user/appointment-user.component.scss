@@ -19,12 +19,20 @@
 .text-white-25   { color: rgba(255,255,255,0.25) !important; }
 
 /* ── HERO ── */
-.hero-citas { min-height: 88vh; }
+.hero-citas { 
+  min-height: 91vh;
+  margin-top: 0;
+  padding-top: 0; 
+}
 
 .hero-left {
   background-color: var(--bark);
   position: relative;
   overflow: hidden;
+  min-height: 91h;
+  display: flex;
+  align-items: center;
+  padding-top: 0;
 }
 
 .hero-left::before {
@@ -44,9 +52,15 @@
   letter-spacing: 1px;
 }
 
-.hero-title em { color: var(--sand); }
+.hero-title em { 
+  color: var(--sand); 
+  font-style: italic;
+}
 
-.hero-desc { color: rgba(255,255,255,0.65); font-weight: 300; font-size: 16px; line-height: 1.7; }
+.hero-desc { 
+  color: rgba(255,255,255,0.65); 
+  font-weight: 300; 
+}
 
 .hero-btn {
   background-color: var(--moss) !important;
@@ -60,8 +74,19 @@
   box-shadow: 0 10px 32px rgba(92,122,78,0.45) !important;
 }
 
-.hero-img-col { min-height: 520px; }
-.hero-img { object-position: center top; }
+.hero-img-col { 
+  min-height: 91vh;
+  position: relative; 
+}
+.hero-img { 
+  object-fit: cover;
+  object-position: center top;
+  min-height: 90vh;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  inset: 0; 
+}
 
 .hero-overlay {
   position: absolute; inset: 0;
@@ -69,16 +94,20 @@
 }
 
 .hero-badge {
-  position: absolute; bottom: 32px; right: 32px;
-  min-width: 210px;
+  position: absolute; 
+  bottom: 32px; 
+  right: 32px;
+  min-width: 200px;
 }
 
 .badge-icon { width: 46px; height: 46px; background: #ECFDF5; }
 
 .stat-num {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 28px; font-weight: 700;
-  color: var(--sand); line-height: 1;
+  font-size: 30px; 
+  font-weight: 700;
+  color: var(--sand); 
+  line-height: 1;
 }
 
 .stat-lbl {

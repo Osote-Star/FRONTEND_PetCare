@@ -4,12 +4,17 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { provideLottieOptions } from 'ngx-lottie';
+import player from 'lottie-web';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(
-      withInterceptors([authInterceptor]) // ✅ Usar el interceptor correcto
-    )
+      withInterceptors([authInterceptor])
+    ),
+    provideLottieOptions({
+      player: () => player
+    })
   ]
 };

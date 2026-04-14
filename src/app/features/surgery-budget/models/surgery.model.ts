@@ -1,24 +1,26 @@
-export interface SurgeryType {
+// features/surgery-budget/models/surgery.model.ts
+
+export type ServiceCategory = 'cirugia' | 'medicamento';
+
+export interface VetService {
   id: string;
   name: string;
+  category: ServiceCategory;
   description: string;
-  basePrice: number;
-  estimatedDays: number;
+  price: number;
+  priceNote?: string;
+  icon: string;
 }
 
-export interface BudgetRequest {
-  petName:          string;
-  petType:          string;
-  petAge:           number;
-  petWeight:        number;
-  surgeryTypeId:    string;
-  additionalNotes?: string;
+export interface BudgetItem {
+  service: VetService;
+  quantity: number;
 }
 
-export interface BudgetResponse {
-  id:            string;
-  estimatedCost: number;
-  breakdown:     { concept: string; amount: number }[];
-  validUntil:    Date;
-  notes:         string;
+export interface PetInfo {
+  petName: string;
+  petType: string;
+  petAge: number;
+  petWeight: number;
+  notes?: string;
 }

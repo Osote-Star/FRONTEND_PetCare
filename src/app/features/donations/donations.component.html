@@ -1,1 +1,214 @@
-<p>donations works!</p>
+<!-- ══ HERO ══ -->
+<section class="hero-donations mt-0 pt-0">
+  <div class="container-fluid g-0">
+    <div class="row g-0 min-vh-90">
+
+      <!-- Izquierda -->
+      <div class="col-lg-6 hero-left d-flex align-items-start">
+        <div class="px-5 py-5 px-lg-5 hero-content position-relative">
+          <span class="badge hero-tag mb-4 px-3 py-2">
+            <i class="bi bi-heart-fill me-2"></i>Haz la diferencia hoy
+          </span>
+          <h1 class="display-4 fw-bold text-white hero-title mb-4">
+            Tu donación salva<br>vidas de <em>mascotas</em>
+          </h1>
+          <p class="lead hero-desc mb-5">
+            Cada aporte nos ayuda a brindar atención médica a mascotas que más lo necesitan.
+            Tu generosidad marca la diferencia en su calidad de vida.
+          </p>
+          <div class="d-flex gap-4 mt-3 pt-4 border-top border-white border-opacity-10">
+            <div class="text-center">
+              <div class="stat-num">100%</div>
+              <div class="stat-lbl">Seguro con PayPal</div>
+            </div>
+            <div class="text-center border-start border-end border-white border-opacity-10 px-4">
+              <div class="stat-num">+500</div>
+              <div class="stat-lbl">Mascotas ayudadas</div>
+            </div>
+            <div class="text-center">
+              <div class="stat-num">❤️</div>
+              <div class="stat-lbl">Con amor</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Derecha: imagen -->
+      <div class="col-lg-6 position-relative hero-img-col">
+        <img
+          src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1200&auto=format&fit=crop"
+          class="w-100 h-100 object-fit-cover hero-img"
+          alt="Mascotas felices">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FORMULARIO ══ -->
+<section class="py-6 bg-cream">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+
+        <div class="text-center mb-5">
+          <span class="section-label d-inline-flex align-items-center gap-2 mb-3">
+            <span class="label-line"></span>Dona ahora<span class="label-line"></span>
+          </span>
+          <h2 class="display-5 fw-bold text-bark">¿Cuánto deseas donar?</h2>
+          <p class="text-muted mt-2">Elige un monto o ingresa el tuyo</p>
+        </div>
+
+        <div class="donation-card rounded-4 p-4 p-lg-5 w-100">
+
+          <!-- Montos fijos -->
+          <div class="row g-3 mb-3">
+            <div class="col-6" *ngFor="let opcion of opcionesMonto">
+              <button
+                class="btn monto-btn w-100 rounded-3 py-3"
+                [class.active]="montoSeleccionado === opcion.amount && !usarMontoPersonalizado"
+                (click)="seleccionarMonto(opcion.amount)">
+                <div class="fw-bold fs-5">{{ opcion.label }}</div>
+                <div class="small text-muted mt-1">{{ opcion.description }}</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Monto personalizado -->
+          <div class="mb-4">
+            <button
+              class="btn monto-btn w-100 rounded-3 py-3 mb-2"
+              [class.active]="usarMontoPersonalizado"
+              (click)="activarMontoPersonalizado()">
+              <i class="bi bi-pencil-fill me-2"></i>Otro monto
+            </button>
+            <div *ngIf="usarMontoPersonalizado" class="mt-2">
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="Ingresa el monto"
+                  [(ngModel)]="montoPersonalizado"
+                  min="1">
+              </div>
+            </div>
+          </div>
+
+          <!-- Datos del donante -->
+          <div class="mb-3">
+            <input type="text" class="form-control rounded-3"
+              placeholder="Tu nombre (opcional)" [(ngModel)]="donorName">
+          </div>
+          <div class="mb-3">
+            <input type="email" class="form-control rounded-3"
+              placeholder="Tu correo (opcional)" [(ngModel)]="donorEmail">
+          </div>
+          <div class="mb-4">
+            <textarea class="form-control rounded-3"
+              placeholder="Mensaje opcional..." rows="3" [(ngModel)]="message">
+            </textarea>
+          </div>
+
+          <!-- Error -->
+          <div *ngIf="errorMsg" class="alert alert-danger rounded-3 py-2 small mb-3">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ errorMsg }}
+          </div>
+
+          <!-- Botón donar -->
+          <button class="btn btn-donate w-100 py-3 fw-bold rounded-3"
+            (click)="donar()" [disabled]="cargando">
+            <span *ngIf="!cargando">
+              <i class="bi bi-heart-fill me-2"></i>
+              Donar {{ montoFinal > 0 ? ('$' + montoFinal) : '' }} con PayPal
+            </span>
+            <span *ngIf="cargando">
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              Procesando...
+            </span>
+          </button>
+
+          <p class="text-center text-muted small mt-3">
+            <i class="bi bi-shield-lock-fill me-1"></i>
+            Pago seguro procesado por PayPal
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ IMPACTO ══ -->
+<section class="py-6 bg-white">
+  <div class="container py-5">
+    <div class="text-center mb-5">
+      <span class="section-label d-inline-flex align-items-center gap-2 mb-3">
+        <span class="label-line"></span>Tu impacto<span class="label-line"></span>
+      </span>
+      <h2 class="display-5 fw-bold text-bark">¿A dónde va tu donación?</h2>
+      <p class="text-muted mx-auto mt-3" style="max-width:580px;">
+        Cada peso donado se destina directamente al cuidado y bienestar de las mascotas.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="impact-card rounded-4 p-4 h-100 text-center">
+          <div class="impact-icon mb-3 mx-auto rounded-3 d-flex align-items-center justify-content-center">
+            <i class="bi bi-capsule-pill fs-2 text-moss"></i>
+          </div>
+          <h5 class="fw-bold text-bark mb-2">Medicamentos</h5>
+          <p class="text-muted small">Cubrimos el costo de medicinas para mascotas en tratamiento.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="impact-card rounded-4 p-4 h-100 text-center">
+          <div class="impact-icon mb-3 mx-auto rounded-3 d-flex align-items-center justify-content-center">
+            <i class="bi bi-scissors fs-2 text-moss"></i>
+          </div>
+          <h5 class="fw-bold text-bark mb-2">Cirugías</h5>
+          <p class="text-muted small">Financiamos cirugías esenciales para mascotas que lo necesitan.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="impact-card rounded-4 p-4 h-100 text-center">
+          <div class="impact-icon mb-3 mx-auto rounded-3 d-flex align-items-center justify-content-center">
+            <i class="bi bi-droplet-fill fs-2 text-moss"></i>
+          </div>
+          <h5 class="fw-bold text-bark mb-2">Higiene</h5>
+          <p class="text-muted small">Servicios de baño y estética para mascotas en situación vulnerable.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="impact-card rounded-4 p-4 h-100 text-center">
+          <div class="impact-icon mb-3 mx-auto rounded-3 d-flex align-items-center justify-content-center">
+            <i class="bi bi-heart-pulse-fill fs-2 text-moss"></i>
+          </div>
+          <h5 class="fw-bold text-bark mb-2">Consultas</h5>
+          <p class="text-muted small">Consultas médicas gratuitas para mascotas de familias de bajos recursos.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA ══ -->
+<section class="cta-banner py-5">
+  <div class="container py-3">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <h2 class="display-6 fw-bold text-white mb-2">
+          También puedes donar<br>directamente en clínica.
+        </h2>
+        <p class="text-white-75 mb-0">
+          Visítanos y entrega tu donación en especie o efectivo directamente en cualquiera de nuestras clínicas.
+        </p>
+      </div>
+      <div class="col-lg-5 d-flex justify-content-lg-end">
+        <a routerLink="/contacto" class="btn btn-light btn-lg px-5 py-3 fw-bold text-moss rounded-3 shadow">
+          <i class="bi bi-geo-alt me-2"></i>Ver ubicaciones
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

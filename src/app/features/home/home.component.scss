@@ -24,22 +24,25 @@
 .bg-bark          { background-color: var(--bark) !important; }
 
 /* ── HERO ── */
-.hero-section { min-height: 88vh; }
+.hero-section { min-height: 91vh; }
 
 .hero-left {
   background-color: var(--bark);
   position: relative;
   overflow: hidden;
+  min-height: 91vh;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 0;
 }
 
 /* Círculo decorativo de fondo */
 .hero-left::before {
   content: '';
   position: absolute;
-  width: 500px; height: 500px;
-  border-radius: 50%;
+  width: 480px; height: 480px; border-radius: 50%;
   background: rgba(92,122,78,0.1);
-  top: -120px; left: -120px;
+  top: -100px; left: -120px;
   pointer-events: none;
 }
 
@@ -66,7 +69,7 @@
   transform: translateY(-2px);
 }
 
-.hero-img { object-position: center top; min-height: 500px; }
+.hero-img { object-position: center top; min-height: 88vh; }
 
 .hero-overlay {
   position: absolute; inset: 0;

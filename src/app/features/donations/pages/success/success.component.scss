@@ -1,0 +1,128 @@
+/* ── VARIABLES ── */
+:root {
+  --bark:       #4A3728;
+  --moss:       #5C7A4E;
+  --moss-light: #8BAF78;
+  --sand:       #E8D5B7;
+  --cream:      #FDF6EE;
+}
+
+.text-bark { color: var(--bark) !important; }
+.text-moss { color: var(--moss) !important; }
+
+/* ── LAYOUT ── */
+.result-section {
+  min-height: 100vh;
+}
+
+/* ── IMAGEN COL ── */
+.img-col {
+  min-height: 100vh;
+  position: relative;
+}
+
+.hero-img {
+  object-fit: cover;
+  object-position: center center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to right, rgba(74,55,40,0.2), transparent 60%);
+}
+
+/* ── MENSAJE COL ── */
+.msg-col {
+  background-color: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* ── RESULT CARD ── */
+.result-card {
+  max-width: 480px;
+  background: #fff;
+  box-shadow: 0 8px 40px rgba(74,55,40,0.12);
+}
+
+/* ── ICONS ── */
+.result-icon {
+  width: 64px; height: 64px;
+  font-size: 1.8rem;
+  border-radius: 50%;
+}
+
+.success-icon   { background: var(--moss); }
+.error-icon     { background: #dc3545; }
+.cancelled-icon { background: #E67E22; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--moss);
+}
+
+.label-line {
+  display: inline-block; width: 24px; height: 2px;
+  background: var(--moss); border-radius: 2px;
+}
+
+/* ── TEXTO ── */
+.hero-desc {
+  color: rgba(74,55,40,0.7);
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* ── IMPACT BADGE ── */
+.impact-badge {
+  background: #EEF5EA;
+  border: 1px solid rgba(92,122,78,0.2);
+}
+
+/* ── LOTTIE ── */
+.lottie-wrapper {
+  display: flex;
+  justify-content: center;
+  height: 100px;
+  overflow: hidden;
+}
+
+.lottie-wrapper > * {
+  width: 100px !important;
+  height: 100px !important;
+}
+
+/* ── BOTONES ── */
+.btn-donate {
+  background: var(--moss);
+  border: none;
+  color: #fff;
+  transition: background 0.2s, transform 0.2s;
+
+  &:hover {
+    background: #6e9260;
+    transform: translateY(-2px);
+  }
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--bark);
+  color: var(--bark);
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--bark);
+    color: #fff;
+    transform: translateY(-2px);
+  }
+}

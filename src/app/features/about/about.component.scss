@@ -20,24 +20,31 @@
 .text-white-25   { color: rgba(255,255,255,0.25) !important; }
 
 /* ── HERO ── */
-.hero-sobre   { min-height: 86vh; }
-.hero-img-col { min-height: 500px; }
+.hero-sobre   { 
+  min-height: 86vh;
+  margin-top: 0;
+  padding-top: 0; 
+}
+.hero-img-col { 
+  min-height: 91vh;
+  position: relative; 
+}
 
 .hero-left {
   background-color: var(--bark);
   position: relative;
   overflow: hidden;
+  min-height: 88vh;
 }
 
 .hero-left::before {
   content: '';
   position: absolute;
-  width: 460px; height: 460px; border-radius: 50%;
+  width: 480px; height: 480px; border-radius: 50%;
   background: rgba(92,122,78,0.1);
-  top: -100px; left: -110px;
+  top: -100px; left: -120px;
   pointer-events: none;
 }
-
 .hero-tag {
   background: rgba(139,175,120,0.2) !important;
   border: 1px solid rgba(139,175,120,0.4) !important;
@@ -47,7 +54,7 @@
 }
 
 .hero-title em { color: var(--sand); font-style: italic; }
-.hero-desc     { color: rgba(255,255,255,0.65); font-weight: 300; font-size: 16px; line-height: 1.7; }
+.hero-desc     { color: rgba(255,255,255,0.65); font-weight: 300; }
 
 .hero-btn {
   background-color: var(--moss) !important;
@@ -62,17 +69,27 @@
   transform: translateY(-2px);
 }
 
-.hero-img     { object-position: center top; }
+.hero-img     { 
+  object-fit: cover;
+  object-position: center top;
+  min-height: 500px;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  inset: 0;
+}
 .hero-overlay {
   position: absolute; inset: 0;
   background: linear-gradient(to right, rgba(74,55,40,0.2), transparent 40%);
 }
 
 .hero-badge {
-  position: absolute; bottom: 32px; right: 32px;
+  position: absolute; 
+  bottom: 95px; 
+  right: 32px;
   min-width: 210px;
 }
-.badge-icon { width: 46px; height: 46px; background: #EEF5EA; }
+.badge-icon { width: 46px; height: 46px; background: #f5eeea; }
 
 /* ── STATS BAR ── */
 .stats-bar   { background: var(--cream); border-bottom: 1px solid #EEE; }

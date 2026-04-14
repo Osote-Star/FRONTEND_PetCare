@@ -1,0 +1,43 @@
+<section class="result-section">
+    <div class="container-fluid g-0 h-100">
+        <div class="row g-0 min-vh-100">
+
+            <!-- Izquierda — Imagen -->
+            <div class="col-lg-6 img-col position-relative">
+                <img [src]="imagenSeleccionada" class="w-100 h-100 hero-img" alt="Mascota esperando">
+                <div class="hero-overlay"></div>
+            </div>
+
+            <!-- Derecha — Mensaje + Animación -->
+            <div class="col-lg-6 msg-col d-flex align-items-center justify-content-center">
+                <div class="result-card rounded-4 p-5 mx-4 w-100">
+
+                    <!-- Reemplaza el bloque del círculo naranja por esto -->
+                    <div class="icon-wrapper mb-4">
+                        <div class="result-icon cancelled-icon rounded-circle"></div>
+                        <div class="lottie-over">
+                            <ng-lottie [options]="animacionOptions" width="120px" height="120px"></ng-lottie>
+                        </div>
+                    </div>
+                    <span class="section-label d-flex align-items-center gap-2 mb-3">
+                        <span class="label-line"></span>Donación cancelada
+                    </span>
+                    <h2 class="fw-bold text-bark mb-3">No se realizó ningún cargo</h2>
+                    <p class="hero-desc mb-4">
+                        Tu donación fue cancelada. Puedes intentarlo de nuevo cuando quieras,
+                        tu apoyo siempre será bienvenido. 🐾
+                    </p>
+
+                    <button class="btn btn-donate w-100 py-3 fw-bold rounded-3 mb-3" (click)="volverDonaciones()">
+                        <i class="bi bi-heart-fill me-2"></i>Intentar de nuevo
+                    </button>
+                    <button class="btn btn-outline w-100 py-3 fw-bold rounded-3" (click)="volverInicio()">
+                        <i class="bi bi-house-fill me-2"></i>Volver al inicio
+                    </button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

@@ -1,379 +1,381 @@
-  <!-- ══ HERO ══ -->
-  <section class="hero-citas">
-    <div class="container-fluid g-0">
-      <div class="row g-0">
+<!-- ══ HERO ══ -->
+<section class="hero-citas">
+  <div class="container-fluid g-0">
+    <div class="row g-0 min-vh-91">
 
-        <!-- Izquierda -->
-        <div class="col-lg-6 hero-left d-flex align-items-center">
-          <div class="px-5 py-5 px-lg-5 hero-content position-relative">
-            <span class="badge hero-tag mb-4 px-3 py-2">
-              <i class="bi bi-calendar2-heart me-2"></i>Agenda fácil · Sin esperas
-            </span>
-            <h1 class="display-4 fw-bold text-white hero-title mb-4">
-              Cuida a tu mascota<br>con una <em>cita hoy</em>
-            </h1>
-            <p class="hero-desc mb-5">
-              Agendar una cita veterinaria a tiempo puede salvar la vida de tu compañero.
-              Nuestros médicos están listos para atenderlos con profesionalismo y cariño.
-            </p>
-<button (click)="irAgendarCita()" class="btn btn-success btn-lg px-5 py-3 fw-bold hero-btn shadow">
-  Agendar mi cita ahora
-</button>
-            <div class="d-flex gap-4 mt-5 pt-4 border-top border-white border-opacity-10">
-              <div class="text-center">
-                <div class="stat-num">5 min</div>
-                <div class="stat-lbl">Para agendar</div>
-              </div>
-              <div class="text-center border-start border-end border-white border-opacity-10 px-4">
-                <div class="stat-num">24/7</div>
-                <div class="stat-lbl">Agenda online</div>
-              </div>
-              <div class="text-center">
-                <div class="stat-num">100%</div>
-                <div class="stat-lbl">Confirmación inmediata</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Derecha: imagen -->
-        <div class="col-lg-6 position-relative hero-img-col">
-          <img
-            src="https://plus.unsplash.com/premium_photo-1663041606868-bf51840308b6?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            class="w-100 h-100 object-fit-cover hero-img"
-            alt="Mascota feliz en veterinaria"
-          >
-          <div class="hero-overlay"></div>
-          <div class="hero-badge bg-white shadow rounded-4 p-3 d-flex align-items-center gap-3">
-            <div class="badge-icon rounded-3 d-flex align-items-center justify-content-center">
-              <i class="bi bi-shield-fill-check text-success fs-4"></i>
-            </div>
-            <div>
-              <div class="fw-bold text-bark">Atención garantizada</div>
-              <div class="text-muted small">Médicos certificados</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ SERVICIOS / PROCEDIMIENTOS ══ -->
-  <section class="py-6 bg-white">
-    <div class="container py-5">
-
-      <div class="text-center mb-5">
-        <span class="section-label d-inline-flex align-items-center gap-2 mb-3">
-          <span class="label-line"></span>Procedimientos y Servicios<span class="label-line"></span>
-        </span>
-        <h2 class="display-5 fw-bold text-bark">¿Para qué sirve cada servicio?</h2>
-        <p class="text-muted mx-auto mt-3" style="max-width:580px;">
-          Conoce los principales procedimientos veterinarios, para qué sirven y cómo benefician
-          directamente la salud y calidad de vida de tu mascota.
-        </p>
-      </div>
-
-      <div class="row g-4">
-
-        <!-- Vacunas -->
-        <div class="col-md-6 col-lg-4">
-          <div class="proc-card rounded-4 p-4 h-100 d-flex flex-column">
-            <div class="proc-icon mb-3 rounded-3 d-flex align-items-center justify-content-center">
-              <i class="bi bi-capsule-pill fs-2 text-moss"></i>
-            </div>
-            <h5 class="fw-bold text-bark mb-2">Vacunación</h5>
-            <p class="text-muted small flex-grow-1">
-              Las vacunas protegen a tu mascota de enfermedades graves como rabia,
-              moquillo, parvovirus y hepatitis. Se aplican desde cachorros y se refuerzan
-              anualmente. Son la base de una vida larga y saludable.
-            </p>
-            <div class="proc-benefit mt-3 rounded-3 px-3 py-2 d-flex align-items-center gap-2">
-              <i class="bi bi-check-circle-fill text-moss small"></i>
-              <span class="small fw-semibold text-moss">Previene enfermedades mortales</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Esterilización -->
-        <div class="col-md-6 col-lg-4">
-          <div class="proc-card rounded-4 p-4 h-100 d-flex flex-column">
-            <div class="proc-icon mb-3 rounded-3 d-flex align-items-center justify-content-center">
-              <i class="bi bi-gender-neuter fs-2 text-moss"></i>
-            </div>
-            <h5 class="fw-bold text-bark mb-2">Esterilización (hembras)</h5>
-            <p class="text-muted small flex-grow-1">
-              Procedimiento quirúrgico que elimina los ovarios y el útero. Evita embarazos
-              no deseados, reduce el riesgo de cáncer mamario hasta en un 90% si se
-              realiza antes del primer celo, y previene infecciones uterinas (piómetra).
-            </p>
-            <div class="proc-benefit mt-3 rounded-3 px-3 py-2 d-flex align-items-center gap-2">
-              <i class="bi bi-check-circle-fill text-moss small"></i>
-              <span class="small fw-semibold text-moss">Alarga y mejora la calidad de vida</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Castración -->
-        <div class="col-md-6 col-lg-4">
-          <div class="proc-card rounded-4 p-4 h-100 d-flex flex-column">
-            <div class="proc-icon mb-3 rounded-3 d-flex align-items-center justify-content-center">
-              <i class="bi bi-scissors fs-2 text-moss"></i>
-            </div>
-            <h5 class="fw-bold text-bark mb-2">Castración (machos)</h5>
-            <p class="text-muted small flex-grow-1">
-              Extirpación de los testículos en machos. Reduce comportamientos agresivos,
-              el marcaje de territorio y la tendencia a escapar. Previene el cáncer
-              testicular y problemas de próstata en perros mayores.
-            </p>
-            <div class="proc-benefit mt-3 rounded-3 px-3 py-2 d-flex align-items-center gap-2">
-              <i class="bi bi-check-circle-fill text-moss small"></i>
-              <span class="small fw-semibold text-moss">Mejor carácter y menos riesgos</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Baño y estética -->
-        <div class="col-md-6 col-lg-4">
-          <div class="proc-card rounded-4 p-4 h-100 d-flex flex-column">
-            <div class="proc-icon mb-3 rounded-3 d-flex align-items-center justify-content-center">
-              <i class="bi bi-droplet-fill fs-2 text-moss"></i>
-            </div>
-            <h5 class="fw-bold text-bark mb-2">Baño y Estética</h5>
-            <p class="text-muted small flex-grow-1">
-              Más que limpieza: el baño profesional incluye revisión de piel, oídos,
-              uñas y pelaje. Ayuda a detectar pulgas, garrapatas, hongos o irritaciones
-              a tiempo. Un perro limpio es un perro saludable.
-            </p>
-            <div class="proc-benefit mt-3 rounded-3 px-3 py-2 d-flex align-items-center gap-2">
-              <i class="bi bi-check-circle-fill text-moss small"></i>
-              <span class="small fw-semibold text-moss">Detección temprana de problemas</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Desparasitación -->
-        <div class="col-md-6 col-lg-4">
-          <div class="proc-card rounded-4 p-4 h-100 d-flex flex-column">
-            <div class="proc-icon mb-3 rounded-3 d-flex align-items-center justify-content-center">
-              <i class="bi bi-bug-fill fs-2 text-moss"></i>
-            </div>
-            <h5 class="fw-bold text-bark mb-2">Desparasitación</h5>
-            <p class="text-muted small flex-grow-1">
-              Elimina parásitos internos (lombrices, tenias) y externos (pulgas, garrapatas).
-              Se recomienda cada 3–6 meses. Protege también a la familia, ya que
-              varios parásitos son transmisibles a humanos.
-            </p>
-            <div class="proc-benefit mt-3 rounded-3 px-3 py-2 d-flex align-items-center gap-2">
-              <i class="bi bi-check-circle-fill text-moss small"></i>
-              <span class="small fw-semibold text-moss">Protege a tu mascota y a tu familia</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Consulta general -->
-        <div class="col-md-6 col-lg-4">
-          <div class="proc-card rounded-4 p-4 h-100 d-flex flex-column">
-            <div class="proc-icon mb-3 rounded-3 d-flex align-items-center justify-content-center">
-              <i class="bi bi-stethoscope fs-2 text-moss"></i>
-            </div>
-            <h5 class="fw-bold text-bark mb-2">Consulta General</h5>
-            <p class="text-muted small flex-grow-1">
-              Revisión completa de signos vitales, peso, dientes, ojos y comportamiento.
-              Se recomienda al menos 1 vez al año. Permite detectar enfermedades
-              silenciosas antes de que se vuelvan graves y costosas.
-            </p>
-            <div class="proc-benefit mt-3 rounded-3 px-3 py-2 d-flex align-items-center gap-2">
-              <i class="bi bi-check-circle-fill text-moss small"></i>
-              <span class="small fw-semibold text-moss">Diagnóstico a tiempo = vida más larga</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ DATOS INTERESANTES ══ -->
-  <section class="facts-section py-6">
-    <div class="container py-4">
-      <div class="text-center mb-5">
-        <span class="section-label section-label-light d-inline-flex align-items-center gap-2 mb-3">
-          <span class="label-line-light"></span>¿Sabías que…<span class="label-line-light"></span>
-        </span>
-        <h2 class="display-5 fw-bold text-white">5 datos que todo dueño<br>debe conocer</h2>
-      </div>
-
-      <div class="row g-4 justify-content-center">
-
-        <div class="col-md-6 col-lg-4">
-          <div class="fact-card rounded-4 p-4 h-100 text-center">
-            <div class="fact-num mb-2">90%</div>
-            <p class="text-white-75 small">
-              de reducción en el riesgo de cáncer mamario en perras esterilizadas
-              <strong class="text-white">antes de su primer celo.</strong>
-            </p>
-          </div>
-        </div>
-
-        <div class="col-md-6 col-lg-4">
-          <div class="fact-card rounded-4 p-4 h-100 text-center">
-            <div class="fact-num mb-2">1 de 3</div>
-            <p class="text-white-75 small">
-              mascotas desarrollará <strong class="text-white">cáncer</strong> en su vida.
-              La detección temprana en consultas de rutina puede ser la diferencia.
-            </p>
-          </div>
-        </div>
-
-        <div class="col-md-6 col-lg-4">
-          <div class="fact-card rounded-4 p-4 h-100 text-center">
-            <div class="fact-num mb-2">2× más</div>
-            <p class="text-white-75 small">
-              Los perros con vacunación completa y revisiones anuales
-              <strong class="text-white">viven el doble</strong> que los que nunca van al veterinario.
-            </p>
-          </div>
-        </div>
-
-        <div class="col-md-6 col-lg-4">
-          <div class="fact-card rounded-4 p-4 h-100 text-center">
-            <div class="fact-num mb-2">70%</div>
-            <p class="text-white-75 small">
-              de los gatos mayores de 3 años tienen
-              <strong class="text-white">enfermedad dental</strong> sin que sus dueños lo sepan.
-              Una limpieza a tiempo lo evita.
-            </p>
-          </div>
-        </div>
-
-        <div class="col-md-6 col-lg-4">
-          <div class="fact-card rounded-4 p-4 h-100 text-center">
-            <div class="fact-num mb-2">$0</div>
-            <p class="text-white-75 small">
-              cuesta detectar un problema a tiempo. Tratar una enfermedad avanzada puede
-              costar <strong class="text-white">10 veces más</strong> que una consulta preventiva.
-            </p>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ BENEFICIOS DE IR AL VET ══ -->
-  <section class="py-6 bg-white">
-    <div class="container py-4">
-      <div class="row align-items-center g-5">
-
-        <div class="col-lg-5">
-          <div class="position-relative">
-            <img
-              src="https://media.istockphoto.com/id/2218833097/es/foto/veterinario-feliz-saludando-a-un-perro-y-a-su-due%C3%B1o-en-el-hospital-de-animales.webp?a=1&b=1&s=612x612&w=0&k=20&c=7lzPWS9CkAO92eGJptm2TjnJrjGNcj95sZzGssF6kkY="
-              class="rounded-4 w-100 benefits-img shadow-lg"
-              alt="Mascota en consulta"
-            >
-            <div class="benefits-badge bg-white shadow rounded-4 p-3 d-flex align-items-center gap-3">
-              <span style="font-size:2rem;">🐾</span>
-              <div>
-                <div class="fw-bold text-bark small">Medicina preventiva</div>
-                <div class="text-muted" style="font-size:11px;">La base de una vida larga</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-7">
-          <span class="section-label d-flex align-items-center gap-2 mb-3">
-            <span class="label-line"></span>Beneficios de la atención veterinaria
+      <!-- Izquierda -->
+      <div class="col-lg-6 hero-left d-flex align-items-start">
+        <div class="px-5 py-5 px-lg-5 hero-content position-relative">
+          <span class="badge hero-tag mb-4 px-3 py-2">
+            <i class="bi bi-calendar2-heart me-2"></i>Agenda fácil · Sin esperas
           </span>
-          <h2 class="display-5 fw-bold text-bark mb-4">
-            ¿Por qué llevar a tu<br>mascota al veterinario?
-          </h2>
-
-          <div class="row g-3">
-            <div class="col-md-6">
-              <div class="benefit-item rounded-3 p-3 d-flex gap-3 align-items-start h-100">
-                <i class="bi bi-heart-pulse-fill text-moss fs-4 flex-shrink-0 mt-1"></i>
-                <div>
-                  <div class="fw-semibold text-bark small mb-1">Detección temprana</div>
-                  <div class="text-muted" style="font-size:12px;">Muchas enfermedades no muestran síntomas visibles hasta etapas avanzadas.</div>
-                </div>
-              </div>
+          <h1 class="display-4 fw-bold text-white hero-title mb-4">
+            Cuida a tu mascota<br>con una <em>cita hoy</em>
+          </h1>
+          <p class="lead hero-desc mb-5">
+            Agendar una cita veterinaria a tiempo puede salvar la vida de tu compañero.
+            Nuestros médicos están listos para atenderlos con profesionalismo y cariño.
+          </p>
+          <button (click)="irAgendarCita()" class="btn btn-success btn-lg px-5 py-3 fw-bold hero-btn shadow">
+            Agendar mi cita ahora
+          </button>
+          <div class="d-flex gap-4 mt-5 pt-4 border-top border-white border-opacity-10">
+            <div class="text-center">
+              <div class="stat-num">5 min</div>
+              <div class="stat-lbl">Para agendar</div>
             </div>
-            <div class="col-md-6">
-              <div class="benefit-item rounded-3 p-3 d-flex gap-3 align-items-start h-100">
-                <i class="bi bi-emoji-smile-fill text-moss fs-4 flex-shrink-0 mt-1"></i>
-                <div>
-                  <div class="fw-semibold text-bark small mb-1">Mejor calidad de vida</div>
-                  <div class="text-muted" style="font-size:12px;">Un animal sano es un animal feliz, activo y con más energía cada día.</div>
-                </div>
-              </div>
+            <div class="text-center border-start border-end border-white border-opacity-10 px-4">
+              <div class="stat-num">24/7</div>
+              <div class="stat-lbl">Agenda online</div>
             </div>
-            <div class="col-md-6">
-              <div class="benefit-item rounded-3 p-3 d-flex gap-3 align-items-start h-100">
-                <i class="bi bi-piggy-bank-fill text-moss fs-4 flex-shrink-0 mt-1"></i>
-                <div>
-                  <div class="fw-semibold text-bark small mb-1">Ahorro a largo plazo</div>
-                  <div class="text-muted" style="font-size:12px;">Prevenir es siempre más económico que tratar enfermedades avanzadas.</div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="benefit-item rounded-3 p-3 d-flex gap-3 align-items-start h-100">
-                <i class="bi bi-people-fill text-moss fs-4 flex-shrink-0 mt-1"></i>
-                <div>
-                  <div class="fw-semibold text-bark small mb-1">Protección familiar</div>
-                  <div class="text-muted" style="font-size:12px;">Algunas enfermedades animales pueden transmitirse a humanos. Prevenirlas protege a toda la familia.</div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="benefit-item rounded-3 p-3 d-flex gap-3 align-items-start h-100">
-                <i class="bi bi-calendar2-check-fill text-moss fs-4 flex-shrink-0 mt-1"></i>
-                <div>
-                  <div class="fw-semibold text-bark small mb-1">Mayor esperanza de vida</div>
-                  <div class="text-muted" style="font-size:12px;">Las mascotas con cuidado veterinario regular viven significativamente más años.</div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="benefit-item rounded-3 p-3 d-flex gap-3 align-items-start h-100">
-                <i class="bi bi-clipboard2-pulse-fill text-moss fs-4 flex-shrink-0 mt-1"></i>
-                <div>
-                  <div class="fw-semibold text-bark small mb-1">Historial médico</div>
-                  <div class="text-muted" style="font-size:12px;">Tener registros permite diagnósticos más precisos y un seguimiento óptimo de su salud.</div>
-                </div>
-              </div>
+            <div class="text-center">
+              <div class="stat-num">100%</div>
+              <div class="stat-lbl">Confirmación inmediata</div>
             </div>
           </div>
         </div>
-
       </div>
-    </div>
-  </section>
 
-  <!-- ══ CTA FINAL ══ -->
-  <section class="cta-banner py-5">
-    <div class="container py-3">
-      <div class="row align-items-center g-4">
-        <div class="col-lg-7">
-          <h2 class="display-6 fw-bold text-white mb-2">
-            Tu mascota te necesita. <br>Agenda hoy.
-          </h2>
-          <p class="text-white-75 mb-0">
-            En menos de 5 minutos puedes reservar una cita con nuestros veterinarios.
-            Sin filas, sin esperas, con confirmación inmediata.
+      <!-- Derecha: imagen -->
+      <div class="col-lg-6 position-relative hero-img-col">
+        <img
+          src="https://plus.unsplash.com/premium_photo-1663041606868-bf51840308b6?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          class="w-100 h-100 object-fit-cover hero-img" alt="Mascota feliz en veterinaria">
+        <div class="hero-overlay"></div>
+        <div class="hero-badge bg-white shadow rounded-4 p-3 d-flex align-items-center gap-3">
+          <div class="badge-icon rounded-3 d-flex align-items-center justify-content-center">
+            <i class="bi bi-shield-fill-check text-success fs-4"></i>
+          </div>
+          <div>
+            <div class="fw-bold text-bark">Atención garantizada</div>
+            <div class="text-muted small">Médicos certificados</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ SERVICIOS / PROCEDIMIENTOS ══ -->
+<section class="py-6 bg-white">
+  <div class="container py-5">
+
+    <div class="text-center mb-5">
+      <span class="section-label d-inline-flex align-items-center gap-2 mb-3">
+        <span class="label-line"></span>Procedimientos y Servicios<span class="label-line"></span>
+      </span>
+      <h2 class="display-5 fw-bold text-bark">¿Para qué sirve cada servicio?</h2>
+      <p class="text-muted mx-auto mt-3" style="max-width:580px;">
+        Conoce los principales procedimientos veterinarios, para qué sirven y cómo benefician
+        directamente la salud y calidad de vida de tu mascota.
+      </p>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- Vacunas -->
+      <div class="col-md-6 col-lg-4">
+        <div class="proc-card rounded-4 p-4 h-100 d-flex flex-column">
+          <div class="proc-icon mb-3 rounded-3 d-flex align-items-center justify-content-center">
+            <i class="bi bi-capsule-pill fs-2 text-moss"></i>
+          </div>
+          <h5 class="fw-bold text-bark mb-2">Vacunación</h5>
+          <p class="text-muted small flex-grow-1">
+            Las vacunas protegen a tu mascota de enfermedades graves como rabia,
+            moquillo, parvovirus y hepatitis. Se aplican desde cachorros y se refuerzan
+            anualmente. Son la base de una vida larga y saludable.
+          </p>
+          <div class="proc-benefit mt-3 rounded-3 px-3 py-2 d-flex align-items-center gap-2">
+            <i class="bi bi-check-circle-fill text-moss small"></i>
+            <span class="small fw-semibold text-moss">Previene enfermedades mortales</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Esterilización -->
+      <div class="col-md-6 col-lg-4">
+        <div class="proc-card rounded-4 p-4 h-100 d-flex flex-column">
+          <div class="proc-icon mb-3 rounded-3 d-flex align-items-center justify-content-center">
+            <i class="bi bi-gender-neuter fs-2 text-moss"></i>
+          </div>
+          <h5 class="fw-bold text-bark mb-2">Esterilización (hembras)</h5>
+          <p class="text-muted small flex-grow-1">
+            Procedimiento quirúrgico que elimina los ovarios y el útero. Evita embarazos
+            no deseados, reduce el riesgo de cáncer mamario hasta en un 90% si se
+            realiza antes del primer celo, y previene infecciones uterinas (piómetra).
+          </p>
+          <div class="proc-benefit mt-3 rounded-3 px-3 py-2 d-flex align-items-center gap-2">
+            <i class="bi bi-check-circle-fill text-moss small"></i>
+            <span class="small fw-semibold text-moss">Alarga y mejora la calidad de vida</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Castración -->
+      <div class="col-md-6 col-lg-4">
+        <div class="proc-card rounded-4 p-4 h-100 d-flex flex-column">
+          <div class="proc-icon mb-3 rounded-3 d-flex align-items-center justify-content-center">
+            <i class="bi bi-scissors fs-2 text-moss"></i>
+          </div>
+          <h5 class="fw-bold text-bark mb-2">Castración (machos)</h5>
+          <p class="text-muted small flex-grow-1">
+            Extirpación de los testículos en machos. Reduce comportamientos agresivos,
+            el marcaje de territorio y la tendencia a escapar. Previene el cáncer
+            testicular y problemas de próstata en perros mayores.
+          </p>
+          <div class="proc-benefit mt-3 rounded-3 px-3 py-2 d-flex align-items-center gap-2">
+            <i class="bi bi-check-circle-fill text-moss small"></i>
+            <span class="small fw-semibold text-moss">Mejor carácter y menos riesgos</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Baño y estética -->
+      <div class="col-md-6 col-lg-4">
+        <div class="proc-card rounded-4 p-4 h-100 d-flex flex-column">
+          <div class="proc-icon mb-3 rounded-3 d-flex align-items-center justify-content-center">
+            <i class="bi bi-droplet-fill fs-2 text-moss"></i>
+          </div>
+          <h5 class="fw-bold text-bark mb-2">Baño y Estética</h5>
+          <p class="text-muted small flex-grow-1">
+            Más que limpieza: el baño profesional incluye revisión de piel, oídos,
+            uñas y pelaje. Ayuda a detectar pulgas, garrapatas, hongos o irritaciones
+            a tiempo. Un perro limpio es un perro saludable.
+          </p>
+          <div class="proc-benefit mt-3 rounded-3 px-3 py-2 d-flex align-items-center gap-2">
+            <i class="bi bi-check-circle-fill text-moss small"></i>
+            <span class="small fw-semibold text-moss">Detección temprana de problemas</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desparasitación -->
+      <div class="col-md-6 col-lg-4">
+        <div class="proc-card rounded-4 p-4 h-100 d-flex flex-column">
+          <div class="proc-icon mb-3 rounded-3 d-flex align-items-center justify-content-center">
+            <i class="bi bi-bug-fill fs-2 text-moss"></i>
+          </div>
+          <h5 class="fw-bold text-bark mb-2">Desparasitación</h5>
+          <p class="text-muted small flex-grow-1">
+            Elimina parásitos internos (lombrices, tenias) y externos (pulgas, garrapatas).
+            Se recomienda cada 3–6 meses. Protege también a la familia, ya que
+            varios parásitos son transmisibles a humanos.
+          </p>
+          <div class="proc-benefit mt-3 rounded-3 px-3 py-2 d-flex align-items-center gap-2">
+            <i class="bi bi-check-circle-fill text-moss small"></i>
+            <span class="small fw-semibold text-moss">Protege a tu mascota y a tu familia</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Consulta general -->
+      <div class="col-md-6 col-lg-4">
+        <div class="proc-card rounded-4 p-4 h-100 d-flex flex-column">
+          <div class="proc-icon mb-3 rounded-3 d-flex align-items-center justify-content-center">
+            <i class="bi bi-stethoscope fs-2 text-moss"></i>
+          </div>
+          <h5 class="fw-bold text-bark mb-2">Consulta General</h5>
+          <p class="text-muted small flex-grow-1">
+            Revisión completa de signos vitales, peso, dientes, ojos y comportamiento.
+            Se recomienda al menos 1 vez al año. Permite detectar enfermedades
+            silenciosas antes de que se vuelvan graves y costosas.
+          </p>
+          <div class="proc-benefit mt-3 rounded-3 px-3 py-2 d-flex align-items-center gap-2">
+            <i class="bi bi-check-circle-fill text-moss small"></i>
+            <span class="small fw-semibold text-moss">Diagnóstico a tiempo = vida más larga</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ DATOS INTERESANTES ══ -->
+<section class="facts-section py-6">
+  <div class="container py-4">
+    <div class="text-center mb-5">
+      <span class="section-label section-label-light d-inline-flex align-items-center gap-2 mb-3">
+        <span class="label-line-light"></span>¿Sabías que…<span class="label-line-light"></span>
+      </span>
+      <h2 class="display-5 fw-bold text-white">5 datos que todo dueño<br>debe conocer</h2>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+
+      <div class="col-md-6 col-lg-4">
+        <div class="fact-card rounded-4 p-4 h-100 text-center">
+          <div class="fact-num mb-2">90%</div>
+          <p class="text-white-75 small">
+            de reducción en el riesgo de cáncer mamario en perras esterilizadas
+            <strong class="text-white">antes de su primer celo.</strong>
           </p>
         </div>
-        <div class="col-lg-5 d-flex flex-column flex-sm-row gap-3 justify-content-lg-end">
-<a routerLink="/citas/ubicacion" class="btn btn-light btn-lg px-5 py-3 fw-bold text-moss rounded-3 shadow">  
-            <i class="bi bi-calendar-check me-2"></i>Agendar cita
-          </a>
-          <a href="/contacto" class="btn btn-outline-light btn-lg px-4 py-3 fw-semibold rounded-3">
-            <i class="bi bi-telephone me-2"></i>Llamar
-          </a>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <div class="fact-card rounded-4 p-4 h-100 text-center">
+          <div class="fact-num mb-2">1 de 3</div>
+          <p class="text-white-75 small">
+            mascotas desarrollará <strong class="text-white">cáncer</strong> en su vida.
+            La detección temprana en consultas de rutina puede ser la diferencia.
+          </p>
         </div>
       </div>
+
+      <div class="col-md-6 col-lg-4">
+        <div class="fact-card rounded-4 p-4 h-100 text-center">
+          <div class="fact-num mb-2">2× más</div>
+          <p class="text-white-75 small">
+            Los perros con vacunación completa y revisiones anuales
+            <strong class="text-white">viven el doble</strong> que los que nunca van al veterinario.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <div class="fact-card rounded-4 p-4 h-100 text-center">
+          <div class="fact-num mb-2">70%</div>
+          <p class="text-white-75 small">
+            de los gatos mayores de 3 años tienen
+            <strong class="text-white">enfermedad dental</strong> sin que sus dueños lo sepan.
+            Una limpieza a tiempo lo evita.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <div class="fact-card rounded-4 p-4 h-100 text-center">
+          <div class="fact-num mb-2">$0</div>
+          <p class="text-white-75 small">
+            cuesta detectar un problema a tiempo. Tratar una enfermedad avanzada puede
+            costar <strong class="text-white">10 veces más</strong> que una consulta preventiva.
+          </p>
+        </div>
+      </div>
+
     </div>
-  </section>
+  </div>
+</section>
+
+<!-- ══ BENEFICIOS DE IR AL VET ══ -->
+<section class="py-6 bg-white">
+  <div class="container py-4">
+    <div class="row align-items-center g-5">
+
+      <div class="col-lg-5">
+        <div class="position-relative">
+          <img
+            src="https://media.istockphoto.com/id/2218833097/es/foto/veterinario-feliz-saludando-a-un-perro-y-a-su-due%C3%B1o-en-el-hospital-de-animales.webp?a=1&b=1&s=612x612&w=0&k=20&c=7lzPWS9CkAO92eGJptm2TjnJrjGNcj95sZzGssF6kkY="
+            class="rounded-4 w-100 benefits-img shadow-lg" alt="Mascota en consulta">
+          <div class="benefits-badge bg-white shadow rounded-4 p-3 d-flex align-items-center gap-3">
+            <span style="font-size:2rem;">🐾</span>
+            <div>
+              <div class="fw-bold text-bark small">Medicina preventiva</div>
+              <div class="text-muted" style="font-size:11px;">La base de una vida larga</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <span class="section-label d-flex align-items-center gap-2 mb-3">
+          <span class="label-line"></span>Beneficios de la atención veterinaria
+        </span>
+        <h2 class="display-5 fw-bold text-bark mb-4">
+          ¿Por qué llevar a tu<br>mascota al veterinario?
+        </h2>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="benefit-item rounded-3 p-3 d-flex gap-3 align-items-start h-100">
+              <i class="bi bi-heart-pulse-fill text-moss fs-4 flex-shrink-0 mt-1"></i>
+              <div>
+                <div class="fw-semibold text-bark small mb-1">Detección temprana</div>
+                <div class="text-muted" style="font-size:12px;">Muchas enfermedades no muestran síntomas visibles hasta
+                  etapas avanzadas.</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="benefit-item rounded-3 p-3 d-flex gap-3 align-items-start h-100">
+              <i class="bi bi-emoji-smile-fill text-moss fs-4 flex-shrink-0 mt-1"></i>
+              <div>
+                <div class="fw-semibold text-bark small mb-1">Mejor calidad de vida</div>
+                <div class="text-muted" style="font-size:12px;">Un animal sano es un animal feliz, activo y con más
+                  energía cada día.</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="benefit-item rounded-3 p-3 d-flex gap-3 align-items-start h-100">
+              <i class="bi bi-piggy-bank-fill text-moss fs-4 flex-shrink-0 mt-1"></i>
+              <div>
+                <div class="fw-semibold text-bark small mb-1">Ahorro a largo plazo</div>
+                <div class="text-muted" style="font-size:12px;">Prevenir es siempre más económico que tratar
+                  enfermedades avanzadas.</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="benefit-item rounded-3 p-3 d-flex gap-3 align-items-start h-100">
+              <i class="bi bi-people-fill text-moss fs-4 flex-shrink-0 mt-1"></i>
+              <div>
+                <div class="fw-semibold text-bark small mb-1">Protección familiar</div>
+                <div class="text-muted" style="font-size:12px;">Algunas enfermedades animales pueden transmitirse a
+                  humanos. Prevenirlas protege a toda la familia.</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="benefit-item rounded-3 p-3 d-flex gap-3 align-items-start h-100">
+              <i class="bi bi-calendar2-check-fill text-moss fs-4 flex-shrink-0 mt-1"></i>
+              <div>
+                <div class="fw-semibold text-bark small mb-1">Mayor esperanza de vida</div>
+                <div class="text-muted" style="font-size:12px;">Las mascotas con cuidado veterinario regular viven
+                  significativamente más años.</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="benefit-item rounded-3 p-3 d-flex gap-3 align-items-start h-100">
+              <i class="bi bi-clipboard2-pulse-fill text-moss fs-4 flex-shrink-0 mt-1"></i>
+              <div>
+                <div class="fw-semibold text-bark small mb-1">Historial médico</div>
+                <div class="text-muted" style="font-size:12px;">Tener registros permite diagnósticos más precisos y un
+                  seguimiento óptimo de su salud.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA FINAL ══ -->
+<section class="cta-banner py-5">
+  <div class="container py-3">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <h2 class="display-6 fw-bold text-white mb-2">
+          Tu mascota te necesita. <br>Agenda hoy.
+        </h2>
+        <p class="text-white-75 mb-0">
+          En menos de 5 minutos puedes reservar una cita con nuestros veterinarios.
+          Sin filas, sin esperas, con confirmación inmediata.
+        </p>
+      </div>
+      <div class="col-lg-5 d-flex flex-column flex-sm-row gap-3 justify-content-lg-end">
+        <a routerLink="/citas/ubicacion" class="btn btn-light btn-lg px-5 py-3 fw-bold text-moss rounded-3 shadow">
+          <i class="bi bi-calendar-check me-2"></i>Agendar cita
+        </a>
+        <a href="/contacto" class="btn btn-outline-light btn-lg px-4 py-3 fw-semibold rounded-3">
+          <i class="bi bi-telephone me-2"></i>Llamar
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
