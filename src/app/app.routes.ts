@@ -74,6 +74,15 @@ export const routes: Routes = [
       import('./features/register-vet/register-vet.component')
         .then(m => m.RegisterVetComponent)
     },
+    //AdmClinicas
+    {
+      path: 'adm-clinics',
+      canActivate: [authGuard, roleGuard], 
+    data:{roles:['admin']},
+    loadComponent: () =>
+      import('./features/adm-clinics/adm-clinics.component')
+        .then(m => m.AdmClinicsComponent)
+    },
     //Administrar usuarios
     {
       path: 'admin-usu',
@@ -82,6 +91,19 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/users/admin-users/admin-users.component')
         .then(m => m.AdminUsersComponent)
+    },
+    //reset password
+    {
+  path: 'forgot-password',
+  loadComponent: () =>
+    import('./features/auth/forgot-password/forgot-password.component')
+      .then(m => m.ForgotPasswordComponent),
+    },
+    {
+      path: 'reset-password',
+      loadComponent: () =>
+        import('./features/auth/reset-password/reset-password.component')
+          .then(m => m.ResetPasswordComponent),
     },
   {
     path: '**',

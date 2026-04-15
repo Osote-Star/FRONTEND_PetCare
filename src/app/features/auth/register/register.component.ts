@@ -63,9 +63,8 @@ export class RegisterComponent {
         this.authService.login({ email, password }).subscribe({
           next: () => {
             this.isLoading.set(false);
-            // ✅ Cerrar modal y redirigir
-            this.authModal.close();
-            this.authModal.runAfterLogin();
+           
+            this.router.navigate(['/']);
           },
           error: () => {
             this.isLoading.set(false);

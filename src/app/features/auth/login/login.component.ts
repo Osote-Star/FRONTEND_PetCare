@@ -39,9 +39,8 @@ export class LoginComponent {
     this.authService.login(this.form.value as any).subscribe({
       next: () => {
         this.isLoading.set(false);
-        // ✅ Cerrar modal y redirigir a la URL guardada
-        this.authModal.close();
-        this.authModal.runAfterLogin();
+  
+        this.router.navigate(['/']);
       },
       error: (err: any) => {
         this.error.set(err.error?.message ?? 'Credenciales incorrectas');

@@ -1,0 +1,143 @@
+<div class="page">
+
+  <div class="tabs">
+    <button class="tab-btn" [class.active]="clinicReg()" (click)="changeToRegis()">
+      <span class="tab-icon">+</span>
+      Agregar clínica
+    </button>
+    <button class="tab-btn" [class.active]="clinicUpd()" (click)="changeToUpdate()">
+      <span class="tab-icon">-</span>
+      Actualizar clínica
+    </button>
+  </div>
+
+  <!--  Registro -->
+  <div *ngIf="clinicReg()" class="form-section">
+    <div class="section-header">
+      <h2>Nueva clínica</h2>
+      <p>Completa los campos para registrar una clínica en el sistema</p>
+    </div>
+
+    <form class="form" [formGroup]="clinicForm" (ngSubmit)="submitClinic()" novalidate>
+      <div class="grid">
+        <div class="field">
+          <label>Nombre de la clínica</label>
+          <input type="text" formControlName="name" placeholder="Ej: Clínica Veterinaria Central">
+          <small class="error" *ngIf="clinicNameInvalid">El nombre es obligatorio (min 3 caracteres)</small>
+        </div>
+        <div class="field">
+          <label>Ubicación</label>
+          <input type="text" formControlName="location" placeholder="Dirección completa">
+          <small class="error" *ngIf="clinicLocationInvalid">La ubicación es obligatoria (min 5 caracteres)</small>
+        </div>
+        <div class="field full-width">
+          <label>Horario</label>
+          <input type="text" formControlName="schedule" placeholder="Ej: Lunes a Viernes 9:00 - 17:00">
+          <small class="error" *ngIf="clinicScheduleInvalid">El horario es obligatorio (min 5 caracteres)</small>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-primary" type="submit" [disabled]="clinicForm.invalid || isClinicSubmitting()">
+          <span *ngIf="!isClinicSubmitting()">Agregar clínica</span>
+          <span *ngIf="isClinicSubmitting()" class="loading-text">Guardando...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!--  Actualizar -->
+  <div *ngIf="clinicUpd()" class="form-section">
+    <div class="section-header">
+      <h2>Modificar clínica</h2>
+      <p>Selecciona una clínica y edita sus datos</p>
+    </div>
+
+    <form class="form" [formGroup]="clinicForm" (ngSubmit)="submitClinic()" novalidate>
+
+      <div class="field select-field">
+        <label>Clínica a modificar</label>
+        <div class="select-wrapper">
+          <select formControlName="clinicId">
+            <option [ngValue]="null" disabled>Selecciona una clínica</option>
+            <option *ngFor="let c of clinics()" [ngValue]="c.id_clinic">{{ c.name }}</option>
+          </select>
+          <span class="select-arrow">▾</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="grid">
+        <div class="field">
+          <label>Nombre de la clínica</label>
+          <input type="text" formControlName="name"  [attr.disabled]="!clinicSelected ? '' : null">
+          <small class="error" *ngIf="clinicNameInvalid">El nombre es obligatorio (min 3 caracteres)</small>
+        </div>
+        <div class="field">
+          <label>Ubicación</label>
+          <input type="text" formControlName="location"  [attr.disabled]="!clinicSelected ? '' : null">
+          <small class="error" *ngIf="clinicLocationInvalid">La ubicación es obligatoria (min 5 caracteres)</small>
+        </div>
+        <div class="field full-width">
+          <label>Horario</label>
+          <input type="text" formControlName="schedule"  [attr.disabled]="!clinicSelected ? '' : null">
+          <small class="error" *ngIf="clinicScheduleInvalid">El horario es obligatorio (min 5 caracteres)</small>
+        </div>
+      </div>
+
+      <div class="actions two-actions">
+        <button class="btn-primary" type="submit"
+          [disabled]="clinicForm.invalid || isClinicSubmitting()">
+          <span *ngIf="!isClinicSubmitting()">Guardar cambios</span>
+          <span *ngIf="isClinicSubmitting()" class="loading-text">Actualizando...</span>
+        </button>
+        <button class="btn-danger" type="button" (click)="DeleteClincia()"
+          [disabled]="!clinicForm.value.clinicId || isClinicSubmitting()">
+          Eliminar clínica
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<div class="overlay" *ngIf="confirmDeleteModal()">
+  <div class="modal-box">
+    <div class="modal-icon danger-icon">!</div>
+    <h3>¿Eliminar clínica?</h3>
+    <p>Esta acción no se puede deshacer. La clínica será removida permanentemente del sistema.</p>
+    <div class="modal-actions">
+      <button class="btn-secondary" (click)="cancelDelete()">Cancelar</button>
+      <button class="btn-danger" (click)="confirmDelete()">Sí, eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modales -->
+<div class="overlay" *ngIf="clinicSuccess()">
+  <div class="modal-box">
+    <div class="modal-icon success-icon">✓</div>
+    <h3>Clínica registrada</h3>
+    <p>La clínica fue agregada correctamente al sistema.</p>
+    <button class="btn-primary full" (click)="closeClinicSuccess()">Aceptar</button>
+  </div>
+</div>
+
+<div class="overlay" *ngIf="clinicSuccessUpd()">
+  <div class="modal-box">
+    <div class="modal-icon success-icon">✓</div>
+    <h3>Clínica actualizada</h3>
+    <p>Los datos de la clínica fueron modificados correctamente.</p>
+    <button class="btn-primary full" (click)="closeClinicSuccess()">Aceptar</button>
+  </div>
+</div>
+
+<div class="overlay" *ngIf="clinicSuccessDel()">
+  <div class="modal-box">
+    <div class="modal-icon success-icon">✓</div>
+    <h3>Clínica eliminada</h3>
+    <p>La clínica fue removida correctamente del sistema.</p>
+    <button class="btn-primary full" (click)="closeClinicSuccess()">Aceptar</button>
+  </div>
+</div>

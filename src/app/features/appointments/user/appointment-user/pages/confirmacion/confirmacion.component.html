@@ -1,9 +1,35 @@
+<div class="progress-header">
+  <div class="step-badge">5</div>
+  <div class="step-info">
+    <small>Paso 5 de 5</small>
+    <h2>Elige fecha y hora</h2>
+  </div>
+  <div class="h-divider"></div>
+  <div class="header-actions">
+    <button class="btn btn-back" type="button" (click)="atras()" [disabled]="isLoading()">← Atrás</button>
+    <button class="btn btn-next" type="button" [disabled]="!isFormComplete() || isLoading()" (click)="crearCita()">Confirmar →</button>
+  </div>
+  <div class="h-divider"></div>
+  <div class="steps-dots">
+    <div class="dot done"></div>
+    <div class="dot done"></div>
+    <div class="dot done"></div>
+    <div class="dot done"></div>
+    <div class="dot active"></div>
+  </div>
+</div>
+
 <main>
   <div class="card">
-    <h1 class="card-title">¿Cuándo los vemos?</h1>
-    <p class="card-subtitle">Selecciona el veterinario, día y horario de tu preferencia</p>
 
-    <!-- Mensajes de error/éxito -->
+    <div class="card-header">
+      <div class="card-header-text">
+        <h1 class="card-title">¿Cuándo los vemos?</h1>
+        <p class="card-subtitle">Selecciona el veterinario, día y horario de tu preferencia</p>
+      </div>
+    </div>
+
+    <!-- Alertas -->
     <div class="alert alert-error" *ngIf="error()">
       <span>❌ {{ error() }}</span>
       <button class="close-btn" (click)="error.set('')">×</button>
@@ -12,169 +38,193 @@
       <span>✅ ¡Cita creada exitosamente! Redirigiendo...</span>
     </div>
 
-    <!-- VETERINARIO -->
-    <div class="vet-selector">
-      <label class="field-label">Veterinario <span class="required">*</span></label>
-      <div class="select-wrapper">
-        <select class="form-select" (change)="onVeterinarianChange($event)" [disabled]="isLoadingVets()">
-          <option value="" disabled selected>Seleccione un veterinario</option>
-          <option *ngFor="let vet of veterinarios()" [value]="vet.id_user">
-            {{ vet.name }}
-          </option>
-        </select>
-        <div *ngIf="isLoadingVets()" class="loading-text">Cargando veterinarios...</div>
-      </div>
-    </div>
+    <!-- GRID PRINCIPAL: formulario izquierda, resumen derecha -->
+    <div class="card-grid">
 
-    <!-- CALENDARIO -->
-    <div class="section-label">Selecciona una fecha *</div>
-    <div class="calendar-container">
-      <div class="calendar-header">
-        <button class="cal-nav" (click)="prevMonth()" [disabled]="isLoadingDates()">‹</button>
-        <span class="cal-month">{{ months[currentMonth] }} {{ currentYear }}</span>
-        <button class="cal-nav" (click)="nextMonth()" [disabled]="isLoadingDates()">›</button>
-      </div>
-      
-      <div *ngIf="isLoadingDates()" class="loading-dates">
-        <div class="spinner"></div>
-        <span>Cargando fechas disponibles...</span>
-      </div>
-      
-      <table class="calendar-grid" *ngIf="!isLoadingDates()">
-        <thead>
-          <tr>
-            <th *ngFor="let day of weekDays">{{ day }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let week of getCalendarWeeks()">
-            <td *ngFor="let day of week" 
-                class="calendar-day"
-                [class.empty]="!day"
-                [class.available]="day && isDateAvailable(day)"
-                [class.unavailable]="day && !isDateAvailable(day)"
-                [class.selected]="day && isSelectedDate(day)"
-                [class.today]="day && isToday(day)"
-                (click)="day && isDateAvailable(day) && onDateSelect(day)">
-              <span *ngIf="day">{{ day }}</span>
-              <span *ngIf="day && isDateAvailable(day)" class="availability-dot"></span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      
-      <div *ngIf="!isLoadingDates() && availableDates().length === 0 && selectedVeterinarianId()" class="no-dates-message">
-        📅 No hay fechas disponibles para este veterinario en los próximos 30 días
-      </div>
-    </div>
+      <!-- COLUMNA IZQUIERDA -->
+      <div class="col-form">
 
-    <!-- HORARIOS -->
-    <div class="slots-header" *ngIf="selectedDate()">
-      <span class="slots-label">Horarios disponibles</span>
-      <span class="slots-date">— {{ selectedDate() | date:'EEEE d \'de\' MMMM' | titlecase }}</span>
-    </div>
-    
-    <div class="slots-grid" *ngIf="!isLoadingSlots() && availableSlots().length > 0; else noSlots">
-      <button 
-        *ngFor="let slot of availableSlots()"
-        class="slot-btn"
-        [class.selected]="selectedTime() === slot"
-        (click)="selectTime(slot)">
-        {{ slot }}
-      </button>
-    </div>
-    
-    <ng-template #noSlots>
-      <div class="no-slots-message">
-        <p *ngIf="isLoadingSlots()">
-          <span class="spinner-small"></span> Cargando horarios...
-        </p>
-        <p *ngIf="!isLoadingSlots() && selectedDate() && availableSlots().length === 0">
-          📅 No hay horarios disponibles para esta fecha
-        </p>
-        <p *ngIf="!selectedDate()">
-          📅 Selecciona una fecha primero
-        </p>
-      </div>
-    </ng-template>
+        <!-- VETERINARIO -->
+        <div class="field-block">
+          <label class="field-label">Veterinario <span class="required">*</span></label>
+          <div class="select-wrapper">
+            <select class="form-select" (change)="onVeterinarianChange($event)" [disabled]="isLoadingVets()">
+              <option value="" disabled selected>Seleccione un veterinario</option>
+              <option *ngFor="let vet of veterinarios()" [value]="vet.id_user">{{ vet.name }}</option>
+            </select>
+          </div>
+          <div *ngIf="isLoadingVets()" class="loading-text">Cargando veterinarios...</div>
+        </div>
 
-    <div class="confirm-badge" [class.incomplete]="!isFormComplete()">
-      {{ isFormComplete() ? '✅ Todo listo para confirmar' : '⚠️ Selecciona veterinario, fecha y hora' }}
-    </div>
+        <!-- CALENDARIO -->
+        <div class="field-block">
+          <label class="field-label">Selecciona una fecha <span class="required">*</span></label>
+          <div class="calendar-container">
+            <div class="calendar-header">
+              <button class="cal-nav" (click)="prevMonth()" [disabled]="isLoadingDates()">‹</button>
+              <span class="cal-month">{{ months[currentMonth] }} {{ currentYear }}</span>
+              <button class="cal-nav" (click)="nextMonth()" [disabled]="isLoadingDates()">›</button>
+            </div>
 
-    <div class="button-container">
-      <button class="btn-back" (click)="atras()" [disabled]="isLoading()">← Atrás</button>
-      <button class="btn-confirm" [disabled]="!isFormComplete() || isLoading()" (click)="crearCita()">
-        <span *ngIf="!isLoading()">📅 Confirmar cita</span>
-        <span *ngIf="isLoading()">⏳ Creando cita...</span>
-      </button>
-    </div>
-  </div>
+            <div *ngIf="isLoadingDates()" class="loading-dates">
+              <div class="spinner"></div>
+              <span>Cargando fechas disponibles...</span>
+            </div>
 
-  <!-- SIDEBAR -->
-  <div class="summary-card">
-    <div class="summary-title">Resumen de tu cita</div>
-    
-    <div class="summary-item">
-      <div class="summary-icon">🏥</div>
-      <div class="summary-item-text">
-        <small>Clínica</small>
-        <span>{{ clinic().name || 'No seleccionada' }}</span>
+            <table class="calendar-grid" *ngIf="!isLoadingDates()">
+              <thead>
+                <tr>
+                  <th *ngFor="let day of weekDays">{{ day }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let week of getCalendarWeeks()">
+                  <td
+                    *ngFor="let day of week"
+                    class="calendar-day"
+                    [class.empty]="!day"
+                    [class.available]="day && isDateAvailable(day)"
+                    [class.unavailable]="day && !isDateAvailable(day)"
+                    [class.selected]="day && isSelectedDate(day)"
+                    [class.today]="day && isToday(day)"
+                    (click)="day && isDateAvailable(day) && onDateSelect(day)">
+                    <span *ngIf="day">{{ day }}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div *ngIf="!isLoadingDates() && availableDates().length === 0 && selectedVeterinarianId()" class="no-dates-message">
+              No hay fechas disponibles para este veterinario en los próximos 30 días
+            </div>
+          </div>
+        </div>
+
+        <!-- HORARIOS -->
+        <div class="field-block" *ngIf="selectedDate()">
+          <label class="field-label">
+            Horarios disponibles
+            <span class="field-label-date">— {{ selectedDate() | date:'EEEE d \'de\' MMMM' | titlecase }}</span>
+          </label>
+
+          <div class="slots-grid" *ngIf="!isLoadingSlots() && availableSlots().length > 0; else noSlots">
+            <button
+              *ngFor="let slot of availableSlots()"
+              class="slot-btn"
+              [class.selected]="selectedTime() === slot"
+              (click)="selectTime(slot)">
+              {{ slot }}
+            </button>
+          </div>
+
+          <ng-template #noSlots>
+            <div class="no-slots-message">
+              <p *ngIf="isLoadingSlots()">Cargando horarios...</p>
+              <p *ngIf="!isLoadingSlots() && availableSlots().length === 0">No hay horarios disponibles para esta fecha</p>
+            </div>
+          </ng-template>
+        </div>
+
+        <div class="field-block" *ngIf="!selectedDate()">
+          <div class="no-slots-message">
+            <p>Selecciona una fecha para ver los horarios disponibles</p>
+          </div>
+        </div>
+
       </div>
-    </div>
-    
-    <div class="summary-item">
-      <div class="summary-icon">🩺</div>
-      <div class="summary-item-text">
-        <small>Servicio</small>
-        <span>{{ service().name || 'No seleccionado' }}</span>
-        <div class="service-price">${{ service().price }} MXN</div>
+
+      <!-- COLUMNA DERECHA: resumen -->
+      <div class="col-summary">
+        <div class="summary-card">
+
+          <div class="summary-card-header">
+            <span class="summary-card-title">Resumen de tu cita</span>
+            <span class="summary-card-sub">Revisa los detalles antes de confirmar</span>
+          </div>
+
+          <div class="summary-body">
+
+            <div class="summary-row">
+              <div class="summary-icon-wrap">🏥</div>
+              <div class="summary-text">
+                <span class="summary-key">Clínica</span>
+                <span class="summary-val">{{ clinic().name || 'No seleccionada' }}</span>
+              </div>
+            </div>
+
+            <div class="summary-row">
+              <div class="summary-icon-wrap">🩺</div>
+              <div class="summary-text">
+                <span class="summary-key">Servicio</span>
+                <span class="summary-val">{{ service().name || 'No seleccionado' }}</span>
+              </div>
+            </div>
+
+            <div class="summary-row">
+              <div class="summary-icon-wrap">🐾</div>
+              <div class="summary-text">
+                <span class="summary-key">Mascota</span>
+                <span class="summary-val">{{ mascota().nombre || 'No registrada' }}</span>
+              </div>
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <div class="summary-row" [class.summary-row--pending]="!selectedVeterinarianName()">
+              <div class="summary-icon-wrap">👨‍⚕️</div>
+              <div class="summary-text">
+                <span class="summary-key">Veterinario</span>
+                <span class="summary-val">{{ selectedVeterinarianName() || 'Por seleccionar' }}</span>
+              </div>
+              <span class="summary-check" *ngIf="selectedVeterinarianName()">✓</span>
+            </div>
+
+            <div class="summary-row" [class.summary-row--pending]="!selectedDate()">
+              <div class="summary-icon-wrap">📅</div>
+              <div class="summary-text">
+                <span class="summary-key">Fecha</span>
+                <span class="summary-val">{{ (selectedDate() | date:'d \'de\' MMMM, yyyy') || 'Por seleccionar' }}</span>
+              </div>
+              <span class="summary-check" *ngIf="selectedDate()">✓</span>
+            </div>
+
+            <div class="summary-row" [class.summary-row--pending]="!selectedTime()">
+              <div class="summary-icon-wrap">🕐</div>
+              <div class="summary-text">
+                <span class="summary-key">Hora</span>
+                <span class="summary-val">{{ selectedTime() ? selectedTime() + ' hrs' : 'Por seleccionar' }}</span>
+              </div>
+              <span class="summary-check" *ngIf="selectedTime()">✓</span>
+            </div>
+
+          </div>
+
+          <div class="summary-total">
+            <span class="summary-total-label">Total estimado</span>
+            <span class="summary-total-amount">${{ service().price || 0 }} MXN</span>
+          </div>
+
+          <div class="summary-note">
+            💡 La cita se confirmará al completar este paso
+          </div>
+
+        </div>
+
+        <!-- Badge + botones debajo del resumen -->
+        <div class="confirm-badge" [class.incomplete]="!isFormComplete()">
+          {{ isFormComplete() ? '✅ Todo listo para confirmar' : '⚠️ Completa todos los campos' }}
+        </div>
+
+        <div class="button-container">
+          <button class="btn-back-card" (click)="atras()" [disabled]="isLoading()">← Atrás</button>
+          <button class="btn-confirm" [disabled]="!isFormComplete() || isLoading()" (click)="crearCita()">
+            <span *ngIf="!isLoading()">Confirmar cita</span>
+            <span *ngIf="isLoading()">Creando cita...</span>
+          </button>
+        </div>
+
       </div>
-    </div>
-    
-    <div class="summary-item">
-      <div class="summary-icon">🐾</div>
-      <div class="summary-item-text">
-        <small>Mascota</small>
-        <span>{{ mascota().nombre || 'No registrada' }}</span>
-      </div>
-    </div>
-    
-    <div class="summary-divider"></div>
-    
-    <div class="summary-item">
-      <div class="summary-icon">👨‍⚕️</div>
-      <div class="summary-item-text">
-        <small>Veterinario</small>
-        <span>{{ selectedVeterinarianName() || 'Por seleccionar' }}</span>
-      </div>
-    </div>
-    
-    <div class="summary-item">
-      <div class="summary-icon">📅</div>
-      <div class="summary-item-text">
-        <small>Fecha</small>
-        <span>{{ (selectedDate() | date:'EEEE d \'de\' MMMM') || 'Por seleccionar' }}</span>
-      </div>
-    </div>
-    
-    <div class="summary-item">
-      <div class="summary-icon">🕐</div>
-      <div class="summary-item-text">
-        <small>Hora</small>
-        <span>{{ selectedTime() || 'Por seleccionar' }} hrs</span>
-      </div>
-    </div>
-    
-    <div class="summary-divider"></div>
-    
-    <div class="summary-total">
-      <span>Total estimado</span>
-      <span>${{ service().price || 0 }} MXN</span>
-    </div>
-    
-    <div class="summary-note">
-      <small>💡 La cita se confirmará al finalizar</small>
-    </div>
-  </div>
+    </div><!-- /card-grid -->
+
+  </div><!-- /card -->
 </main>

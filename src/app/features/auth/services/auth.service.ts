@@ -16,12 +16,14 @@ import {
 import { environment } from '../../../environments/environment';
 import { RegisterVetDto, UpdateVetDto } from '../models/vet.model';
 import { AuthModalService } from './auth-modal.service';
+import { SanitizerService } from '@core/services/sanitizer.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly authModal = inject(AuthModalService);
+  private readonly sanitizer = inject(SanitizerService); //  Para limpiar XSS
   private readonly base = `${environment.apiUrl}`;
   private readonly usersUrl = `${environment.apiUrl}/users`;
 
@@ -52,7 +54,7 @@ export class AuthService {
   });
 
   constructor() {
-    // ✅ Verificar token al inicio y cargar perfil si es necesario
+    //  Verificar token al inicio y cargar perfil si es necesario
     if (this._isLoggedIn() && !this._currentUser()) {
       this.fetchProfile().subscribe({
         error: () => this.logout()
@@ -91,7 +93,6 @@ export class AuthService {
     
     try {
       const user = JSON.parse(raw);
-      // ✅ Validar estructura mínima
       if (user && user.id_user && user.name) {
         return user;
       }
@@ -143,20 +144,36 @@ export class AuthService {
 
   /**
    * Inicia sesión con email y contraseña
+   *  Sanitiza email para prevenir XSS
    */
   login(dto: LoginDto): Observable<ApiResponse<LoginResponseDto>> {
-    // ✅ Validación básica en cliente
-    if (!dto.email || !dto.password) {
+    //  Limpiar email (remover posibles scripts maliciosos)
+    const sanitizedEmail = this.sanitizer.sanitizeText(dto.email);
+    
+    //  Validación básica en cliente
+    if (!sanitizedEmail || !dto.password) {
       return throwError(() => new Error('Email y contraseña son requeridos'));
     }
     
-    return this.http.post<ApiResponse<LoginResponseDto>>(`${this.base}/auth/login`, dto).pipe(
+    //  Validar formato de email después de sanitizar
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailPattern.test(sanitizedEmail)) {
+      return throwError(() => new Error('Email inválido'));
+    }
+    
+    //  La contraseña NO se sanitiza para no alterarla
+    const sanitizedDto: LoginDto = {
+      email: sanitizedEmail,
+      password: dto.password
+    };
+    
+    return this.http.post<ApiResponse<LoginResponseDto>>(`${this.base}/auth/login`, sanitizedDto).pipe(
       tap(response => {
         if (response.data?.token) {
           localStorage.setItem('token', response.data.token);
           this._isLoggedIn.set(true);
           
-          // ✅ Obtener perfil y ejecutar callbacks
+          //  Obtener perfil y ejecutar callbacks
           this.fetchProfile().subscribe({
             next: () => {
               this.authModal.runAfterLogin();
@@ -194,20 +211,37 @@ export class AuthService {
 
   /**
    * Registra un nuevo usuario (cliente)
+   *  Sanitiza todos los campos de texto para prevenir XSS
    */
   register(dto: RegisterDto): Observable<ApiResponse<string>> {
-    // ✅ Validaciones en cliente
-    if (!dto.name || dto.name.length < 3) {
+    //  Limpiar todos los campos de texto
+    const sanitizedName = this.sanitizer.sanitizeText(dto.name);
+    const sanitizedEmail = this.sanitizer.sanitizeText(dto.email);
+    const sanitizedPhone = dto.phone ? this.sanitizer.sanitizeText(dto.phone) : null;
+    
+    //  Validaciones en cliente
+    if (!sanitizedName || sanitizedName.length < 3) {
       return throwError(() => new Error('El nombre debe tener al menos 3 caracteres'));
     }
-    if (!dto.email || !dto.email.includes('@')) {
+    if (!sanitizedEmail || !sanitizedEmail.includes('@')) {
       return throwError(() => new Error('Email inválido'));
     }
     if (!dto.password || dto.password.length < 8) {
       return throwError(() => new Error('La contraseña debe tener al menos 8 caracteres'));
     }
     
-    return this.http.post<ApiResponse<string>>(`${this.base}/auth/register`, dto).pipe(
+    //  La contraseña NO se sanitiza
+    const sanitizedDto: RegisterDto = {
+      name: sanitizedName,
+      email: sanitizedEmail,
+      password: dto.password,
+      phone: sanitizedPhone,
+      id_role: dto.id_role,
+      id_clinic: dto.id_clinic,
+      schedule: dto.schedule
+    };
+    
+    return this.http.post<ApiResponse<string>>(`${this.base}/auth/register`, sanitizedDto).pipe(
       tap(() => this.authModal.runAfterRegister()),
       catchError(error => this.handleAuthError(error))
     );
@@ -215,13 +249,20 @@ export class AuthService {
 
   /**
    * Registra un nuevo veterinario (solo admin)
+   *  Sanitiza todos los campos de texto
    */
   registerVet(dto: RegisterVetDto): Observable<ApiResponse<string>> {
-    // ✅ Validaciones en cliente
-    if (!dto.name || dto.name.length < 3) {
+    //  Limpiar campos de texto
+    const sanitizedName = this.sanitizer.sanitizeText(dto.name);
+    const sanitizedEmail = this.sanitizer.sanitizeText(dto.email);
+    const sanitizedPhone = this.sanitizer.sanitizeText(dto.phone);
+    const sanitizedSchedule = this.sanitizer.sanitizeText(dto.schedule);
+    
+    //  Validaciones en cliente
+    if (!sanitizedName || sanitizedName.length < 3) {
       return throwError(() => new Error('El nombre debe tener al menos 3 caracteres'));
     }
-    if (!dto.email || !dto.email.includes('@')) {
+    if (!sanitizedEmail || !sanitizedEmail.includes('@')) {
       return throwError(() => new Error('Email inválido'));
     }
     if (!dto.password || dto.password.length < 8) {
@@ -230,14 +271,29 @@ export class AuthService {
     if (!dto.id_clinic) {
       return throwError(() => new Error('Debe seleccionar una clínica'));
     }
-    if (!dto.schedule) {
+    if (!sanitizedSchedule) {
       return throwError(() => new Error('Debe especificar un horario'));
     }
     
-    return this.http.post<ApiResponse<string>>(`${this.base}/auth/register`, dto).pipe(
+    const sanitizedDto: RegisterVetDto = {
+      name: sanitizedName,
+      email: sanitizedEmail,
+      password: dto.password, // ⚠️ No sanitizar
+      phone: sanitizedPhone,
+      id_clinic: dto.id_clinic,
+      id_role: dto.id_role,
+      schedule: sanitizedSchedule
+    };
+    
+    return this.http.post<ApiResponse<string>>(`${this.base}/auth/register`, sanitizedDto).pipe(
       catchError(error => this.handleAuthError(error))
     );
   }
+
+//registrar admin 
+
+
+
 
   /**
    * Actualiza datos de un veterinario
@@ -247,17 +303,83 @@ export class AuthService {
       return throwError(() => new Error('ID de veterinario requerido'));
     }
     
-    return this.http.put<ApiResponse<any>>(`${this.base}/users/${id}`, dto).pipe(
+    //  Sanitizar campos de texto
+    const sanitizedDto = {
+      ...dto,
+      name: this.sanitizer.sanitizeText(dto.name),
+      email: this.sanitizer.sanitizeText(dto.email),
+      phone: this.sanitizer.sanitizeText(dto.phone),
+      schedule: this.sanitizer.sanitizeText(dto.schedule)
+      // password: dto.password //  No sanitizar si viene
+    };
+    
+    return this.http.put<ApiResponse<any>>(`${this.base}/users/${id}`, sanitizedDto).pipe(
       catchError(error => this.handleAuthError(error))
     );
   }
 
   /**
-   * Cierra sesión
+   * Cierra sesión de forma segura
+   *  Limpia localStorage, sessionStorage y notifica al backend
    */
   logout(): void {
+    const token = this.getToken();
+    
+    // Limpiar sesión local
     this.clearSession();
-    this.authModal.openLogin();
+    
+    //  Notificar al backend para invalidar el token
+    if (token) {
+      this.http.post(`${this.base}/auth/logout`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).subscribe({
+        error: () => console.warn('Error al cerrar sesión en backend')
+      });
+    }
+    
+    //  Limpiar sessionStorage por seguridad
+    sessionStorage.clear();
+    
+    // Redirigir a home
+    this.router.navigate(['/']);
+  }
+
+  /**
+   *  Verifica si la sesión es válida (token no expirado)
+   */
+  isSessionValid(): boolean {
+    if (!this._isLoggedIn()) return false;
+    
+    const token = this.getToken();
+    if (!token) return false;
+    
+    // Verificar expiración
+    if (!this.hasValidToken()) {
+      this.logout();
+      return false;
+    }
+    
+    return true;
+  }
+
+  /**
+   * ✅ Refresca el token si está por expirar
+   */
+  refreshToken(): Observable<string> {
+    return this.http.post<ApiResponse<{ token: string }>>(`${this.base}/auth/refresh`, {})
+      .pipe(
+        map(response => {
+          if (response.data?.token) {
+            localStorage.setItem('token', response.data.token);
+            return response.data.token;
+          }
+          throw new Error('No se pudo refrescar el token');
+        }),
+        catchError(error => {
+          this.logout();
+          return throwError(() => error);
+        })
+      );
   }
 
   // ==================== MÉTODOS PÚBLICOS ====================
@@ -267,7 +389,6 @@ export class AuthService {
    */
   getToken(): string | null {
     const token = localStorage.getItem('token');
-    // ✅ Verificar que el token no esté expirado
     if (token && this.hasValidToken()) {
       return token;
     }
@@ -412,17 +533,30 @@ export class AuthService {
 
   /**
    * Actualiza el perfil del usuario actual
+   *  Sanitiza todos los campos
    */
   updateProfile(dto: UpdateProfileDto): Observable<User> {
-    // ✅ Validaciones
-    if (!dto.name || dto.name.length < 3) {
+    //  Sanitizar campos
+    const sanitizedName = this.sanitizer.sanitizeText(dto.name);
+    const sanitizedEmail = this.sanitizer.sanitizeText(dto.email);
+    const sanitizedPhone = dto.phone ? this.sanitizer.sanitizeText(dto.phone) : null;
+    
+    //  Validaciones
+    if (!sanitizedName || sanitizedName.length < 3) {
       return throwError(() => new Error('El nombre debe tener al menos 3 caracteres'));
     }
-    if (!dto.email || !dto.email.includes('@')) {
+    if (!sanitizedEmail || !sanitizedEmail.includes('@')) {
       return throwError(() => new Error('Email inválido'));
     }
     
-    return this.http.put<ApiResponse<User>>(`${this.usersUrl}/perfil`, dto)
+    const sanitizedDto: UpdateProfileDto = {
+      name: sanitizedName,
+      email: sanitizedEmail,
+      password: dto.password, // 
+      phone: sanitizedPhone
+    };
+    
+    return this.http.put<ApiResponse<User>>(`${this.usersUrl}/perfil`, sanitizedDto)
       .pipe(
         map(response => response.data),
         tap(updatedUser => {
@@ -430,10 +564,10 @@ export class AuthService {
           if (current && current.id_user === updatedUser.id_user) {
             const updatedSession: UserSession = {
               id_user: updatedUser.id_user,
-              name: updatedUser.name,
-              email: updatedUser.email,
+              name: this.sanitizer.sanitizeText(updatedUser.name),
+              email: this.sanitizer.sanitizeText(updatedUser.email),
               id_role: updatedUser.id_role,
-              phone: updatedUser.phone,
+              phone: updatedUser.phone ? this.sanitizer.sanitizeText(updatedUser.phone) : null,
               schedule: updatedUser.schedule
             };
             this.setUserSession(updatedSession);
@@ -445,13 +579,23 @@ export class AuthService {
 
   /**
    * Actualiza un usuario (solo admin)
+   *  Sanitiza campos de texto
    */
   updateUser(id: string, dto: AdminUpdateUserDto): Observable<User> {
     if (!id) {
       return throwError(() => new Error('ID de usuario requerido'));
     }
     
-    return this.http.put<ApiResponse<User>>(`${this.usersUrl}/${id}`, dto)
+    //  Sanitizar campos
+    const sanitizedDto = {
+      ...dto,
+      name: this.sanitizer.sanitizeText(dto.name),
+      email: this.sanitizer.sanitizeText(dto.email),
+      phone: dto.phone ? this.sanitizer.sanitizeText(dto.phone) : null,
+      schedule: dto.schedule ? this.sanitizer.sanitizeText(dto.schedule) : null
+    };
+    
+    return this.http.put<ApiResponse<User>>(`${this.usersUrl}/${id}`, sanitizedDto)
       .pipe(
         map(response => response.data),
         catchError(error => this.handleAuthError(error))
@@ -472,4 +616,24 @@ export class AuthService {
         catchError(error => this.handleAuthError(error))
       );
   }
+
+
+
+
+requestPasswordReset(email: string) {
+  return this.http.post(`${this.base}/auth/request-reset`, {
+    email
+  });
+}
+
+resetPassword(token: string, newPassword: string) {
+  return this.http.post(`${this.base}/auth/reset-password`, {
+    token,
+    newPassword
+  });
+}
+
+
+
+
 }
