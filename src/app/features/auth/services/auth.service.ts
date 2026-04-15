@@ -23,7 +23,7 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly authModal = inject(AuthModalService);
-  private readonly sanitizer = inject(SanitizerService); // ✅ Para limpiar XSS
+  private readonly sanitizer = inject(SanitizerService); //  Para limpiar XSS
   private readonly base = `${environment.apiUrl}`;
   private readonly usersUrl = `${environment.apiUrl}/users`;
 
@@ -54,7 +54,7 @@ export class AuthService {
   });
 
   constructor() {
-    // ✅ Verificar token al inicio y cargar perfil si es necesario
+    //  Verificar token al inicio y cargar perfil si es necesario
     if (this._isLoggedIn() && !this._currentUser()) {
       this.fetchProfile().subscribe({
         error: () => this.logout()
@@ -144,24 +144,24 @@ export class AuthService {
 
   /**
    * Inicia sesión con email y contraseña
-   * ✅ Sanitiza email para prevenir XSS
+   *  Sanitiza email para prevenir XSS
    */
   login(dto: LoginDto): Observable<ApiResponse<LoginResponseDto>> {
-    // ✅ Limpiar email (remover posibles scripts maliciosos)
+    //  Limpiar email (remover posibles scripts maliciosos)
     const sanitizedEmail = this.sanitizer.sanitizeText(dto.email);
     
-    // ✅ Validación básica en cliente
+    //  Validación básica en cliente
     if (!sanitizedEmail || !dto.password) {
       return throwError(() => new Error('Email y contraseña son requeridos'));
     }
     
-    // ✅ Validar formato de email después de sanitizar
+    //  Validar formato de email después de sanitizar
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(sanitizedEmail)) {
       return throwError(() => new Error('Email inválido'));
     }
     
-    // ⚠️ La contraseña NO se sanitiza para no alterarla
+    //  La contraseña NO se sanitiza para no alterarla
     const sanitizedDto: LoginDto = {
       email: sanitizedEmail,
       password: dto.password
@@ -173,7 +173,7 @@ export class AuthService {
           localStorage.setItem('token', response.data.token);
           this._isLoggedIn.set(true);
           
-          // ✅ Obtener perfil y ejecutar callbacks
+          //  Obtener perfil y ejecutar callbacks
           this.fetchProfile().subscribe({
             next: () => {
               this.authModal.runAfterLogin();
@@ -211,15 +211,15 @@ export class AuthService {
 
   /**
    * Registra un nuevo usuario (cliente)
-   * ✅ Sanitiza todos los campos de texto para prevenir XSS
+   *  Sanitiza todos los campos de texto para prevenir XSS
    */
   register(dto: RegisterDto): Observable<ApiResponse<string>> {
-    // ✅ Limpiar todos los campos de texto
+    //  Limpiar todos los campos de texto
     const sanitizedName = this.sanitizer.sanitizeText(dto.name);
     const sanitizedEmail = this.sanitizer.sanitizeText(dto.email);
     const sanitizedPhone = dto.phone ? this.sanitizer.sanitizeText(dto.phone) : null;
     
-    // ✅ Validaciones en cliente
+    //  Validaciones en cliente
     if (!sanitizedName || sanitizedName.length < 3) {
       return throwError(() => new Error('El nombre debe tener al menos 3 caracteres'));
     }
@@ -230,7 +230,7 @@ export class AuthService {
       return throwError(() => new Error('La contraseña debe tener al menos 8 caracteres'));
     }
     
-    // ⚠️ La contraseña NO se sanitiza
+    //  La contraseña NO se sanitiza
     const sanitizedDto: RegisterDto = {
       name: sanitizedName,
       email: sanitizedEmail,
@@ -249,16 +249,16 @@ export class AuthService {
 
   /**
    * Registra un nuevo veterinario (solo admin)
-   * ✅ Sanitiza todos los campos de texto
+   *  Sanitiza todos los campos de texto
    */
   registerVet(dto: RegisterVetDto): Observable<ApiResponse<string>> {
-    // ✅ Limpiar campos de texto
+    //  Limpiar campos de texto
     const sanitizedName = this.sanitizer.sanitizeText(dto.name);
     const sanitizedEmail = this.sanitizer.sanitizeText(dto.email);
     const sanitizedPhone = this.sanitizer.sanitizeText(dto.phone);
     const sanitizedSchedule = this.sanitizer.sanitizeText(dto.schedule);
     
-    // ✅ Validaciones en cliente
+    //  Validaciones en cliente
     if (!sanitizedName || sanitizedName.length < 3) {
       return throwError(() => new Error('El nombre debe tener al menos 3 caracteres'));
     }
@@ -303,14 +303,14 @@ export class AuthService {
       return throwError(() => new Error('ID de veterinario requerido'));
     }
     
-    // ✅ Sanitizar campos de texto
+    //  Sanitizar campos de texto
     const sanitizedDto = {
       ...dto,
       name: this.sanitizer.sanitizeText(dto.name),
       email: this.sanitizer.sanitizeText(dto.email),
       phone: this.sanitizer.sanitizeText(dto.phone),
       schedule: this.sanitizer.sanitizeText(dto.schedule)
-      // password: dto.password // ⚠️ No sanitizar si viene
+      // password: dto.password //  No sanitizar si viene
     };
     
     return this.http.put<ApiResponse<any>>(`${this.base}/users/${id}`, sanitizedDto).pipe(
@@ -320,7 +320,7 @@ export class AuthService {
 
   /**
    * Cierra sesión de forma segura
-   * ✅ Limpia localStorage, sessionStorage y notifica al backend
+   *  Limpia localStorage, sessionStorage y notifica al backend
    */
   logout(): void {
     const token = this.getToken();
@@ -328,7 +328,7 @@ export class AuthService {
     // Limpiar sesión local
     this.clearSession();
     
-    // ✅ Notificar al backend para invalidar el token
+    //  Notificar al backend para invalidar el token
     if (token) {
       this.http.post(`${this.base}/auth/logout`, {}, {
         headers: { Authorization: `Bearer ${token}` }
@@ -337,7 +337,7 @@ export class AuthService {
       });
     }
     
-    // ✅ Limpiar sessionStorage por seguridad
+    //  Limpiar sessionStorage por seguridad
     sessionStorage.clear();
     
     // Redirigir a home
@@ -345,7 +345,7 @@ export class AuthService {
   }
 
   /**
-   * ✅ Verifica si la sesión es válida (token no expirado)
+   *  Verifica si la sesión es válida (token no expirado)
    */
   isSessionValid(): boolean {
     if (!this._isLoggedIn()) return false;
@@ -533,15 +533,15 @@ export class AuthService {
 
   /**
    * Actualiza el perfil del usuario actual
-   * ✅ Sanitiza todos los campos
+   *  Sanitiza todos los campos
    */
   updateProfile(dto: UpdateProfileDto): Observable<User> {
-    // ✅ Sanitizar campos
+    //  Sanitizar campos
     const sanitizedName = this.sanitizer.sanitizeText(dto.name);
     const sanitizedEmail = this.sanitizer.sanitizeText(dto.email);
     const sanitizedPhone = dto.phone ? this.sanitizer.sanitizeText(dto.phone) : null;
     
-    // ✅ Validaciones
+    //  Validaciones
     if (!sanitizedName || sanitizedName.length < 3) {
       return throwError(() => new Error('El nombre debe tener al menos 3 caracteres'));
     }
@@ -552,7 +552,7 @@ export class AuthService {
     const sanitizedDto: UpdateProfileDto = {
       name: sanitizedName,
       email: sanitizedEmail,
-      password: dto.password, // ⚠️ No sanitizar
+      password: dto.password, // 
       phone: sanitizedPhone
     };
     
@@ -579,14 +579,14 @@ export class AuthService {
 
   /**
    * Actualiza un usuario (solo admin)
-   * ✅ Sanitiza campos de texto
+   *  Sanitiza campos de texto
    */
   updateUser(id: string, dto: AdminUpdateUserDto): Observable<User> {
     if (!id) {
       return throwError(() => new Error('ID de usuario requerido'));
     }
     
-    // ✅ Sanitizar campos
+    //  Sanitizar campos
     const sanitizedDto = {
       ...dto,
       name: this.sanitizer.sanitizeText(dto.name),
@@ -616,4 +616,24 @@ export class AuthService {
         catchError(error => this.handleAuthError(error))
       );
   }
+
+
+
+
+requestPasswordReset(email: string) {
+  return this.http.post(`${this.base}/auth/request-reset`, {
+    email
+  });
+}
+
+resetPassword(token: string, newPassword: string) {
+  return this.http.post(`${this.base}/auth/reset-password`, {
+    token,
+    newPassword
+  });
+}
+
+
+
+
 }
