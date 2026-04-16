@@ -81,8 +81,21 @@
         </tr>
 
         <!-- Sin resultados -->
-        <tr *ngIf="pagedUsers().length === 0">
-          <td colspan="4" class="empty-state">No se encontraron usuarios con los filtros aplicados.</td>
+           <tr *ngIf="pagedUsers().length === 0">
+          <td colspan="4" class="empty-state">
+
+            <!-- LOADING -->
+            <div class="loading-container" *ngIf="isLoading()">
+              <div class="spinner"></div>
+              <span>Cargando resultados...</span>
+            </div>
+
+            <!-- SIN RESULTADOS -->
+            <span *ngIf="!isLoading()">
+              No se encontraron usuarios con los filtros aplicados.
+            </span>
+
+          </td>
         </tr>
       </tbody>
     </table>

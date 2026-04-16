@@ -15,7 +15,7 @@ import { ClinicService } from '../../auth/services/clinic.service';
   styleUrl: './admin-users.component.scss'
 })
 export class AdminUsersComponent implements OnInit {
-// ─── State ───────────────────────────────────────────────
+//  State 
   users          = signal<User[]>([]);
   clinics        = signal<Clinic[]>([]);
   selectedUser   = signal<User | null>(null);
@@ -23,7 +23,9 @@ export class AdminUsersComponent implements OnInit {
   success        = signal('');
   confirmDeleteModal = signal(false);
 
-  // ─── Filtros y paginación ─────────────────────────────────
+   isLoading = signal(true);
+
+  //  Filtros y paginación
   searchQuery    = signal('');
   selectedRole   = signal<number | null>(null);
   currentPage    = signal(1);
@@ -58,10 +60,7 @@ filteredUsers = computed(() => {
     return this.filteredUsers().slice(start, start + this.PAGE_SIZE);
   });
 
-  /**
-   * Páginas visibles en el paginador (máx. 5 botones centrados en la página actual).
-   * Ejemplo: si hay 10 páginas y estás en la 6 → muestra [4, 5, 6, 7, 8]
-   */
+
   visiblePages = computed(() => {
     const total   = this.totalPages();
     const current = this.currentPage();
@@ -93,7 +92,7 @@ filteredUsers = computed(() => {
     this.loadClinics();
   }
 
-  /* ================= FORM ================= */
+  /*  FORM  */
 
   private initForm() {
     this.form = this.fb.group({
@@ -126,14 +125,22 @@ filteredUsers = computed(() => {
     });
   }
 
-  /* ================= LOAD DATA ================= */
+  /*  LOAD DATA  */
 
   loadUsers() {
-    this.userService.getAll().subscribe({
-      next: (users) => this.users.set(users),
-      error: () => this.error.set('Error cargando usuarios')
-    });
-  }
+  this.isLoading.set(true);
+
+      this.userService.getAll().subscribe({
+        next: (users) => {
+          this.users.set(users);
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.error.set('Error cargando usuarios');
+          this.isLoading.set(false);
+        }
+      });
+    }
 
   loadClinics() {
     this.clinicService.getAll().subscribe({
@@ -146,7 +153,8 @@ filteredUsers = computed(() => {
 
   onSearchChange(query: string) {
     this.searchQuery.set(query);
-    this.currentPage.set(1); // Reiniciar página al buscar
+    this.currentPage.set(1); 
+    this.isLoading = signal(false);
   }
 
   clearSearch() {
@@ -156,7 +164,7 @@ filteredUsers = computed(() => {
 
   onRoleFilter(role: number | null) {
     this.selectedRole.set(role);
-    this.currentPage.set(1); // Reiniciar página al cambiar filtro
+    this.currentPage.set(1); 
   }
 
   goToPage(page: number) {
@@ -167,7 +175,7 @@ filteredUsers = computed(() => {
 
 
   
-  /* ================= SELECT USER ================= */
+  /*  SELECT USER  */
 
   selectUser(user: User) {
     this.selectedUser.set(user);
@@ -186,7 +194,7 @@ filteredUsers = computed(() => {
     this.success.set('');
   }
 
-  /* ================= UPDATE ================= */
+  /*  UPDATE  */
 
   updateUser() {
     if (this.form.invalid || !this.selectedUser()) return;
@@ -216,7 +224,7 @@ filteredUsers = computed(() => {
     });
   }
 
-  /* ================= DELETE ================= */
+  /*  DELETE  */
 
   deleteUser() {
     if (!this.selectedUser()) return;
@@ -244,7 +252,7 @@ filteredUsers = computed(() => {
     this.confirmDeleteModal.set(false);
   }
 
-  /* ================= HELPERS ================= */
+  /*  HELPERS  */
 
   closeSuccess() {
     this.success.set('');

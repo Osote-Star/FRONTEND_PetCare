@@ -273,6 +273,35 @@
   //color: #3d5e32;
 }
 
+/* CONTENEDOR CENTRADO */
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 0;
+  color: #7A5C47;
+  font-size: 0.85rem;
+}
+
+/* SPINNER  */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2.5px solid #E8D5B7;   
+  border-top-color: #7A5C47;  
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+/* ANIMACIÓN */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
 /* ── Badge de rol ── */
 .role-badge {
   display: inline-block;
@@ -421,6 +450,7 @@ select:focus {
   pointer-events: none;
   font-size: 0.85rem;
 }
+
 
 /* ── Errores ── */
 .error-msg {
