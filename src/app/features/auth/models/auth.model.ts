@@ -13,6 +13,7 @@ export interface RegisterDto {
 export interface LoginDto {
   email: string;
   password: string;        // ← Atención: en backend es "Password" con mayúscula
+  CaptchaToken?: string;
 }
 
 export interface User {

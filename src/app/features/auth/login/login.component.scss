@@ -358,6 +358,12 @@ input[type='password'] {
   flex-shrink: 0;
 }
 
+.captcha-container {
+  margin: 16px 0;
+  display: flex;
+  justify-content: center;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);

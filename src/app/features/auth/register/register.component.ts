@@ -60,7 +60,7 @@ export class RegisterComponent {
     this.authService.register({ name: fullName, email, phone, password, id_role: 3 }).subscribe({
       next: () => {
         // Login automático después del registro
-        this.authService.login({ email, password }).subscribe({
+       /* this.authService.login({ email, password }).subscribe({
           next: () => {
             this.isLoading.set(false);
            
@@ -71,7 +71,8 @@ export class RegisterComponent {
             this.authModal.close();
             this.router.navigate(['/login']);
           },
-        });
+        }); */
+        this.router.navigate(['/login']);
       },
       error: (err) => {
         this.error.set(err.error?.message ?? 'Error al crear la cuenta');

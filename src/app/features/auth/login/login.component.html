@@ -89,6 +89,10 @@
           {{ error() }}
         </div>
 
+        <!-- CAPTCHA -->
+         @if (showCaptcha()) {
+        <div id="recaptcha-container" class="captcha-container"></div>
+         }
         <!-- Submit -->
       <button
       type="submit"
