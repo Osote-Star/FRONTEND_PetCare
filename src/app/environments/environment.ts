@@ -1,4 +1,5 @@
+// src/environments/environment.ts
 export const environment = {
-    production: false,
-    apiUrl: 'http://localhost:5009/api/v1',
-  };
+  production: false,
+  apiUrl: 'https://api.petcare-app.online/api/v1',
+};
