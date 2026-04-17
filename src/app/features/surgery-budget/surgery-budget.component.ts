@@ -14,6 +14,7 @@ import { VetService, ServiceCategory, BudgetItem, PetInfo } from './models/surge
   styleUrl: './surgery-budget.component.scss'
 })
 export class SurgeryBudgetComponent {
+  
 
   filtroActivo: ServiceCategory | 'todos' = 'todos';
   mostrarCalculadora = false;

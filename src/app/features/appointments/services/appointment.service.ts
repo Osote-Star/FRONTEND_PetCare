@@ -16,7 +16,7 @@ export class AppointmentService {
    */
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Error al procesar la solicitud';
-    
+
     if (error.status === 400) {
       errorMessage = error.error?.message || 'Datos inválidos';
     } else if (error.status === 401) {
@@ -28,7 +28,7 @@ export class AppointmentService {
     } else if (error.error?.message) {
       errorMessage = error.error.message;
     }
-    
+
     return throwError(() => new Error(errorMessage));
   }
 
@@ -44,7 +44,7 @@ export class AppointmentService {
     if (!dto.appointment_date) throw new Error('Fecha de cita requerida');
     if (!dto.service) throw new Error('Servicio requerido');
     if (dto.cost < 0) throw new Error('El costo no puede ser negativo');
-    
+
     return this.http.post<ApiResponse<Appointment>>(this.baseUrl, dto).pipe(
       map(response => response.data),
       catchError(error => this.handleError(error))
@@ -71,6 +71,15 @@ export class AppointmentService {
     );
   }
 
+  // ── Citas de la clínica (admin) ───────────────────
+  getMyClinicAppointments(): Observable<Appointment[]> {
+    return this.http.get<ApiResponse<Appointment[]>>(`${this.baseUrl}/mi-clinica`).pipe(
+      map(r => r.data),
+      catchError(e => this.handleError(e))
+    );
+  }
+
+
   /**
    * Obtiene los pacientes del veterinario (solo veterinario)
    */
@@ -86,7 +95,7 @@ export class AppointmentService {
    */
   getAppointmentById(id: string): Observable<Appointment> {
     if (!id) throw new Error('ID de cita requerido');
-    
+
     return this.http.get<ApiResponse<Appointment>>(`${this.baseUrl}/${id}`).pipe(
       map(response => response.data),
       catchError(error => this.handleError(error))
@@ -98,15 +107,39 @@ export class AppointmentService {
    */
   changeStatus(id_appointment: string, status: string): Observable<Appointment> {
     if (!id_appointment) throw new Error('ID de cita requerido');
-    
-    const validStatuses = ['pendiente', 'confirmada', 'cancelada', 'completada'];
+
+    const validStatuses = ['pendiente', 'confirmada', 'atendida', 'cancelada'];
     if (!validStatuses.includes(status)) {
       throw new Error(`Estado inválido. Valores permitidos: ${validStatuses.join(', ')}`);
     }
-    
-    return this.http.patch<ApiResponse<Appointment>>(`${this.baseUrl}/${id_appointment}/status`, { status }).pipe(
-      map(response => response.data),
-      catchError(error => this.handleError(error))
+
+    return this.http.patch<ApiResponse<Appointment>>(
+      `${this.baseUrl}/${id_appointment}/status`,
+      { status }
+    ).pipe(
+      map(r => r.data),
+      catchError(e => this.handleError(e))
+    );
+  }
+
+  // ── Cancelar propia cita (cliente) ────────────────────────
+  cancelMyAppointment(id_appointment: string): Observable<Appointment> {
+    if (!id_appointment) throw new Error('ID de cita requerido');
+
+    return this.http.patch<ApiResponse<Appointment>>(
+      `${this.baseUrl}/cancelar/${id_appointment}`, {}
+    ).pipe(
+      map(r => r.data),
+      catchError(e => this.handleError(e))
+    );
+  }
+
+  // ── Eliminar cita (admin) ────────────────────────────────
+  deleteAppointment(id_appointment: string): Observable<void> {
+    if (!id_appointment) throw new Error('ID de cita requerido');
+
+    return this.http.delete<void>(`${this.baseUrl}/${id_appointment}`).pipe(
+      catchError(e => this.handleError(e))
     );
   }
 
@@ -115,7 +148,7 @@ export class AppointmentService {
    */
   updateAppointment(id_appointment: string, dto: any): Observable<Appointment> {
     if (!id_appointment) throw new Error('ID de cita requerido');
-    
+
     return this.http.put<ApiResponse<Appointment>>(`${this.baseUrl}/${id_appointment}`, dto).pipe(
       map(response => response.data),
       catchError(error => this.handleError(error))
@@ -127,7 +160,7 @@ export class AppointmentService {
    */
   getAvailableDates(veterinarianId: string): Observable<string[]> {
     if (!veterinarianId) throw new Error('ID de veterinario requerido');
-    
+
     return this.http.get<ApiResponse<string[]>>(`${this.baseUrl}/available-dates`, {
       params: { veterinarianId }
     }).pipe(
@@ -144,13 +177,13 @@ export class AppointmentService {
   getAvailableSlots(veterinarianId: string, date: string): Observable<string[]> {
     if (!veterinarianId) throw new Error('ID de veterinario requerido');
     if (!date) throw new Error('Fecha requerida');
-    
+
     // ✅ Validar formato de fecha
     const datePattern = /^\d{4}-\d{2}-\d{2}/;
     if (!datePattern.test(date)) {
       throw new Error('Formato de fecha inválido. Use YYYY-MM-DD');
     }
-    
+
     // ✅ Convertir a UTC para la consulta
     const [year, month, day] = date.split('-');
     const utcDate = new Date(Date.UTC(
@@ -158,12 +191,12 @@ export class AppointmentService {
       parseInt(month) - 1,
       parseInt(day)
     ));
-    
+
     const utcDateString = utcDate.toISOString();
-    
+
     return this.http.get<ApiResponse<string[]>>(`${this.baseUrl}/available-slots`, {
-      params: { 
-        veterinarianId, 
+      params: {
+        veterinarianId,
         date: utcDateString
       }
     }).pipe(

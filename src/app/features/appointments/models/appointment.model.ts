@@ -4,7 +4,7 @@
 // TIPOS ENUM (para mejor tipado)
 // ============================================
 
-export type AppointmentStatus = 'pendiente' | 'confirmada' | 'cancelada' | 'completada';
+export type AppointmentStatus = 'pendiente' | 'confirmada' | 'cancelada' | 'atendida';
 export type AppointmentType = 'consulta' | 'vacunacion' | 'estetica' | 'cirugia' | 'emergencia';
 
 // ============================================
@@ -13,15 +13,30 @@ export type AppointmentType = 'consulta' | 'vacunacion' | 'estetica' | 'cirugia'
 
 export interface Appointment {
   id_appointment: string;
+ 
+  // ── Dueño
   user_name: string;
-  pet_name: string;
-  veterinarian_name: string;
-  date: string;              // ISO format: "2024-03-20T10:30:00"
+ 
+  // ── Mascota
+  pet_name:   string;
+  pet_breed:  string;
+  pet_weight: number;   // kg
+  pet_age:    number;   // años
+ 
+  // ── Veterinario
+  veterinarian_name:  string;
+  veterinarian_email: string;
+  veterinarian_phone: string | null;
+ 
+  // ── Clínica
+  clinic_name:     string | null;
+  clinic_location: string | null;
+ 
+  // ── Cita
+  date:    string;   // ISO: "2026-03-20T10:30:00"
   service: string;
-  cost: number;
-  status: AppointmentStatus; // ✅ mejor tipado
-  clinic_name?: string;      // ✅ opcional
-  created_at?: string;       // ✅ opcional
+  cost:    number;
+  status:  AppointmentStatus;
 }
 
 // ============================================

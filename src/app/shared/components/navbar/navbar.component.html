@@ -2,21 +2,25 @@
 <nav class="main-nav">
   <a routerLink="/">Inicio</a>
   <a routerLink="/sobre-nosotros">Sobre Nosotros</a>
+ 
+  <!-- Cualquiera logueado o sin sesión -->
   <a routerLink="/citas">Citas</a>
   <a routerLink="/presupuesto-cirugias">Presupuesto</a>
   <a routerLink="/donaciones">Donaciones</a>
   <a routerLink="/contacto">Contacto</a>
-
-  <a *ngIf="isLoggedIn() && isAdmin()" routerLink="/register-vet">
-    Agr. Usuarios
-  </a>
-
-    <a *ngIf="isLoggedIn() && isAdmin()" routerLink="/admin-usu">
-    Admis. Usuarios
-  </a>
-
+ 
+  <!-- Solo cliente -->
+  <a routerLink="/mis-citas" *ngIf="isLoggedIn() && isClient()">Mis Citas</a>
+ 
+  <!-- Solo veterinario -->
+  <a routerLink="/mis-pacientes" *ngIf="isLoggedIn() && isVeterinarian()">Mis Pacientes</a>
+ 
+  <!-- Solo admin -->
+  <a routerLink="/admin-citas"  *ngIf="isLoggedIn() && isAdmin()">Mi Clínica</a>
+  <a routerLink="/register-vet" *ngIf="isLoggedIn() && isAdmin()">Admis. veterinarios</a>
+  <a routerLink="/admin-usu"    *ngIf="isLoggedIn() && isAdmin()">Admis. Usuarios</a>
+ 
   <div class="nav-auth">
-    <!-- 👈 ABRIR MODAL EN VEZ DE REDIRIGIR -->
     <a *ngIf="!isLoggedIn()" (click)="goToLogin()">Acceso</a>
     <button *ngIf="isLoggedIn()" (click)="logout()">Cerrar sesión</button>
   </div>

@@ -23,15 +23,35 @@ export const routes: Routes = [
         .then(m => m.appointmentUserRoutes)
   },
 
-  // 📌 ADMIN DE CITAS - RUTA SEPARADA (no va como hijo de /citas)
+  // 📌 MIS CITAS — cliente
   {
-    path: 'citas/admin',
-     canActivate: [authGuard, roleGuard], 
-    data:{roles:['admin', 'veterinario']},
+    path: 'mis-citas',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['cliente'], role: 'cliente' },
     loadComponent: () =>
-      import('./features/appointments/admin/appointment-admin/appointment-admin.component')
-        .then(m => m.AppointmentAdminComponent)
+      import('./features/appointments/user/appointment-list/appointment-list.component')
+        .then(m => m.AppointmentListComponent)
   },
+ 
+  // 📌 MIS PACIENTES — veterinario (mismo componente, distinto rol)
+  {
+    path: 'mis-pacientes',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['veterinario'], role: 'veterinario' },
+    loadComponent: () =>
+      import('./features/appointments/user/appointment-list/appointment-list.component')
+        .then(m => m.AppointmentListComponent)
+  },
+
+    // 📌 CITAS DE MI CLÍNICA — admin (mismo componente, distinto rol)
+    {
+      path: 'admin-citas',
+      canActivate: [authGuard, roleGuard],
+      data: { roles: ['admin'], role: 'admin' },
+      loadComponent: () =>
+        import('./features/appointments/user/appointment-list/appointment-list.component')
+          .then(m => m.AppointmentListComponent)
+    },
 
   {
     path: 'presupuesto-cirugias',

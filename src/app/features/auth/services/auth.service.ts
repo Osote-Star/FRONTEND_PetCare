@@ -1,4 +1,3 @@
-// features/auth/services/auth.service.ts
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -22,23 +21,18 @@ import { SanitizerService } from '@core/services/sanitizer.service';
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
-  private readonly authModal = inject(AuthModalService);
-  private readonly sanitizer = inject(SanitizerService); //  Para limpiar XSS
+  private readonly sanitizer = inject(SanitizerService);
   private readonly base = `${environment.apiUrl}`;
   private readonly usersUrl = `${environment.apiUrl}/users`;
 
-  // ==================== ESTADO PRIVADO ====================
   private _isLoggedIn = signal<boolean>(this.hasValidToken());
   private _currentUser = signal<UserSession | null>(this.loadUserFromStorage());
 
-  // ==================== ESTADO PÚBLICO (readonly) ====================
   readonly isLoggedIn = this._isLoggedIn.asReadonly();
   readonly currentUser = this._currentUser.asReadonly();
 
-  /** Rol del usuario como número (1: admin, 2: veterinario, 3: cliente) */
   readonly userRole = computed(() => this._currentUser()?.id_role ?? null);
-  
-  /** Nombre del rol como string */
+
   readonly userRoleName = computed(() => {
     const role = this.userRole();
     if (role === 1) return 'admin';
@@ -47,14 +41,12 @@ export class AuthService {
     return '';
   });
 
-  /** Nombre para mostrar en UI */
   readonly userDisplayName = computed(() => {
     const user = this._currentUser();
     return user?.name || 'Usuario';
   });
 
   constructor() {
-    //  Verificar token al inicio y cargar perfil si es necesario
     if (this._isLoggedIn() && !this._currentUser()) {
       this.fetchProfile().subscribe({
         error: () => this.logout()
@@ -62,15 +54,10 @@ export class AuthService {
     }
   }
 
-  // ==================== MÉTODOS PRIVADOS ====================
-
-  /**
-   * Valida si el token existe y no ha expirado
-   */
   private hasValidToken(): boolean {
     const token = localStorage.getItem('token');
     if (!token) return false;
-    
+
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const exp = payload.exp;
@@ -84,13 +71,10 @@ export class AuthService {
     }
   }
 
-  /**
-   * Carga el usuario desde localStorage
-   */
   private loadUserFromStorage(): UserSession | null {
     const raw = localStorage.getItem('user');
     if (!raw) return null;
-    
+
     try {
       const user = JSON.parse(raw);
       if (user && user.id_user && user.name) {
@@ -102,17 +86,11 @@ export class AuthService {
     }
   }
 
-  /**
-   * Guarda la sesión del usuario en memoria y localStorage
-   */
   private setUserSession(user: UserSession): void {
     localStorage.setItem('user', JSON.stringify(user));
     this._currentUser.set(user);
   }
 
-  /**
-   * Limpia completamente la sesión
-   */
   private clearSession(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -120,15 +98,16 @@ export class AuthService {
     this._currentUser.set(null);
   }
 
-  /**
-   * Maneja errores de autenticación
-   */
   private handleAuthError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Error de autenticación';
-    
+
     if (error.status === 401) {
       errorMessage = 'Credenciales inválidas';
       this.clearSession();
+
+      // 🔁 Redirigir a login si pierde sesión
+      this.router.navigate(['/login']);
+
     } else if (error.status === 403) {
       errorMessage = 'No tienes permisos para realizar esta acción';
     } else if (error.status === 409) {
@@ -136,50 +115,46 @@ export class AuthService {
     } else if (error.error?.message) {
       errorMessage = error.error.message;
     }
-    
+
     return throwError(() => new Error(errorMessage));
   }
 
-  // ==================== AUTENTICACIÓN ====================
+  // ==================== LOGIN ====================
 
-  /**
-   * Inicia sesión con email y contraseña
-   *  Sanitiza email para prevenir XSS
-   */
   login(dto: LoginDto): Observable<ApiResponse<LoginResponseDto>> {
-    //  Limpiar email (remover posibles scripts maliciosos)
     const sanitizedEmail = this.sanitizer.sanitizeText(dto.email);
-    
-    //  Validación básica en cliente
+
     if (!sanitizedEmail || !dto.password) {
       return throwError(() => new Error('Email y contraseña son requeridos'));
     }
-    
-    //  Validar formato de email después de sanitizar
+
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(sanitizedEmail)) {
       return throwError(() => new Error('Email inválido'));
     }
-    
-    //  La contraseña NO se sanitiza para no alterarla
+
     const sanitizedDto: LoginDto = {
       email: sanitizedEmail,
-      password: dto.password
+      password: dto.password,
+      CaptchaToken: dto.CaptchaToken,
     };
-    
-    return this.http.post<ApiResponse<LoginResponseDto>>(`${this.base}/auth/login`, sanitizedDto).pipe(
+
+    return this.http.post<ApiResponse<LoginResponseDto>>(
+      `${this.base}/auth/login`, sanitizedDto
+    ).pipe(
       tap(response => {
         if (response.data?.token) {
           localStorage.setItem('token', response.data.token);
           this._isLoggedIn.set(true);
-          
-          //  Obtener perfil y ejecutar callbacks
+
           this.fetchProfile().subscribe({
             next: () => {
-              this.authModal.runAfterLogin();
-              this.authModal.close();
+              // 🔁 Redirección después de login
+              this.router.navigate(['/']);
             },
-            error: () => this.authModal.close()
+            error: () => {
+              this.router.navigate(['/login']);
+            }
           });
         }
       }),
@@ -187,9 +162,8 @@ export class AuthService {
     );
   }
 
-  /**
-   * Obtiene el perfil del usuario actual
-   */
+  // ==================== PROFILE ====================
+
   fetchProfile(): Observable<UserSession> {
     return this.http.get<ApiResponse<UserSession>>(`${this.usersUrl}/perfil`).pipe(
       map(response => {
@@ -209,17 +183,13 @@ export class AuthService {
     );
   }
 
-  /**
-   * Registra un nuevo usuario (cliente)
-   *  Sanitiza todos los campos de texto para prevenir XSS
-   */
+  // ==================== REGISTER ====================
+
   register(dto: RegisterDto): Observable<ApiResponse<string>> {
-    //  Limpiar todos los campos de texto
     const sanitizedName = this.sanitizer.sanitizeText(dto.name);
     const sanitizedEmail = this.sanitizer.sanitizeText(dto.email);
     const sanitizedPhone = dto.phone ? this.sanitizer.sanitizeText(dto.phone) : null;
-    
-    //  Validaciones en cliente
+
     if (!sanitizedName || sanitizedName.length < 3) {
       return throwError(() => new Error('El nombre debe tener al menos 3 caracteres'));
     }
@@ -229,8 +199,7 @@ export class AuthService {
     if (!dto.password || dto.password.length < 8) {
       return throwError(() => new Error('La contraseña debe tener al menos 8 caracteres'));
     }
-    
-    //  La contraseña NO se sanitiza
+
     const sanitizedDto: RegisterDto = {
       name: sanitizedName,
       email: sanitizedEmail,
@@ -240,12 +209,19 @@ export class AuthService {
       id_clinic: dto.id_clinic,
       schedule: dto.schedule
     };
-    
-    return this.http.post<ApiResponse<string>>(`${this.base}/auth/register`, sanitizedDto).pipe(
-      tap(() => this.authModal.runAfterRegister()),
+
+    return this.http.post<ApiResponse<string>>(
+      `${this.base}/auth/register`, sanitizedDto
+    ).pipe(
+      tap(() => {
+        // 🔁 Después de registrarse, mandarlo a login
+        this.router.navigate(['/login']);
+      }),
       catchError(error => this.handleAuthError(error))
     );
   }
+
+
 
   /**
    * Registra un nuevo veterinario (solo admin)
@@ -363,7 +339,7 @@ export class AuthService {
   }
 
   /**
-   * ✅ Refresca el token si está por expirar
+   *  Refresca el token si está por expirar
    */
   refreshToken(): Observable<string> {
     return this.http.post<ApiResponse<{ token: string }>>(`${this.base}/auth/refresh`, {})

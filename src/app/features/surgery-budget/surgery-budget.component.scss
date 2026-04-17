@@ -5,252 +5,155 @@
   --moss-light: #8BAF78;
   --sand:       #E8D5B7;
   --cream:      #FDF6EE;
+  --leaf-bg:    #EEF5EA;
+  --border:     rgba(92,122,78,0.18);
+  --radius:     12px;
+
+  display: block;
+  background: var(--cream);
+  min-height: 100vh;
+  font-family: 'DM Sans', sans-serif;
 }
 
-/* ── COLOR UTILS ── */
-.text-bark     { color: var(--bark) !important; }
-.text-moss     { color: var(--moss) !important; }
-.text-white-75 { color: rgba(255,255,255,0.75) !important; }
-.bg-cream      { background-color: var(--cream); }
-
-/* ── HERO ── */
-.hero-budget { min-height: 91vh; }
-
-.hero-left {
-  background-color: var(--bark);
+/* ── PAGE HEADER ── */
+.page-header {
+  background: var(--bark);
+  padding: 28px 40px 32px;
   position: relative;
   overflow: hidden;
-  min-height: 91vh;
-  display: flex;
-  align-items: flex-start;
-  padding-top: 0;
+  text-align: center;
 }
-
-.hero-left::before {
+.page-header::before {
   content: '';
   position: absolute;
-  width: 480px; height: 480px; border-radius: 50%;
+  width: 360px; height: 360px; border-radius: 50%;
   background: rgba(92,122,78,0.1);
-  top: -100px; left: -120px;
+  top: -180px; right: -60px;
   pointer-events: none;
 }
-
-.hero-tag {
-  background: rgba(139,175,120,0.2) !important;
-  border: 1px solid rgba(139,175,120,0.4) !important;
-  color: var(--moss-light) !important;
-  font-size: 12px !important;
-  letter-spacing: 1px;
+.page-header-inner {
+  position: relative;
+  z-index: 1;
 }
-
-.hero-title em { color: var(--sand); font-style: italic; }
-
-.hero-desc {
-  color: rgba(255,255,255,0.65);
-  font-weight: 300;
+.page-header-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(139,175,120,0.2);
+  border: 1px solid rgba(139,175,120,0.4);
+  color: var(--moss-light);
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  border-radius: 30px; padding: 4px 14px;
+  margin-bottom: 10px;
 }
-
-.hero-btn {
-  background-color: var(--moss) !important;
-  border-color: var(--moss) !important;
-  color: white !important;
-  border-radius: 12px;
-  box-shadow: 0 6px 24px rgba(92,122,78,0.4) !important;
-  transition: transform 0.2s, box-shadow 0.2s;
-
-  &:hover {
-    background-color: #6e9260 !important;
-    transform: translateY(-2px);
-  }
-}
-
-.hero-img { object-position: center top; min-height: 91vh; }
-
-.hero-overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(to right, rgba(74,55,40,0.2), transparent 40%);
-}
-
-.hero-badge {
-  position: absolute; bottom: 80px; right: 32px;
-  min-width: 210px;
-}
-
-.badge-icon { width: 46px; height: 46px; background: #ECFDF5; }
-
-.stat-num {
+.page-header-title {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 30px; font-weight: 700;
-  color: var(--sand); line-height: 1;
+  font-size: 30px; color: white; line-height: 1.2;
+}
+.page-header-title em { color: var(--sand); font-style: italic; }
+.page-header-desc {
+  color: rgba(255,255,255,0.45);
+  font-size: 13px; margin-top: 6px;
 }
 
-.stat-lbl {
-  font-size: 11px; color: rgba(255,255,255,0.45);
-  text-transform: uppercase; letter-spacing: 0.7px; margin-top: 4px;
+/* ── MAIN ── */
+.svc-main {
+  padding: 28px 40px 48px;
 }
 
-/* ── SECTION LABEL ── */
-.section-label {
-  font-size: 11px; font-weight: 700;
+/* ── CATEGORÍA ── */
+.svc-category { margin-bottom: 32px; }
+
+.svc-category-label {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+}
+.svc-category-text {
+  font-size: 10px; font-weight: 700;
   letter-spacing: 2px; text-transform: uppercase;
-  color: var(--moss);
+  color: var(--moss); white-space: nowrap;
+}
+.svc-category-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(to right, rgba(92,122,78,0.25), transparent);
+}
+.svc-category-count {
+  font-size: 10px; color: #bbb; white-space: nowrap;
 }
 
-.label-line {
-  display: inline-block; width: 24px; height: 2px;
-  background: var(--moss); border-radius: 2px;
+/* ── GRID ── */
+.svc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.svc-grid--2 {
+  grid-template-columns: repeat(2, 1fr);
 }
 
-/* ── FILTROS ── */
-.filter-btn {
-  background: #fff;
-  border: 2px solid #EEE;
-  color: var(--bark);
-  font-weight: 600;
-  transition: all 0.2s;
-
-  &:hover {
-    border-color: var(--moss-light);
-    background: #EEF5EA;
-  }
-
-  &.active {
-    background: var(--moss) !important;
-    border-color: var(--moss) !important;
-    color: #fff !important;
-    box-shadow: 0 4px 16px rgba(92,122,78,0.3);
-  }
+/* ── TARJETA ── */
+.svc-card {
+  background: white;
+  border: 1.5px solid #ede7de;
+  border-radius: var(--radius);
+  padding: 16px;
+  position: relative; overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
-
-/* ── SERVICE CARDS ── */
-.service-card {
-  background: #fff;
-  border: 2px solid #EEE;
-  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 16px 48px rgba(74,55,40,0.1);
-    border-color: var(--moss-light);
-  }
-
-  &.en-carrito {
-    border-color: var(--moss) !important;
-    background: #F7FBF5 !important;
-  }
+.svc-card::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; background: var(--moss);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s ease;
 }
-
-.service-icon {
-  width: 52px; height: 52px;
-  flex-shrink: 0;
+.svc-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(74,55,40,0.1);
+  border-color: var(--moss-light);
 }
+.svc-card:hover::after { transform: scaleX(1); }
 
-.icon-cirugia {
-  background: #FFF0F0;
-  color: #C4704A;
+.svc-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--leaf-bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; margin-bottom: 10px;
 }
-
-.icon-medicamento {
-  background: #EEF5EA;
-  color: var(--moss);
+.svc-name {
+  font-size: 14px; font-weight: 600;
+  color: var(--bark); line-height: 1.3; margin-bottom: 3px;
 }
-
-/* ── CATEGORY BADGES ── */
-.category-badge {
-  font-size: 11px !important;
-  font-weight: 600 !important;
+.svc-desc {
+  font-size: 11px; color: #aaa;
+  line-height: 1.5; margin-bottom: 12px;
 }
-
-.badge-cirugia {
-  background: #FCE7D8 !important;
-  color: #C4704A !important;
+.svc-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 10px; border-top: 1px solid #f0ebe3;
 }
-
-.badge-medicamento {
-  background: #EEF5EA !important;
-  color: var(--moss) !important;
-}
-
-/* ── PRICE TAG ── */
-.price-tag {
+.svc-price {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 22px;
-  color: var(--bark);
+  font-size: 18px; font-weight: 700; color: var(--moss);
+}
+.svc-tag {
+  background: var(--leaf-bg);
+  border: 1px solid var(--border);
+  color: var(--moss);
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.5px; border-radius: 20px;
+  padding: 3px 8px;
 }
 
-/* ── ADD BUTTON ── */
-.add-btn {
-  background: var(--cream);
-  border: 2px solid #EEE;
-  color: var(--bark);
-  transition: all 0.2s;
-
-  &:hover {
-    border-color: var(--moss);
-    background: #EEF5EA;
-    color: var(--moss);
-  }
-
-  &.added {
-    background: var(--moss) !important;
-    border-color: var(--moss) !important;
-    color: #fff !important;
-  }
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .svc-grid { grid-template-columns: repeat(2, 1fr); }
 }
-
-/* ── BUDGET CARD ── */
-.budget-card {
-  background: #fff;
-  box-shadow: 0 8px 40px rgba(74,55,40,0.08);
-  border: 1.5px solid #EEE;
+@media (max-width: 700px) {
+  .page-header { padding: 20px 18px 24px; }
+  .svc-main    { padding: 20px 16px 32px; }
+  .svc-grid    { grid-template-columns: repeat(2, 1fr); }
+  .svc-grid--2 { grid-template-columns: repeat(2, 1fr); }
 }
-
-.budget-item {
-  background: var(--cream);
-  border: 1.5px solid #EEE;
-}
-
-.budget-item-icon {
-  width: 40px; height: 40px;
-  background: #EEF5EA;
-  flex-shrink: 0;
-}
-
-/* ── TOTAL BAR ── */
-.total-bar {
-  background: linear-gradient(135deg, var(--moss) 0%, #3D5C32 100%);
-}
-
-.total-amount {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 28px;
-}
-
-/* ── FORM CONTROLS ── */
-.form-control, .form-select {
-  border: 1.5px solid #EEE;
-  color: var(--bark);
-
-  &:focus {
-    border-color: var(--moss);
-    box-shadow: 0 0 0 3px rgba(92,122,78,0.15);
-  }
-}
-
-/* ── DONATE BUTTON ── */
-.btn-donate {
-  background: var(--moss);
-  border: none;
-  color: #fff;
-  transition: background 0.2s, transform 0.2s;
-
-  &:hover {
-    background: #6e9260;
-    transform: translateY(-2px);
-  }
-}
-
-/* ── CTA BANNER ── */
-.cta-banner {
-  background: linear-gradient(135deg, var(--moss) 0%, #3D5C32 100%);
+@media (max-width: 420px) {
+  .svc-grid, .svc-grid--2 { grid-template-columns: 1fr; }
 }
